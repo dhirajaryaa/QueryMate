@@ -5,6 +5,11 @@ node_modules
 .pnp
 .pnp.js
 
+# log files 
+logs
+logs*
+logs_*
+
 # Local env files
 .env
 .env.local

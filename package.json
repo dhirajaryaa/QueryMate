@@ -1,5 +1,5 @@
 {
-  "name": "QueryMate",
+  "name": "querymate",
   "private": true,
   "scripts": {
     "build": "turbo run build",
