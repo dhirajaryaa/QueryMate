@@ -61,6 +61,27 @@ shared/     → shared types (optional)
 6. Results displayed in frontend
 
 
+## QueryMate Build Timeline
+
+### 19 Feb 2026 — Logger Setup
+
+Status: Completed ✅  
+Branch: `dev`  
+Features:
+- Turborepo configured
+- Pino Logger setup
+- Logger transport create
+- Package workspace add
+
+### 20 Feb 2026 — Backend Foundation
+
+Status: Completed ✅  
+Branch: `feature/backend-api`  
+Features:
+- Express backend initialized
+- Logger added [instant of console.log]
+- Env setup and type-safe
+
 ## Author
 
 Dhiraj Arya
