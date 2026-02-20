@@ -7,9 +7,8 @@
   "types": "dist/index.d.ts",
   "files": ["dist"],
   "scripts": {
-    "dev": "tsup src/index.ts --dts --watch",
-    "build": "tsup src/index.ts --dts",
-    "start": "node dist/index.js"
+    "dev": "tsup src/index.ts --dts --watch --format cjs,esm",
+    "build": "tsup src/index.ts --dts --format cjs,esm"
   },
   "keywords": [
     "logger",
