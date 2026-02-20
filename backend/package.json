@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "API-Server",
   "version": "1.0.0",
   "description": "backend for QueryMate",
   "main": "src/server.js",
