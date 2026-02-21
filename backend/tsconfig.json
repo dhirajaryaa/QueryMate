@@ -16,7 +16,6 @@
     "sourceMap": true,
 
     "declaration": true,
-
     "declarationMap": true,
 
     "noUncheckedIndexedAccess": true,
@@ -25,8 +24,12 @@
     "verbatimModuleSyntax": true,
     "isolatedModules": true,
 
+    "esModuleInterop": true,     
+    "forceConsistentCasingInFileNames": true,
+
     "skipLibCheck": true
   },
 
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }
