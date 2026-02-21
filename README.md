@@ -82,6 +82,16 @@ Features:
 - Logger added [instant of console.log]
 - Env setup and type-safe
 
+### 21 Feb 2026 — Drizzle Setup
+
+Status: Completed ✅  
+Branch: `feature/backend-api`  
+Features:
+- drizzle setup
+- auth schema create for signup/login
+- session schema create for different manageable session
+- fix ts/js file import extension typescript classic error
+
 ## Author
 
 Dhiraj Arya
