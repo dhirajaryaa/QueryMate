@@ -16,9 +16,15 @@ const envSchema = z.object({
         "test"
     ]),
 
-    QM_DATABASE_URL: z.string().url(),
+    QM_DATABASE_URL: z.url(),
+
+    QM_FRONTEND_URL: z.httpUrl()
 });
 
 const env = envSchema.parse(process.env);
 
-export const {PORT,NODE_ENV,QM_DATABASE_URL} = env;
+export const { PORT,
+    NODE_ENV,
+    QM_DATABASE_URL,
+    QM_FRONTEND_URL
+} = env;
