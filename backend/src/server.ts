@@ -1,9 +1,10 @@
 import app from "./app.js";
 import { NODE_ENV, PORT } from "./config/env.js";
-import logger from "@QueryMate/logger"; //!package/logger  local package from workspace
+//!package/logger  local package from workspace
+import logger from "@QueryMate/logger"; 
 
 try {
-    // start server 
+    //? start server 
     app.listen(PORT,()=>{
         logger.info(`API ${NODE_ENV} server running on port ${PORT}`)
     });
