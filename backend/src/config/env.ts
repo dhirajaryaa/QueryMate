@@ -16,9 +16,9 @@ const envSchema = z.object({
         "test"
     ]),
 
-    QM_DATABASE_URL: z.url(),
+    QM_DATABASE_URL: z.string().min(1),
 
-    QM_FRONTEND_URL: z.httpUrl()
+    QM_FRONTEND_URL: z.url()
 });
 
 const env = envSchema.parse(process.env);
