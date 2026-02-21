@@ -1,5 +1,5 @@
-import app from "./app.js";
-import { NODE_ENV, PORT } from "./config/env.js";
+import app from "./app";
+import { NODE_ENV, PORT } from "./config/env";
 //!package/logger  local package from workspace
 import logger from "@QueryMate/logger"; 
 
