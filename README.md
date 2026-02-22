@@ -92,6 +92,16 @@ Features:
 - session schema create for different manageable session
 - fix ts/js file import extension typescript classic error
 
+### 22 Feb 2026 — Error & Signup Route
+
+Status: Completed ✅  
+Branch: `feature/backend-api`  
+Features:
+- api error & error middleware setup
+- password hash fn. create
+- jwt token generate fn. with package josh
+- create signup `POST` route with token and password hash
+
 ## Author
 
 Dhiraj Arya
