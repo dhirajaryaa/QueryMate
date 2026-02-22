@@ -18,7 +18,10 @@ const envSchema = z.object({
 
     QM_DATABASE_URL: z.string().min(1),
 
-    QM_FRONTEND_URL: z.url()
+    QM_FRONTEND_URL: z.url(),
+    
+    QM_ACCESS_TOKEN_SECRET : z.string(),
+    QM_REFRESH_TOKEN_SECRET : z.string()
 });
 
 const env = envSchema.parse(process.env);
@@ -26,5 +29,7 @@ const env = envSchema.parse(process.env);
 export const { PORT,
     NODE_ENV,
     QM_DATABASE_URL,
-    QM_FRONTEND_URL
+    QM_FRONTEND_URL,
+    QM_REFRESH_TOKEN_SECRET,
+    QM_ACCESS_TOKEN_SECRET
 } = env;
