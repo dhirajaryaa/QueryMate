@@ -1,6 +1,8 @@
 import express, { type Express } from 'express';
 import cors from 'cors';
-import { QM_FRONTEND_URL } from './config/env.js';
+import { QM_FRONTEND_URL } from './config/env';
+import { authRouter } from 'auth/auth.routes';
+import { errorHandler } from 'middleware/error.middleware';
 
 const app: Express = express();
 
@@ -14,5 +16,11 @@ app.use(cors({
     credentials: true
 }));
 
+
+//? routes setup 
+app.use("/api/auth",authRouter);
+
+//! error middleware
+app.use(errorHandler)
 
 export default app;
