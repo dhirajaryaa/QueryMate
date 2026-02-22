@@ -8,7 +8,9 @@ export class ApiError extends Error {
 
         super(message);
         this.statusCode = statusCode;
-        this.details = details ?? [];
+        if (details !== undefined && details.length > 0) {
+            this.details = details;
+        }
         Error.captureStackTrace(this, this.constructor);
 
     }

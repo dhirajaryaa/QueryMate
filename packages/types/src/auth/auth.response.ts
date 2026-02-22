@@ -2,8 +2,7 @@ export interface SignupData {
     user: {
         id: string
         email: string
-        name: string
-        role: "user" | "admin"
+        provider: "google" | "github" | "email" | "link" | null
     }
     token: string
 }
