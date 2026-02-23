@@ -19,9 +19,9 @@ const envSchema = z.object({
     QM_DATABASE_URL: z.string().min(1),
 
     QM_FRONTEND_URL: z.url(),
-    
-    QM_ACCESS_TOKEN_SECRET : z.string(),
-    QM_REFRESH_TOKEN_SECRET : z.string()
+
+    QM_ACCESS_TOKEN_SECRET: z.string(),
+    QM_REFRESH_TOKEN_SECRET: z.string()
 });
 
 const env = envSchema.parse(process.env);
@@ -33,3 +33,11 @@ export const { PORT,
     QM_REFRESH_TOKEN_SECRET,
     QM_ACCESS_TOKEN_SECRET
 } = env;
+
+// cookies secure 
+export const cookiesOptions = {
+    httpOnly: true,
+    secure: NODE_ENV === "production",
+    sameSite: true,
+    maxAge: 7 * 24 * 60 * 60 * 1000
+}

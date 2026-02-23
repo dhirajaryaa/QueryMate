@@ -5,6 +5,7 @@ import { authSchema } from "./auth.schema";
 import { mapZodError } from "utils/zodErrorMapper";
 import { ApiError } from "utils/apiError";
 import { loginService, signupService } from "./auth.services";
+import { cookiesOptions } from "config/env";
 
 // signup controller 
 export const signupController: RequestHandler = asyncHandler(async (req: Request, res: Response<SignupResponse>) => {
@@ -19,8 +20,8 @@ export const signupController: RequestHandler = asyncHandler(async (req: Request
     const response = await signupService(body.data);
 
     // sign token on headers
-    res.cookie("token", response.accessToken);
-    res.cookie("refreshToken", response.refreshToken);
+    res.cookie("token", response.accessToken, cookiesOptions);
+    res.cookie("refreshToken", response.refreshToken, cookiesOptions);
 
     return res.status(201).json({
         success: true,
@@ -44,8 +45,8 @@ export const loginController: RequestHandler = asyncHandler(async (req: Request,
     const response = await loginService(body.data);
 
     // sign token on headers
-    res.cookie("token", response.accessToken);
-    res.cookie("refreshToken", response.refreshToken);
+    res.cookie("token", response.accessToken, cookiesOptions);
+    res.cookie("refreshToken", response.refreshToken, cookiesOptions);
 
     return res.status(200).json({
         success: true,
