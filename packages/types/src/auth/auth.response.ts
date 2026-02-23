@@ -6,3 +6,11 @@ export interface SignupData {
     }
     token: string
 }
+
+export interface LoginData {
+    user: {
+        id: string
+        email: string
+    }
+    token: string
+}
