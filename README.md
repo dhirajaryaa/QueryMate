@@ -94,6 +94,16 @@ Features:
 - jwt token generate fn. with package josh
 - create signup `POST` route with token and password hash
 
+### 26 Feb 2026 — Next.js Switch
+
+Status: Completed ✅  
+Branch: `dev and main`  
+Features:
+- remove monorepo for faster mvp
+- next.js & drizzle setup
+- user schema and types created
+- landing page create & deploy on `https://querymate.dhirajarya.xyz`
+
 ## Author
 
 Dhiraj Arya
