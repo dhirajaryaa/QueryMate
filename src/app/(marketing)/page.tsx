@@ -54,8 +54,12 @@ export default function HomePage() {
 
 
       {/* Footer */}
-      <footer className="text-center text-sm text-muted-foreground mt-32 pb-6">
-        © 2026 QueryMate. All rights reserved.
+    <footer className="text-center text-sm text-muted-foreground mt-32 pb-6">
+        © 2026
+        <a href={process.env.NEXT_PUBLIC_APP_URL} target="_blank" rel="noopener noreferrer" className="underline ml-1">
+          QueryMate
+        </a>
+        . All rights reserved.
       </footer>
 
     </main>
