@@ -12,7 +12,7 @@ export default function HomePage() {
         <h2 className="text-xl font-bold text-primary flex items-center justify-center gap-1.5"> <DatabaseSearch />QueryMate</h2>
 
         <div className="flex items-center gap-4">
-          <ThemeToggler variant={'ghost'}/>
+          <ThemeToggler/>
           <Link href="/login">
             <Button>Login</Button>
           </Link>
