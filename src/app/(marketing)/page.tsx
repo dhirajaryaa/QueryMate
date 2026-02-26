@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { DatabaseSearch } from "lucide-react";
-import {ThemeToggler} from "components/theme-toggler";
+import { ThemeToggler } from "@/components/common/theme-toggler";
 
 export default function HomePage() {
   return (
@@ -12,7 +12,7 @@ export default function HomePage() {
         <h2 className="text-xl font-bold text-primary flex items-center justify-center gap-1.5"> <DatabaseSearch />QueryMate</h2>
 
         <div className="flex items-center gap-4">
-          <ThemeToggler/>
+          <ThemeToggler />
           <Link href="/login">
             <Button>Login</Button>
           </Link>
@@ -54,7 +54,7 @@ export default function HomePage() {
 
 
       {/* Footer */}
-    <footer className="text-center text-sm text-muted-foreground mt-32 pb-6">
+      <footer className="text-center text-sm text-muted-foreground mt-32 pb-6">
         © 2026
         <a href={process.env.NEXT_PUBLIC_APP_URL} target="_blank" rel="noopener noreferrer" className="underline ml-1">
           QueryMate
