@@ -28,7 +28,7 @@ This project is built with separate frontend and backend architecture to simulat
 
 **Backend**
 
-* Express.js
+* Next.js API
 * PostgreSQL
 * Redis
 * JWT Authentication
@@ -39,17 +39,6 @@ This project is built with separate frontend and backend architecture to simulat
 
 ---
 
-## Project Structure
-
-```
-querymate/
-
-frontend/   → Next.js frontend
-backend/    → Express.js backend
-shared/     → shared types (optional)
-```
-
----
 
 ## How It Works
 
@@ -68,6 +57,7 @@ shared/     → shared types (optional)
 Status: Completed ✅  
 Branch: `dev`  
 Features:
+
 - Turborepo configured
 - Pino Logger setup
 - Logger transport create
@@ -78,6 +68,7 @@ Features:
 Status: Completed ✅  
 Branch: `feature/backend-api`  
 Features:
+
 - Express backend initialized
 - Logger added [instant of console.log]
 - Env setup and type-safe
@@ -87,6 +78,7 @@ Features:
 Status: Completed ✅  
 Branch: `feature/backend-api`  
 Features:
+
 - drizzle setup
 - auth schema create for signup/login
 - session schema create for different manageable session
