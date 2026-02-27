@@ -8,12 +8,29 @@ import {
     FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { SignupInput } from "@/types/auth.types";
 import Link from "next/link";
 
 export function SignupForm() {
 
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        // Handle form submission logic here
+        const formData = new FormData(e.currentTarget);
+
+        const signupData: SignupInput = {
+            name: formData.get("name") as string,
+            email: formData.get("email") as string,
+            password: formData.get("password") as string,
+        }
+        console.log("Signup Data:", signupData);
+
+        // Reset the form after submission
+        e.currentTarget.reset();
+    }
+
     return (
-        <form>
+        <form onSubmit={handleSubmit}>
             <FieldGroup>
                 <Field>
                     <FieldLabel htmlFor="name">Full Name</FieldLabel>
