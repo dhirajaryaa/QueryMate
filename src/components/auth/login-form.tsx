@@ -1,12 +1,6 @@
-import { cn } from "@/lib/utils"
+"use client";
+
 import { Button } from "@/components/ui/button"
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
 import {
     Field,
     FieldDescription,
@@ -16,19 +10,8 @@ import {
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 
-export function LoginForm({
-    className,
-    ...props
-}: React.ComponentProps<typeof Card>) {
+export function LoginForm() {
     return (
-        <Card {...props} className="bg-muted">
-            <CardHeader>
-                <CardTitle>Login to your account</CardTitle>
-                <CardDescription>
-                    Enter your email below to login to your account
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
                 <form>
                     <FieldGroup>
                         <Field>
@@ -66,7 +49,6 @@ export function LoginForm({
                         </Field>
                     </FieldGroup>
                 </form>
-            </CardContent>
-        </Card>
+            
     )
 }
