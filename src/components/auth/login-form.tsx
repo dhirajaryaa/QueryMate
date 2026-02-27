@@ -8,11 +8,26 @@ import {
     FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { LoginInput } from "@/types/auth.types";
 import Link from "next/link"
 
 export function LoginForm() {
+     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+            e.preventDefault();
+            // Handle form submission logic here
+            const formData = new FormData(e.currentTarget);
+    
+            const loginData: LoginInput = {
+                email: formData.get("email") as string,
+                password: formData.get("password") as string,
+            }
+            console.log("Signup Data:", loginData);
+    
+            // Reset the form after submission
+            e.currentTarget.reset();
+        }
     return (
-                <form>
+                <form onSubmit={handleSubmit}>
                     <FieldGroup>
                         <Field>
                             <FieldLabel htmlFor="email">Email</FieldLabel>
