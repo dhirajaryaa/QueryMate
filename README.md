@@ -104,6 +104,16 @@ Features:
 - user schema and types created
 - landing page create & deploy on `https://querymate.dhirajarya.xyz`
 
+### 27 Feb 2026 — Better Auth config
+
+Status: Completed ✅  
+Branch: `dev`  
+Features:
+- better auth configure
+- drizzle orm connect schema generate
+- auth and authClient create
+- api routes for better auth
+
 ## Author
 
 Dhiraj Arya
