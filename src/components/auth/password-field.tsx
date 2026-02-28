@@ -5,10 +5,9 @@ import { Input } from "../ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import { FieldError } from "../ui/field";
 import { UseFormRegister, FieldError as RHFError } from "react-hook-form";
-import { SignupInput } from "@/types/auth.types";
 
 type Props = {
-    register: UseFormRegister<SignupInput>;
+    register: UseFormRegister<any>;
     error?: RHFError;
 };
 export default function PasswordField({ register, error }: Props) {
