@@ -1,4 +1,7 @@
 
+import AppHeader from "@/components/common/app-header";
+import { AppSidebar } from "@/components/common/app-sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -18,7 +21,13 @@ export default async function DashboardLayout({
 
     return (
         <>
-            {children}
+            <SidebarProvider>
+                <AppSidebar />
+                <main className="flex-1 w-full h-svh">
+                    <AppHeader />
+                    {children}
+                </main>
+            </SidebarProvider>
         </>
 
     );
