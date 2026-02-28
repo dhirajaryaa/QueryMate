@@ -1,10 +1,8 @@
+import z from "zod";
 import { User } from "./user.types";
+import { SignupSchema } from "@/schema/auth.schema";
 
-export interface SignupInput {
-    name: string;
-    email: string;
-    password: string;
-};
+export type SignupInput = z.infer<typeof SignupSchema>
 
 export interface LoginInput {
     email: string;
@@ -29,5 +27,5 @@ export type AuthResponse = AuthErrorResponse | AuthSuccussResponse
 
 export interface JwtPayload {
     id: string;
-    token : string
+    token: string
 };
