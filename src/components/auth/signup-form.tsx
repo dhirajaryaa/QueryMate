@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
-import { SignupInput } from "@/types/auth.types";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { toast } from "sonner";
@@ -20,6 +19,9 @@ import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignupSchema } from "@/schema/auth.schema";
+import z from "zod";
+
+type SignupInput = z.infer<typeof SignupSchema>;
 
 export function SignupForm() {
     const [isLoading, setIsLoading] = useState(false);
@@ -92,7 +94,7 @@ export function SignupForm() {
                 </Field>
                 <FieldGroup>
                     <Field>
-                        <Button type="submit">
+                        <Button type="submit" disabled={isLoading}>
                             {isLoading ?
                                 <Loader2 className="animate-spin size-7" /> : "Create Account"}
                         </Button>
