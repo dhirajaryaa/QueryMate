@@ -114,6 +114,27 @@ Features:
 - auth and authClient create
 - api routes for better auth
 
+### 28 Feb 2026 — Protected Routes & layout
+
+Status: Completed ✅  
+Branch: `dev`  
+Features:
+- better auth signup /signup
+- zod and react-form-hook setup
+- protected routes setup
+- sidebar layout setup
+- stich app design create
+
+### 1 Mar 2026 — DB Connection 
+
+Status: Completed ✅  
+Branch: `dev`  
+Features:
+- connection page ui create
+- model create connection form
+- test connection func.
+- save connection on DB.
+
 ## Author
 
 Dhiraj Arya
