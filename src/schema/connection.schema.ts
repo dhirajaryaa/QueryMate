@@ -1,9 +1,10 @@
-import z from "zod";
+import {z} from "zod";
 
 export const connectionSchema = z.object({
     name: z.string({ error: "connection name required" }),
     type: z.enum(["pg", "mysql", "sqlite", "mongodb"]),
-    status: z.enum(["active", "pending", "error"]).default("pending").optional(), uri: z.string()
+    uri: z.string().min(1, "Connection URI required"),
+    ssl: z.boolean(),
 }).superRefine((data, ctx) => {
     const regexMap = {
         pg: /^postgres(ql)?:\/\/[^:\s]+:[^@\s]+@[^:\s]+(:\d+)?\/[^\s]+$/,

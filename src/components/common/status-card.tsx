@@ -19,7 +19,7 @@ function StatusCard({
 }: Props) {
 
     return (
-        <Card className={cn("shadow-sm w-full p-1.5", className)}>
+        <Card className={cn("shadow-sm max-w-[220px] w-full p-1.5", className)}>
             <CardContent className="flex items-center gap-4 p-2 w-full max-w-sm">
                 <Icon
                     className={cn(

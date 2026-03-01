@@ -13,7 +13,7 @@ export default function ConnectionsPage() {
             >
                 <div className=" w-full h-fit">
                     {/* status cards for connections (active, pending, failed)  */}
-                    <section className="w-full h-full flex items-center justify-evenly  gap-2  flex-wrap">
+                    <section className="flex flex-wrap items-center  gap-4">
                         <StatusCard title="Active"
                             icon={CheckIcon}
                             value={10}
