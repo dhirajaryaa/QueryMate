@@ -5,7 +5,7 @@ import UserProfile from "../profile/user-profile";
 
 export default function AppHeader() {
     return (
-        <header className="flex items-center justify-between w-full h-13 px-4 py-2 shadow-sm border-b">
+        <header className="flex items-center justify-between w-full h-13 px-4 py-2 shadow-sm border-b sticky top-0 z-50 bg-background">
             {/* sidebar trigger */}
             <SidebarTrigger className="" />
             {/* theme  */}
