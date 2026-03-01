@@ -9,7 +9,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus, ShieldCheck, Zap } from "lucide-react";
+import { Loader2, Plus, Save, ShieldCheck, Zap } from "lucide-react";
 import { Field, FieldError, FieldGroup } from "../ui/field";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
@@ -19,33 +19,47 @@ import { Controller, useForm } from "react-hook-form";
 import { connectionSchema } from "@/schema/connection.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ConnectionInput } from "@/types/connection.types";
-import { createNewConnection } from "@/actions/connection";
+import { createNewConnectionAction, testConnectionAction } from "@/actions/connection";
 import { toast } from "sonner";
 import { useState } from "react";
 
-
 export function ConnectionModel() {
     const [showModel, setShowModel] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isTest, setIsTest] = useState(false);
 
-    const { register, control, reset, handleSubmit, formState: { errors } } = useForm<ConnectionInput>({
+    const { register, control, reset, handleSubmit, watch, formState: { errors } } = useForm<ConnectionInput>({
         mode: "onBlur",
         defaultValues: {
             type: "pg",
-            name: "",
             ssl: false,
-            uri: ""
         },
         resolver: zodResolver(connectionSchema)
     });
+    const dbType = watch("type");
 
     const handleFormSubmit = async (payload: ConnectionInput) => {
-        const res = await createNewConnection(payload);
+        setIsLoading(true);
+        const res = await createNewConnectionAction(payload);
         if (!res.success) {
             return toast.error(res.error || "connection create failed!")
         };
 
         reset();
+        setIsLoading(false);
         setShowModel(false); // close model
+    };
+
+    //?test connection 
+    const handleTestConnection = async (payload: ConnectionInput) => {
+        setIsTest(true);
+        const res = await testConnectionAction(payload);
+
+        res.success ? 
+        toast.success("Connection Test Successful.") : 
+        toast.error(res.error || "failed to test connection!")
+
+        setIsTest(false);
     };
 
     return (
@@ -114,6 +128,8 @@ export function ConnectionModel() {
                         </Field>
                     </FieldGroup>
                     {/* SSL Toggle */}
+                    {
+                        (dbType === 'pg' || dbType === 'mysql') &&
                     <Field className="flex items-center justify-between flex-row border-dashed py-4 px-2 my-4 border rounded-md">
                         <Label htmlFor="ssl">
                             <span>
@@ -135,12 +151,20 @@ export function ConnectionModel() {
                             )}
                         />
                     </Field>
+                    }
                     <DialogFooter className="justify-between sm:justify-between flex-col sm:flex-row">
-                        <Button type="button" variant={'secondary'}>
-                            <Zap fill="currentColor" className="text-yellow-500" />
+                        <Button
+                            onClick={handleSubmit(handleTestConnection)}
+                            type="button"
+                            variant={'outline'}
+                        >
+                            {isTest ? <Loader2 className="size-6 animate-spin" /> :
+                                <Zap fill="currentColor" className="text-yellow-500" />
+                            }
                             Test Connection</Button>
                         <div className="space-x-2">
-                            <Button type="submit" className="w-full">Save changes</Button>
+                            <Button type="submit" className="w-full">
+                                {isLoading ? <Loader2 className="size-6 animate-spin" /> : <Save />}Save</Button>
                         </div>
                     </DialogFooter>
                 </form>

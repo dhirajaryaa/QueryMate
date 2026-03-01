@@ -1,7 +1,7 @@
 import {z} from "zod";
 
 export const connectionSchema = z.object({
-    name: z.string({ error: "connection name required" }),
+    name: z.string({ error: "connection name required" }).min(3,"connection name must be greater than 3 characters"),
     type: z.enum(["pg", "mysql", "sqlite", "mongodb"]),
     uri: z.string().min(1, "Connection URI required"),
     ssl: z.boolean(),

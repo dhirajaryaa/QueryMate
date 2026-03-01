@@ -1,5 +1,7 @@
 'use server';
 
+//! all exported function use Action end with name to identify easily server action function
+
 import { db } from "@/db";
 import { connection } from "@/db/schema";
 import { auth } from "@/lib/auth";
@@ -9,7 +11,7 @@ import { ConnectionInput, ConnectionResponse, NewConnection } from "@/types/conn
 import { headers } from "next/headers";
 import { z } from "zod";
 
-export async function createNewConnection(payload: ConnectionInput): Promise<ConnectionResponse> {
+export async function createNewConnectionAction(payload: ConnectionInput): Promise<ConnectionResponse> {
 
     // check schema 
     const valid = connectionSchema.safeParse(payload);
@@ -29,4 +31,12 @@ export async function createNewConnection(payload: ConnectionInput): Promise<Con
     }).returning();
 
     return { success: true, data }
+};
+
+// test connection 
+export async function testConnectionAction(payload: ConnectionInput): Promise<{
+    success: boolean,
+    error?: string
+}> {
+    return await testDatabaseConnection(payload);
 }
