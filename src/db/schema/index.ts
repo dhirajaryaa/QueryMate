@@ -6,3 +6,5 @@ export * from "./session.schema"
 export * from "./user.schema"
 // verification schema
 export * from "./verification.schema"
+// connection schema
+export * from "./connection.schema"
