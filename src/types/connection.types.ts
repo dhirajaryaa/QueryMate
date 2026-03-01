@@ -1,0 +1,1 @@
+export type DBType = "pg" | "mysql" | "sqlite" | "mongodb";
