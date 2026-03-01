@@ -9,7 +9,7 @@ export const connectionSchema = z.object({
     const regexMap = {
         pg: /^postgres(ql)?:\/\/[^:\s]+:[^@\s]+@[^:\s]+(:\d+)?\/[^\s]+$/,
         mysql: /^mysql:\/\/[^:\s]+:[^@\s]+@[^:\s]+(:\d+)?\/[^\s]+$/,
-        mongodb: /^mongodb(\+srv)?:\/\/[^:\s]+:[^@\s]+@[^\/\s]+\/[^\s]+$/,
+       mongodb: /^mongodb(\+srv)?:\/\/.+@.+\/?.*$/,
         sqlite: /^(file:|sqlite:\/\/\/).+\.db$/,
     };
     if (!regexMap[data.type].test(data.uri)) {

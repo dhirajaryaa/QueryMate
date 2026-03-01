@@ -1,3 +1,4 @@
+'use client';
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -20,9 +21,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ConnectionInput } from "@/types/connection.types";
 import { createNewConnection } from "@/actions/connection";
 import { toast } from "sonner";
+import { useState } from "react";
 
 
 export function ConnectionModel() {
+    const [showModel, setShowModel] = useState(false);
+
     const { register, control, reset, handleSubmit, formState: { errors } } = useForm<ConnectionInput>({
         mode: "onBlur",
         defaultValues: {
@@ -39,11 +43,13 @@ export function ConnectionModel() {
         if (!res.success) {
             return toast.error(res.error || "connection create failed!")
         };
+
         reset();
+        setShowModel(false); // close model
     };
 
     return (
-        <Dialog >
+        <Dialog open={showModel} onOpenChange={() => setShowModel(!showModel)}>
             <DialogTrigger asChild>
                 <Button size={'sm'}>
                     <Plus className="mr-1" size={16} />

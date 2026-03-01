@@ -6,7 +6,6 @@ import { History, LayoutGrid, MessageSquareMore, Settings, Unplug } from "lucide
 
 export default function NavLinks() {
     const pathname = usePathname();
-    console.log(pathname);
 
     const links = [
         {
