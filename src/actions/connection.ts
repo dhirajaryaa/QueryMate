@@ -7,7 +7,8 @@ import { connection } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { testDatabaseConnection } from "@/lib/db/test.connection";
 import { connectionSchema } from "@/schema/connection.schema";
-import { ConnectionInput, ConnectionResponse, NewConnection } from "@/types/connection.types";
+import { ConnectionInput, ConnectionResponse, GetConnections, NewConnection } from "@/types/connection.types";
+import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { z } from "zod";
 
@@ -39,4 +40,33 @@ export async function testConnectionAction(payload: ConnectionInput): Promise<{
     error?: string
 }> {
     return await testDatabaseConnection(payload);
+};
+
+// get connection list
+export async function getConnectionAction(): Promise<GetConnections> {
+    // session get 
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) {
+        return { succuss: false, error: "UnAuthorized Request!" };
+    };
+    // get all connection
+    const allConn = await db.select().from(connection).where(eq(connection.userId, session.user.id));
+
+    // stats list 
+    const stats = {
+        total: 0,
+        pending: 0,
+        active: 0,
+        issus: 0,
+    };
+    if (allConn && allConn.length < 0) {
+        return { succuss: true, data: [], stats };
+    };
+
+    stats.total = allConn.length;
+    stats.pending = allConn.filter((d) => d.status === 'pending').length;
+    stats.active = allConn.filter((d) => d.status === 'active').length;
+    stats.issus = allConn.filter((d) => d.status === 'issus').length;
+
+    return { succuss: true, data: allConn, stats };
 }

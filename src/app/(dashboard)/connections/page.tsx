@@ -1,10 +1,14 @@
-'use client';
+import { getConnectionAction } from "@/actions/connection";
 import SectionLayout from "@/components/common/section-layout";
 import StatusCard from "@/components/common/status-card";
 import { ConnectionModel } from "@/components/connection/connection-model";
-import { CheckIcon, Info, Layers, RefreshCw } from "lucide-react";
+import ListAllConnection from "@/components/connection/list-connection";
+import { CheckIcon, CircleDotDashed, Hourglass, Info, Layers, RefreshCw } from "lucide-react";
+import { Suspense } from "react";
 
-export default function ConnectionsPage() {
+export default async function ConnectionsPage() {
+    // fetch connections 
+    const connections = await getConnectionAction();
 
     return (
         <>
@@ -12,33 +16,44 @@ export default function ConnectionsPage() {
                 actionUI={<ConnectionModel />}
             >
                 <div className=" w-full h-fit">
-                    {/* status cards for connections (active, pending, failed)  */}
-                    <section className="flex flex-wrap items-center  gap-4">
-                        <StatusCard title="Active"
-                            icon={CheckIcon}
-                            value={10}
-                            iconClassName="bg-green-200 text-green-600"
-                        />
-                        <StatusCard title="Issues"
-                            icon={Info}
-                            value={7}
-                            iconClassName="bg-orange-200 text-orange-600"
-                        />
-                        <StatusCard title="Syncing"
-                            icon={RefreshCw}
-                            value={2}
-                            iconClassName="bg-blue-200 text-blue-600"
-                        />
-                        <StatusCard title="Total"
-                            icon={Layers}
-                            value={12}
-                            iconClassName="bg-gray-200 text-gray-600"
-                        />
-                    </section>
-                    {/* table for connections */}
-                    <section className="w-full h-full bg-secondary rounded-xl mt-4">
-                       
-                    </section>
+                    <Suspense>
+                        {/* status cards for connections (active, pending, error)  */}
+                        <section className="flex flex-wrap items-center  gap-4">
+                            <StatusCard title="Active"
+                                icon={CheckIcon}
+                                value={connections.stats?.active}
+                                iconClassName="bg-green-200 text-green-700"
+                            />
+                            <StatusCard title="Pending"
+                                icon={Hourglass}
+                                value={connections.stats?.pending}
+                                iconClassName="bg-yellow-200 text-yellow-700"
+                            />
+                            <StatusCard title="Issues"
+                                icon={Info}
+                                value={connections.stats?.issus}
+                                iconClassName="bg-red-100 text-red-700"
+                            />
+                            <StatusCard title="Total"
+                                icon={Layers}
+                                value={connections.stats?.total}
+                                iconClassName="bg-gray-200 text-gray-600"
+                            />
+                        </section>
+                        {/* table for connections */}
+                        <section className="w-full h-full rounded-xl mt-4">
+                            <div className="w-full flex flex-col gap-3">
+                                {/* Heading */}
+                                <div className="flex justify-between items-center">
+                                    <h2 className="text-sm sm:text-lg font-semibold text-muted-foreground">
+                                        Connections
+                                    </h2>
+                                </div>
+                                {/* List connection */}
+                                <ListAllConnection connections={connections.data} />
+                            </div>
+                        </section>
+                    </Suspense>
                 </div>
             </SectionLayout>
         </>
