@@ -37,9 +37,9 @@ export default function HomePage() {
         </p>
 
         <div className="flex gap-4">
-          <Link href="/login">
+          <Link href="/app">
             <Button className="px-8 py-6 text-lg">
-              Get Started
+              Start Chatting
             </Button>
           </Link>
 

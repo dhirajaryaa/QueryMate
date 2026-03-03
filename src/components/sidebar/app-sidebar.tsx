@@ -2,27 +2,36 @@ import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
-    SidebarGroup,
     SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { CircleQuestionMark } from "lucide-react"
-import Logo from "./logo"
-import NavLinks from "./nav-links"
+import Logo from "../common/logo"
+import { Suspense } from "react";
+import SidebarNav from "./sidebar-nav";
+import { ChatHistory, HistoryLoading } from "./chat-history";
 
-export function AppSidebar() {
+export async function AppSidebar() {
+
+    await new Promise(resolve => setTimeout(resolve, 4000));
+
     return (
         <Sidebar>
             <SidebarHeader >
+                {/* logo  */}
                 <Logo />
             </SidebarHeader>
             <SidebarContent>
-                <SidebarGroup>
-                    {/* Nav Links  */}
-                    <NavLinks />
-                </SidebarGroup>
+                <div className="bg-sidebar mx-auto w-[90%]">
+                    {/* links  */}
+                    <SidebarNav />
+                    {/* history  */}
+                    <Suspense fallback={<HistoryLoading />}>
+                        <ChatHistory />
+                    </Suspense>
+                </div>
             </SidebarContent>
             <SidebarFooter className="border-t shadow">
                 <SidebarMenu >
@@ -45,4 +54,5 @@ export function AppSidebar() {
             </SidebarFooter>
         </Sidebar>
     )
-}
+};
+

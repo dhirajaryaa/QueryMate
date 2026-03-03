@@ -1,56 +1,42 @@
 "use client";
 import Link from "next/link";
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar";
+import {SidebarMenu, SidebarMenuButton, SidebarMenuItem, } from "../ui/sidebar";
 import { usePathname } from "next/navigation";
-import { History, LayoutGrid, MessageSquareMore, Settings, Unplug } from "lucide-react";
+import { SquarePen, Unplug } from "lucide-react";
 
-export default function NavLinks() {
+export default function SidebarNav() {
     const pathname = usePathname();
 
     const links = [
         {
-            title: "Dashboard",
-            url: "/dashboard",
-            icon: LayoutGrid,
+            title: "New Chat",
+            url: "/app",
+            icon: SquarePen,
         },
         {
             title: "Connections",
-            url: "/connections",
+            url: "/app/connections",
             icon: Unplug,
-        },
-        {
-            title: "Query",
-            url: "/query",
-            icon: MessageSquareMore,
-        },
-        {
-            title: "History",
-            url: "/history",
-            icon: History,
-        },
-        {
-            title: "Settings",
-            url: "/settings",
-            icon: Settings,
-        },
+        }
     ];
 
     return (
-        <SidebarMenu className={"mt-10"}>
+        <SidebarMenu className="sticky z-1 top-0 bg-sidebar pb-2">
             {links.map((link) => (
                 <SidebarMenuItem key={link.title}>
                     <Link href={link.url}>
                         <SidebarMenuButton
                             asChild
                             tooltip={link.title}
-                            isActive={pathname.startsWith(link.url)}
+                            isActive={pathname === link.url}
+                            // isActive={pathname.startsWith(link.url)}
                             className="data-[active=true]:bg-primary data-[active=true]:text-background
                             dark:data-[active=true]:text-white
-                            mx-auto  w-[90%] mt-0.5"
+                             mt-0.5"
                         >
-                            <div className="py-6 flex gap-3 text-base sm:text-[15px] px-3 font-medium ">
+                            <div className="py-5 flex gap-3 text-base sm:text-[15px] px-3 font-medium ">
                                 <span>
-                                    <link.icon className="size-5 sm:size-6" />
+                                    <link.icon className="size-5" />
                                 </span>
                                 <span>{link.title}</span>
                             </div>
