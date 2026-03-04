@@ -2,7 +2,7 @@ import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarM
 import ChatHistoryLink from "./chat-history-links";
 
 export async function ChatHistory() {
-    await new Promise(resolve => setTimeout(resolve, 4000)) //todo remove from api call
+    await new Promise(resolve => setTimeout(resolve, 1000)) //todo remove from api call
 
     const links = [
         { name: "database schema planning", id: "id004" },
@@ -11,7 +11,7 @@ export async function ChatHistory() {
     ];
 
     return (
-        <SidebarGroup>
+        <SidebarGroup className="px-0">
             <SidebarGroupLabel>Your Chats</SidebarGroupLabel>
             <ChatHistoryLink links={links} />
         </SidebarGroup>

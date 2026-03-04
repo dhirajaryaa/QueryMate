@@ -3,10 +3,10 @@ import Link from "next/link";
 
 export default function Logo() {
     return (
-        <Link href={"/app"}>
-            <div className="flex items-center h-12 text-primary px-4 gap-3 w-[90%] mx-auto">
-                < DatabaseSearch className="size-7" />
-                <span className="text-xl font-bold">QueryMate</span>
+        <Link href={"/new"}>
+            <div className="flex items-center py-2 text-primary gap-3 w-[90%] px-4">
+                < DatabaseSearch className="size-5" />
+                <span className="text-xl font-semibold">QueryMate</span>
             </div>
         </Link>
     );

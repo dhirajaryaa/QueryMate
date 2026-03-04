@@ -23,7 +23,7 @@ export default async function DashboardLayout({
         <>
             <SidebarProvider>
                 <AppSidebar />
-                <main className="flex-1 w-full h-svh">
+                <main className="flex flex-col w-full h-svh">
                     <AppHeader />
                     {children}
                 </main>
