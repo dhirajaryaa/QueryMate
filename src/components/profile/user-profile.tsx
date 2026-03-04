@@ -10,10 +10,10 @@ export default async function UserProfile() {
     });
 
     return (
-        <Link href="/app/profile" >
+        <Link href="/profile" >
             {session?.user?.image ?
-                <><Image width={50} src={session?.user?.image} height={50} className="rounded-full size-9" alt={session?.user?.name}></Image></> :
-                <><CircleUserRound className="size-8 rounded-full" />
+                <><Image width={50} src={session?.user?.image} height={50} className="rounded-full size-8" alt={session?.user?.name}></Image></> :
+                <><CircleUserRound className="size-7 rounded-full" />
                 </>
             }
         </Link>

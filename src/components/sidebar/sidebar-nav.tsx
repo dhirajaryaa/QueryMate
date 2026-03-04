@@ -10,12 +10,12 @@ export default function SidebarNav() {
     const links = [
         {
             title: "New Chat",
-            url: "/app",
+            url: "/new",
             icon: SquarePen,
         },
         {
             title: "Connections",
-            url: "/app/connections",
+            url: "/connections",
             icon: Unplug,
         }
     ];
