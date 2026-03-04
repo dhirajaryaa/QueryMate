@@ -15,7 +15,7 @@ import { ChatHistory, HistoryLoading } from "./chat-history";
 
 export async function AppSidebar() {
 
-    await new Promise(resolve => setTimeout(resolve, 4000));
+    // await new Promise(resolve => setTimeout(resolve, 4000));
 
     return (
         <Sidebar>
