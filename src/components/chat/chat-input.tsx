@@ -4,26 +4,29 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { ArrowRight, ArrowUp } from "lucide-react";
 import DbSelect from "./db-select";
+import { toast } from "sonner";
 
 export default function ChatInput({
   sendMessage,
 }: {
-  sendMessage: (message: string) => void;
+  sendMessage: (message: string, dbId: string) => void;
 }) {
   const [isPrompt, setIsPrompt] = useState<string>("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isPrompt.trim()) return;
-
-    sendMessage(isPrompt);
-
+    const id = localStorage.getItem("querymate_selected_db");
+    if (!id) {
+      toast.info("select Database to start Conversation.");
+      return;
+    }
+    sendMessage(isPrompt, id);
     setIsPrompt("");
   };
   return (
     <div className="flex w-full flex-col gap-2">
       <DbSelect />
-
       <form onSubmit={handleSubmit}>
         <div className="flex items-center justify-between gap-2 rounded-2xl border shadow py-1 px-1.5 w-auto">
           <Input
