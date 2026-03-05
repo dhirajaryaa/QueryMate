@@ -1,7 +1,7 @@
 import { pgTable, index, text, boolean, pgEnum, uuid, timestamp } from 'drizzle-orm/pg-core';
 import { user } from './user.schema';
 
-export const dbType = pgEnum("type", ["pg", "mysql", "sqlite", "mongodb"]);
+export const dbTypeEnum = pgEnum("type", ["pg", "mysql", "sqlite", "mongodb"]);
 export const statusEnum = pgEnum("status", ["active", "pending", "issus"]);
 
 export const connection = pgTable("connection", {
@@ -11,7 +11,7 @@ export const connection = pgTable("connection", {
     userId: text("user_id")
         .notNull()
         .references(() => user.id, { onDelete: "cascade" }),
-    type: dbType("type").notNull().default("pg"),
+    type: dbTypeEnum("type").notNull().default("pg"),
     status: statusEnum("status").notNull().default("pending"),
     ssl: boolean("ssl").default(false),
     createdAt: timestamp("created_at").notNull().defaultNow(),
