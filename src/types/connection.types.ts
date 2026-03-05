@@ -7,18 +7,28 @@ export type DBType = "pg" | "mysql" | "sqlite" | "mongodb";
 export type Connection = typeof connection.$inferSelect;
 export type NewConnection = typeof connection.$inferInsert;
 
-export type ConnectionInput = z.infer<typeof connectionSchema>
+export type ConnectionInput = z.infer<typeof connectionSchema>;
 
-export type ConnectionResponse = { success: boolean, data?: any, error?: String };
+export type ConnectionResponse = {
+  success: boolean;
+  data?: any;
+  error?: String;
+};
 
 export type GetConnections = {
-    succuss: boolean;
-    stats?: {
-        total: number;
-        pending: number;
-        active: number;
-        issus: number;
-    };
-    error?: string | any;
-    data: Connection[] | [];
-}
+  succuss: boolean;
+  stats?: {
+    total: number;
+    pending: number;
+    active: number;
+    issus: number;
+  };
+  error?: string | any;
+  data?: Connection[] | [];
+};
+
+export type ConnectionsList = {
+  success: boolean;
+  data?: Pick<Connection, "id" | "type" | "name">[];
+  error?: string;
+};

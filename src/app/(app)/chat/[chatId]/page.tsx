@@ -44,8 +44,6 @@ greet("Dhiraj")
 
                     {/* assistant  message  */}
                     <AssistantChatMessage message={message} />
-                    <AssistantChatMessage message={message} />
-                    <AssistantChatMessage message={message} />
 
                 </div>
             </section>

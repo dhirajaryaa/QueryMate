@@ -50,7 +50,7 @@ export default async function ConnectionsPage() {
                                     </h2>
                                 </div>
                                 {/* List connection */}
-                                <ListAllConnection connections={connections.data} />
+                                <ListAllConnection connections={connections.data!} />
                             </div>
                         </section>
                     </Suspense>
