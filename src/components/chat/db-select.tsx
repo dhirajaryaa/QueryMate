@@ -1,5 +1,4 @@
 "use client";
-import { connectionsListAction } from "@/actions/connection";
 import {
   Select,
   SelectContent,
@@ -13,9 +12,17 @@ import PostgresIcon from "../icons/postgres";
 import MySQLIcon from "../icons/mysql";
 import SqliteIcon from "../icons/sqllite";
 import MongoDBIcon from "../icons/mongodb";
+import { useEffect, useState } from "react";
 
 export default function DbSelect() {
   const { connections, loading } = useConnections();
+  const [dbId, setDbId] = useState<string>("");
+
+  // load from localstorage
+  useEffect(() => {
+    const id = localStorage.getItem("querymate_selected_db");
+    id && setDbId(id);
+  }, []);
 
   const databaseIcons = {
     pg: PostgresIcon,
@@ -24,8 +31,14 @@ export default function DbSelect() {
     mongodb: MongoDBIcon,
   };
 
+  // handle change
+  const handleChange = (id: string) => {
+    setDbId(id);
+    localStorage.setItem("querymate_selected_db", id);
+  };
+
   return (
-    <Select>
+    <Select value={dbId} onValueChange={handleChange}>
       <SelectTrigger
         size="sm"
         className="rounded-xl text-muted-foreground ml-1"
@@ -38,7 +51,7 @@ export default function DbSelect() {
           const Icon = databaseIcons[conn.type];
           return (
             <SelectItem key={conn.id} value={conn.id} className="capitalize">
-               {Icon && <Icon className="size-4" />}
+              {Icon && <Icon className="size-4" />}
               {conn.name}
             </SelectItem>
           );
