@@ -8,3 +8,7 @@ export * from "./user.schema"
 export * from "./verification.schema"
 // connection schema
 export * from "./connection.schema"
+// chat schema 
+export * from "./chat.schema"
+// message schema 
+export * from "./message.schema"
