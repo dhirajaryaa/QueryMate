@@ -32,7 +32,7 @@ function MarkdownRenderer({ message }: Props) {
           /* PARAGRAPH */
 
           p({ children }) {
-            return <p className=" text-foreground">{children}</p>;
+            return <p className=" text-foreground text-base">{children}</p>;
           },
 
           /* LISTS */
