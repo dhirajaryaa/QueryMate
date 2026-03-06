@@ -75,7 +75,7 @@ export async function POST(
       })
       .from(message)
       .innerJoin(chat, eq(message.chatId, chat.id))
-      .where(and(eq(message.id, chatId), eq(chat.userId, session.user.id)))
+      .where(and(eq(message.chatId, chatId), eq(chat.userId, session.user.id)))
       .orderBy(asc(message.createdAt));
 
     if (allMessages.length > 1) {

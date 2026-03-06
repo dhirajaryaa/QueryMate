@@ -9,7 +9,7 @@ import { toast } from "sonner";
 export default function ChatInput({
   sendMessage,
 }: {
-  sendMessage: (message: string, dbId: string) => void;
+  sendMessage: (message: string) => void;
 }) {
   const [isPrompt, setIsPrompt] = useState<string>("");
 
@@ -21,7 +21,7 @@ export default function ChatInput({
       toast.info("select Database to start Conversation.");
       return;
     }
-    sendMessage(isPrompt, id);
+    sendMessage(isPrompt);
     setIsPrompt("");
   };
   return (

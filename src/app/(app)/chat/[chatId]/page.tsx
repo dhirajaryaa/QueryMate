@@ -42,15 +42,14 @@ export default function ChatPage({
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   const sendMessage = async (message: string) => {
     try {
-    setMessages((prev) => [
-      ...prev,
-      { id: Date.now(), role: "user", content: message },
-    ]);
-  
+        setMessages((prev) => [
+          ...prev,
+          { id: Date.now(), role: "user", content: message },
+        ]);
 
       const res = await fetch(`/api/chat/${chatId}/message`, {
         method: "POST",
