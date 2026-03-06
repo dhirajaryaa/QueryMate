@@ -15,7 +15,7 @@ export default function ChatInput({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isPrompt.trim()) return;
+    // if (!isPrompt.trim()) return;
     const id = localStorage.getItem("querymate_selected_db");
     if (!id) {
       toast.info("select Database to start Conversation.");
