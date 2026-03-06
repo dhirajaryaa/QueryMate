@@ -5,9 +5,10 @@ import { toast } from "sonner";
 
 export default function AppPage() {
   const router = useRouter();
-  const sendMessage = async (message: string, dbId: string) => {
+  const sendMessage = async (message: string) => {
     // post api call for new conversion id [chat id ] create
     try {
+      const dbId = localStorage.getItem("querymate_selected_db");
       const res = await fetch("/api/chat/create", {
         method: "POST",
         headers: {
