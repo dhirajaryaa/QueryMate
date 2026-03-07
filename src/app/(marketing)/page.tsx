@@ -37,7 +37,7 @@ export default function HomePage() {
         </p>
 
         <div className="flex gap-4">
-          <Link href="/app">
+          <Link href="/new">
             <Button className="px-8 py-6 text-lg">
               Start Chatting
             </Button>
