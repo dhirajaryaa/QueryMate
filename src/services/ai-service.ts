@@ -13,12 +13,9 @@ export async function generateChatResponse(history: any[]) {
     },
     ...history,
   ];
-
   return await groq.chat.completions.create({
     messages,
     model,
     stream: true,
   });
-
-  
 }

@@ -2,15 +2,18 @@ import { db } from "@/db";
 import { chat, message } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { generateChatResponse } from "@/services/ai-service";
+import { Message } from "@/types/message.types";
 import { and, asc, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-
 export async function POST(
   req: NextRequest,
-  { params }: { params: { chatId: string } },
+  { params }: { params: Promise<{ chatId: string }> },
 ) {
+
+  
+
   try {
     // session check
     const session = await auth.api.getSession({ headers: await headers() });
@@ -29,7 +32,6 @@ export async function POST(
     }
 
     // get all message form db
-    let messages: any[] = [];
     const allMessages = await db
       .select({
         role: message.role,
@@ -40,18 +42,25 @@ export async function POST(
       .where(and(eq(message.chatId, chatId), eq(chat.userId, session.user.id)))
       .orderBy(asc(message.createdAt));
 
-    if (allMessages.length > 1) {
-      messages = [...messages, ...allMessages];
+    let messages: Pick<Message, "content" | "role">[] = [...allMessages];
+
+    //! save user message - prevent depiction
+    const lastMessage = allMessages[allMessages.length - 1];
+    if (
+      !lastMessage ||
+      lastMessage.role !== "user" ||
+      lastMessage.content !== prompt
+    ) {
+      await db.insert(message).values({
+        content: prompt,
+        role: "user",
+        chatId,
+      });
     }
 
-    // save user message
-    await db.insert(message).values({
-      content: prompt,
-      role: "user",
-      chatId,
-    });
+    // new message add on history
     messages.push({ role: "user", content: prompt });
-
+    //? llm calling
     const completions = await generateChatResponse(messages);
 
     // stream response
