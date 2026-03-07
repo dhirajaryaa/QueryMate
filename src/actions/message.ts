@@ -38,7 +38,7 @@ export async function getAllMessagesAction({
       .where(eq(message.chatId, chatId))
       .orderBy(asc(message.createdAt));
 
-      if (allMessages.length === 0) {
+    if (allMessages.length === 0) {
       return { success: false, error: "Chat not found!" };
     }
 
