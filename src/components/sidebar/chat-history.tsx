@@ -1,35 +1,41 @@
-import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuSkeleton } from "../ui/sidebar";
+"use client";
+import { ChatHistory } from "@/types/chat.types";
+import {
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuSkeleton,
+} from "../ui/sidebar";
 import ChatHistoryLink from "./chat-history-links";
+import { useState } from "react";
 
-export async function ChatHistory() {
-    await new Promise(resolve => setTimeout(resolve, 1000)) //todo remove from api call
-
-    const links = [
-        { name: "database schema planning", id: "id004" },
-        { name: "mongodb connection error", id: "id005" },
-        { name: "postgres ssl issue", id: "id006" }
-    ];
-
-    return (
-        <SidebarGroup className="px-0">
-            <SidebarGroupLabel>Your Chats</SidebarGroupLabel>
-            <ChatHistoryLink links={links} />
-        </SidebarGroup>
-    )
+type Props = {
+  initialHistory: ChatHistory[];
 };
 
+export function ChatHistoryList({ initialHistory }: Props) {
+  const [history, setHistory] = useState<ChatHistory[]>(initialHistory);
+
+  return (
+    <SidebarGroup className="px-0">
+      <SidebarGroupLabel>Your Chats</SidebarGroupLabel>
+      <ChatHistoryLink links={history} />
+    </SidebarGroup>
+  );
+}
 
 export function HistoryLoading({ count = 5 }: { count?: number }) {
-    return (
-        <SidebarGroup>
-            <SidebarGroupLabel>Your Chats</SidebarGroupLabel>
-            <SidebarMenu>
-                {Array.from({ length: count }).map((_, index) => (
-                    <SidebarMenuItem key={index}>
-                        <SidebarMenuSkeleton />
-                    </SidebarMenuItem>
-                ))}
-            </SidebarMenu>
-        </SidebarGroup>
-    )
+  return (
+    <SidebarGroup>
+      <SidebarGroupLabel>Your Chats</SidebarGroupLabel>
+      <SidebarMenu>
+        {Array.from({ length: count }).map((_, index) => (
+          <SidebarMenuItem key={index}>
+            <SidebarMenuSkeleton />
+          </SidebarMenuItem>
+        ))}
+      </SidebarMenu>
+    </SidebarGroup>
+  );
 }

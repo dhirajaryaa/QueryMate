@@ -2,7 +2,8 @@
 import { db } from "@/db";
 import { chat, message } from "@/db/schema";
 import { auth } from "@/lib/auth";
-import { CreateChatProps, ChatResponse } from "@/types/chat.types";
+import { CreateChatProps, ChatResponse, GetChatHistory } from "@/types/chat.types";
+import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 
 export async function createNewChatAction({
@@ -43,6 +44,31 @@ export async function createNewChatAction({
     }
 
     return { success: true, data: newChat };
+  } catch (error) {
+    return {
+      success: false,
+      error: "Something went wrong!",
+    };
+  }
+}
+
+export async function getChatHistoryAction(): Promise<GetChatHistory> {
+  try {
+    // session get
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) {
+      return { success: false, error: "UnAuthorized Request!" };
+    }
+
+    const allChats = await db
+      .select({ id: chat.id, title: chat.title })
+      .from(chat)
+      .where(eq(chat.userId, session.user.id));
+
+    return {
+      success: true,
+      data: allChats,
+    };
   } catch (error) {
     return {
       success: false,
