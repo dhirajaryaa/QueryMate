@@ -37,13 +37,13 @@ export default function NewChat() {
   return (
     <>
       {/* Example Prompts */}
-      <section className="grid sm:grid-cols-4 gap-3">
+      <section className="flex flex-wrap items-center justify-center gap-3">
         {examplesPrompt.map((q) => (
           <Button
+          key={q}
             variant={"secondary"}
-            key={q}
             onClick={() => sendMessage(q)}
-            className="cursor-pointer"
+            className="cursor-pointer text-sm"
           >
             {q}
           </Button>

@@ -6,10 +6,10 @@ export default function AppPage() {
       {/* Heading */}
       <div className="max-w-3xl w-full flex flex-col gap-8">
         <section className="text-center space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">
+          <h1 className="text-xl sm:text-3xl font-bold tracking-tight">
             Query your database with AI
           </h1>
-          <p className="text-muted-foreground text-sm">
+          <p className="text-muted-foreground text-[13px] sm:text-sm">
             Ask questions about your database in natural language
           </p>
         </section>
