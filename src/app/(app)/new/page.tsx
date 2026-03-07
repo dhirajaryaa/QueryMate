@@ -1,42 +1,21 @@
-"use client";
-import ChatInput from "@/components/chat/chat-input";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import NewChat from "@/components/chat/new-chat";
 
 export default function AppPage() {
-  const router = useRouter();
-  const sendMessage = async (message: string) => {
-    // post api call for new conversion id [chat id ] create
-    try {
-      const dbId = localStorage.getItem("querymate_selected_db");
-      const res = await fetch("/api/chat/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          prompt: message,
-          dbId,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        toast.error(data.message || data.error);
-      }
-      router.push(`/chat/${data.chatId}`);
-    } catch (error: any) {
-      toast.error("Network error");
-    }
-  };
-
   return (
-    <section className="w-full flex-1 overflow-hidden flex items-center justify-center  py-2 px-4">
-      <div className="max-w-3xl w-full space-y-4">
-        <h1 className="text-xl sm:text-2xl font-semibold text-center text-muted-foreground">
-          Chat with your Database now.
-        </h1>
-        <ChatInput sendMessage={sendMessage} />
+    <div className="w-full flex-1 overflow-hidden flex items-center justify-center  py-2 px-4">
+      {/* Heading */}
+      <div className="max-w-3xl w-full flex flex-col gap-8">
+        <section className="text-center space-y-2">
+          <h1 className="text-3xl font-bold tracking-tight">
+            Query your database with AI
+          </h1>
+          <p className="text-muted-foreground text-sm">
+            Ask questions about your database in natural language
+          </p>
+        </section>
+        {/* new chat input  */}
+        <NewChat />
       </div>
-    </section>
+    </div>
   );
 }
