@@ -92,21 +92,6 @@ export async function POST(
             role: "assistant",
             chatId,
           });
-          //! update chat title
-          const currentChat = await db
-            .select({ title: chat.title })
-            .from(chat)
-            .where(eq(chat.id, chatId))
-            .limit(1);
-
-          if (currentChat[0]?.title === "New Chat") {
-            const newTitle = prompt.slice(0, 30);
-
-            await db
-              .update(chat)
-              .set({ title: newTitle })
-              .where(eq(chat.id, chatId));
-          }
 
           controller.close();
         } catch (error) {
