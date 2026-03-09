@@ -57,6 +57,20 @@ export async function POST(
 
     // new message add on history
     messages.push({ role: "user", content: prompt });
+
+    //! update chat title
+    const currentChat = await db
+      .select({ title: chat.title })
+      .from(chat)
+      .where(eq(chat.id, chatId))
+      .limit(1);
+
+    if (currentChat[0]?.title === "New Chat") {
+      const newTitle = prompt.slice(0, 30);
+
+      await db.update(chat).set({ title: newTitle }).where(eq(chat.id, chatId));
+    }
+
     //? llm calling
     const completions = await generateChatResponse(messages);
 
@@ -72,13 +86,13 @@ export async function POST(
             assistantMessage += text;
             controller.enqueue(encoder.encode(text));
           }
-          // message save on db
+          //? message save on db
           await db.insert(message).values({
             content: assistantMessage,
             role: "assistant",
             chatId,
           });
-          // update chat title
+          //! update chat title
           const currentChat = await db
             .select({ title: chat.title })
             .from(chat)
@@ -86,7 +100,7 @@ export async function POST(
             .limit(1);
 
           if (currentChat[0]?.title === "New Chat") {
-           const newTitle = prompt.slice(0, 30);
+            const newTitle = prompt.slice(0, 30);
 
             await db
               .update(chat)

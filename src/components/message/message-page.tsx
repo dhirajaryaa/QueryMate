@@ -13,6 +13,7 @@ export default function MessagePage({
   initialMessages: SafeMessage[];
 }) {
   const { chatId } = useParams();
+  const chatContainerRef = useRef<HTMLDivElement>(null)
 
   const [messages, setMessages] = useState<SafeMessage[]>(initialMessages);
 
@@ -25,6 +26,13 @@ export default function MessagePage({
       sendMessage(lastMessage.content, true);
     }
   }, []);
+
+  // auto scroll 
+  useEffect(()=>{
+    if(chatContainerRef.current){
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
+    }
+  },[messages])
 
   async function sendMessage(message: string, isInitial = false) {
     try {
@@ -71,13 +79,13 @@ export default function MessagePage({
       toast.error("Network Error");
       console.error("Network error", error);
     }
-  }
+  };
 
   return (
     <>
-      <section className="flex flex-1 flex-col w-full h-full overflow-y-auto">
+      <section className="flex flex-1 flex-col w-full h-full overflow-y-auto" ref={chatContainerRef}>
         {/* chat list  */}
-        <div className="flex flex-col gap-4 flex-1 w-full max-w-3xl mx-auto px-6 py-4">
+        <div className="flex flex-col gap-4 flex-1 w-full max-w-3xl mx-auto px-6 py-4" >
           {/* message list  */}
           <MessageList messages={messages} />
         </div>

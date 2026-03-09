@@ -30,6 +30,7 @@ export default function ChatInput({
       <form onSubmit={handleSubmit}>
         <div className="flex items-center justify-between gap-2 rounded-2xl border shadow py-1 px-1.5 w-auto">
           <Input
+          autoFocus
             value={isPrompt}
             placeholder="Ask you Query?"
             onChange={(e) => setIsPrompt(e.target.value)}
