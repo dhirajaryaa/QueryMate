@@ -17,5 +17,6 @@ export async function generateChatResponse(history: any[]) {
     messages,
     model,
     stream: true,
+    // response_format: { type: "json_object" },
   });
 }
