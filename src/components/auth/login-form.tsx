@@ -37,7 +37,7 @@ export function LoginForm() {
             onSuccess: () => {
                 reset();
                 toast.success("Logged in successfully");
-                redirect("/dashboard");
+                redirect("/new");
             },
             onError: (ctx) => {
                 toast.error(
