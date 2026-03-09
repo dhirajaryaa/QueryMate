@@ -55,21 +55,21 @@ export async function POST(
       });
     }
 
-    // new message add on history
-    messages.push({ role: "user", content: prompt });
-
     //! update chat title
-    const currentChat = await db
-      .select({ title: chat.title })
+    const [currentChat] = await db
+      .select()
       .from(chat)
       .where(eq(chat.id, chatId))
       .limit(1);
 
-    if (currentChat[0]?.title === "New Chat") {
+    if (currentChat.title === "New Chat") {
       const newTitle = prompt.slice(0, 30);
 
       await db.update(chat).set({ title: newTitle }).where(eq(chat.id, chatId));
     }
+
+    //? new message add on history
+    messages.push({ role: "user", content: `${prompt}\nConnectionId:${currentChat.connectionId}` });
 
     //? llm calling
     const completions = await generateChatResponse(messages);

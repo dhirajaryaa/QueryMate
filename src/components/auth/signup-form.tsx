@@ -42,7 +42,7 @@ export function SignupForm() {
             onSuccess: () => {
                 toast.success("Account created successfully");
                 reset();
-                redirect("/dashboard");
+                redirect("/new");
             },
             onError: (ctx) => {
                 toast.error(

@@ -1,4 +1,4 @@
-import { SYSTEM_PROMPT } from "@/prompt/system-prompt";
+import { SYSTEM_PROMPT } from "@/lib/ai/system-prompt";
 import Groq from "groq-sdk";
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
@@ -13,10 +13,11 @@ export async function generateChatResponse(history: any[]) {
     },
     ...history,
   ];
-  return await groq.chat.completions.create({
+  const stream = await groq.chat.completions.create({
     messages,
     model,
     stream: true,
-    // response_format: { type: "json_object" },
   });
+
+  return stream;
 }
