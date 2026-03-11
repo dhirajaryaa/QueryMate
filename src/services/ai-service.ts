@@ -46,7 +46,7 @@ export async function* generateChatResponse(history: any[]) {
     ...history,
   ];
 
-  const maxTurns = 10;
+  const maxTurns = 5;
   let turnNumber = 0;
   // loop llm calling
   while (turnNumber < maxTurns) {
@@ -55,6 +55,7 @@ export async function* generateChatResponse(history: any[]) {
       messages,
       model,
       tools: toolsList,
+      tool_choice: "auto",
       stream: true,
     });
 
@@ -92,6 +93,8 @@ export async function* generateChatResponse(history: any[]) {
       messages.push(...result);
       turnNumber++;
       continue;
+    } else if (finishReason === "stop") {
+      break;
     }
   }
 }
