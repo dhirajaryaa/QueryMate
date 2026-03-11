@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { chat, message } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { generateChatResponse } from "@/services/ai-service";
-import { Message } from "@/types/message.types";
+import { PromptMessage } from "@/types/message.types";
 import { and, asc, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
@@ -39,9 +39,9 @@ export async function POST(
       .where(and(eq(message.chatId, chatId), eq(chat.userId, session.user.id)))
       .orderBy(asc(message.createdAt));
 
-    let messages: Pick<Message, "content" | "role">[] = [...allMessages];
+    let messages: PromptMessage[] = [...allMessages];
 
-    //! save user message - prevent depiction
+    //! save user message - prevent duplication
     const lastMessage = allMessages[allMessages.length - 1];
     if (
       !lastMessage ||
@@ -69,10 +69,13 @@ export async function POST(
     }
 
     //? new message add on history
-    messages.push({ role: "user", content: `${prompt}\nConnectionId:${currentChat.connectionId}` });
+    messages.push({
+      role: "user",
+      content: `${prompt}\n\nConnectionId:${currentChat.connectionId}`,
+    });
 
-    //? llm calling
-    const completions = await generateChatResponse(messages);
+    //! llm calling
+    const completions = generateChatResponse(messages);
 
     // stream response
     let assistantMessage: string = "";
@@ -81,8 +84,7 @@ export async function POST(
     const stream = new ReadableStream({
       async start(controller) {
         try {
-          for await (const chunk of completions) {
-            const text = chunk.choices[0]?.delta.content || "";
+          for await (const text of completions) {
             assistantMessage += text;
             controller.enqueue(encoder.encode(text));
           }

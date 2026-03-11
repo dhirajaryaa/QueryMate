@@ -1,9 +1,17 @@
-import { listTablesTool } from "./tools/list-tables-tool";
+import { getDbInfoTool } from "./tools/get-db-info-tool";
 import { getSchemaTool } from "./tools/get-schema-tool";
 import { runQueryTool } from "./tools/run-query-tool";
 
-export const availableTools = [
-    { type: "function", function: listTablesTool.details },
-    { type: "function", function: getSchemaTool.details },
-    { type: "function", function: runQueryTool.details },
+// tools list
+export const toolsList = [
+  { type: "function", function: getDbInfoTool.details },
+  { type: "function", function: getSchemaTool.details },
+  { type: "function", function: runQueryTool.details },
 ];
+
+// tools mapper
+export const availableTools = {
+  get_db_info : getDbInfoTool.execute,
+  get_schema: getSchemaTool.execute,
+  run_query: runQueryTool.execute,
+};
