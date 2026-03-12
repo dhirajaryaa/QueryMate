@@ -18,7 +18,9 @@ function MarkdownRenderer({ message }: Props) {
           /* HEADINGS */
 
           h1({ children }) {
-            return <h1 className="text-2xl font-semibold mt-6 mb-3 ">{children}</h1>;
+            return (
+              <h1 className="text-2xl font-semibold mt-6 mb-3 ">{children}</h1>
+            );
           },
 
           h2({ children }) {
@@ -45,8 +47,10 @@ function MarkdownRenderer({ message }: Props) {
             return <ol className="list-decimal ml-6  space-y-1">{children}</ol>;
           },
 
-          li({ className,children }) {
-            return <li className={cn("ml-1 list-disc",className)}>{children}</li>;
+          li({ className, children }) {
+            return (
+              <li className={cn("ml-1 text-base list-disc", className)}>{children}</li>
+            );
           },
 
           /* BLOCKQUOTE */

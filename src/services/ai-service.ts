@@ -43,7 +43,7 @@ export async function* runAIAgent(
   connId: string,
 ): AsyncGenerator<AgentEvent> {
   //* status send
-  yield { type: "status", data: "Thinking..." };
+  yield { type: "status", data: "🧠 Thinking..." };
 
   const classifier = await classifierAgent(history);
   if (!classifier) {
@@ -66,6 +66,7 @@ export async function* runAIAgent(
     let turnNumber = 0;
     // loop llm calling
     while (turnNumber < maxTurns) {
+      yield { type: "status", data: "⚙️ Running Tools..." };
       const completion = await toolAgent({ messages, tools: toolsList });
 
       const assistantMessage = completion.choices[0].message;
@@ -75,7 +76,7 @@ export async function* runAIAgent(
         break;
       }
       if (assistantMessage.tool_calls) {
-        yield { type: "status", data: "Connecting database..." };
+        yield { type: "status", data: "📦️ Database Querying..." };
         const result = await executeToolCalls(assistantMessage.tool_calls);
         messages.push(...result);
         turnNumber++;
@@ -85,7 +86,7 @@ export async function* runAIAgent(
 
     const userMessage = history.at(-1); // latest user query
     const toolResult = messages.at(-1); // tool output
-
+    yield { type: "status", data: "🧠 Generating answer..." };
     const stream = await answerAgent([
       { role: "system", content: ANSWER_AGENT_SYSTEM_PROMPT },
       userMessage!,
@@ -109,6 +110,7 @@ export async function* runAIAgent(
       { role: "system", content: ANSWER_AGENT_SYSTEM_PROMPT },
       ...history,
     ];
+    yield { type: "status", data: "✍️ Writing answer..." };
     const stream = await answerAgent(messages);
 
     for await (const chunk of stream) {

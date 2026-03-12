@@ -14,7 +14,7 @@ export default function MessagePage({
 }) {
   const { chatId } = useParams();
   const chatContainerRef = useRef<HTMLDivElement>(null);
-
+  const [status, setStatus] = useState<string | null>(null);
   const [messages, setMessages] = useState<SafeMessage[]>(initialMessages);
 
   // last message llm call
@@ -95,15 +95,19 @@ export default function MessagePage({
 
           if (type === "status") {
             console.log("status🅰️:", data);
+
+            setStatus(data);
           }
 
           if (type === "done") {
+            setStatus(null);
             await reader.cancel();
             return;
           }
         }
       }
     } catch (error) {
+      setStatus(null);
       toast.error("Network Error");
       console.error("Network error", error);
     }
@@ -118,7 +122,7 @@ export default function MessagePage({
         {/* chat list  */}
         <div className="flex flex-col gap-4 flex-1 w-full max-w-3xl mx-auto px-6 py-4">
           {/* message list  */}
-          <MessageList messages={messages} />
+          <MessageList messages={messages} status={status}/>
         </div>
       </section>
       {/* input box  */}
