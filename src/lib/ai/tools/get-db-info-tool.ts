@@ -23,6 +23,8 @@ export const getDbInfoTool = {
   }: {
     connection_id: string;
   }): Promise<string> => {
+    console.log("dbid", connection_id);
+
     if (!connection_id) {
       return "Failed:connection_id not provided";
     }
@@ -41,11 +43,7 @@ export const getDbInfoTool = {
 
     if (!dbInfo) {
       return "Database not found!";
-    }
-    if (dbInfo.status !== "active") {
-      // TODO: addon test connection func.
-      return "Failed to connect to the Database";
-    }
+    };
 
     return `id:${dbInfo.id}|dbType:${dbInfo.type}|name:${dbInfo.name}|status:${dbInfo.status}`;
   },

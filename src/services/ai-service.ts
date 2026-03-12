@@ -4,7 +4,7 @@ import {
   TOOL_AGENT_SYSTEM_PROMPT,
 } from "@/lib/ai/prompts";
 import { availableTools, toolsList } from "@/lib/ai/tool-registry";
-import { AgentMessage } from "@/types/agent.types";
+import { AgentEvent, AgentMessage } from "@/types/agent.types";
 
 //! tool calling
 async function executeToolCalls(toolCalls: any) {
@@ -38,7 +38,10 @@ async function executeToolCalls(toolCalls: any) {
 }
 
 //! run ai agent
-export async function* runAIAgent(history: AgentMessage[], connId: string) {
+export async function* runAIAgent(
+  history: AgentMessage[],
+  connId: string,
+): AsyncGenerator<AgentEvent> {
   //* status send
   yield { type: "status", data: "Thinking..." };
 
@@ -47,7 +50,7 @@ export async function* runAIAgent(history: AgentMessage[], connId: string) {
     throw new Error("Failed to run classifierAgent;");
   } else if (classifier.type === "non_relevant") {
     throw new Error("only database related query allowed");
-  };
+  }
 
   //! run tool calling
   if (classifier.type === "db_related" && classifier.type) {
@@ -79,8 +82,15 @@ export async function* runAIAgent(history: AgentMessage[], connId: string) {
         continue;
       }
     }
-    // 👇 final answer generate
-    const stream = await answerAgent(messages);
+
+    const userMessage = history.at(-1); // latest user query
+    const toolResult = messages.at(-1); // tool output
+
+    const stream = await answerAgent([
+      { role: "system", content: ANSWER_AGENT_SYSTEM_PROMPT },
+      userMessage!,
+      toolResult!,
+    ]);
 
     for await (const chunk of stream) {
       const text = chunk.choices[0]?.delta?.content;
@@ -91,7 +101,7 @@ export async function* runAIAgent(history: AgentMessage[], connId: string) {
 
     yield { type: "done", data: null };
     return;
-  };
+  }
 
   //! run answer calling
   if (!classifier.tool_choice && classifier.type === "conversion") {
@@ -110,5 +120,5 @@ export async function* runAIAgent(history: AgentMessage[], connId: string) {
     // final output
     yield { type: "done", data: null };
     return;
-  };
-};
+  }
+}
