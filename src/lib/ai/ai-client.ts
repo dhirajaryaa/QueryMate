@@ -1,6 +1,6 @@
 import { Groq } from "groq-sdk";
 import { AgentMessage, Tool } from "@/types/agent.types";
-import { classifierSchema } from "@/schema/agent.schema";
+import { classifierSchema } from "@/schema/agent.schems";
 import z from "zod";
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
@@ -50,8 +50,7 @@ export async function toolAgent({
     model,
     messages,
     tools,
-    tool_choice: "required",
-    response_format: { type: "json_object" },
+    tool_choice: "auto",
   });
 }
 

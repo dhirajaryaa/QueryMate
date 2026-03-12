@@ -1,7 +1,11 @@
 export const runQueryTool = {
   details: {
     name: "run_query",
-    description: "Run a query on a database",
+    description: `Execute a query on the database.
+IMPORTANT:
+This tool MUST only be used after calling get_schema.
+Never guess table or column names.
+`,
     parameters: {
       type: "object",
       properties: {

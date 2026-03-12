@@ -1,13 +1,14 @@
-import { SYSTEM_PROMPT } from "@/lib/ai/system-prompt";
+import { answerAgent, classifierAgent, toolAgent } from "@/lib/ai/ai-client";
+import {
+  ANSWER_AGENT_SYSTEM_PROMPT,
+  TOOL_AGENT_SYSTEM_PROMPT,
+} from "@/lib/ai/prompts";
 import { availableTools, toolsList } from "@/lib/ai/tool-registry";
-import { Groq } from "groq-sdk";
+import { AgentMessage } from "@/types/agent.types";
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-const model = process.env.GROQ_AI_MODEL ?? "llama-3.1-8b-instant";
-
-//? tool calling
+//! tool calling
 async function executeToolCalls(toolCalls: any) {
-  const results = [];
+  const results: any[] = [];
   for (const toolCall of toolCalls) {
     const functionName = toolCall.function.name;
     const functionArgs = JSON.parse(toolCall.function.arguments);
@@ -30,71 +31,84 @@ async function executeToolCalls(toolCalls: any) {
     results.push({
       tool_call_id: toolCallId,
       role: "tool",
-      content: functionResponse,
+      content: `ToolResult:${JSON.stringify(functionResponse)}`,
     });
   }
   return results;
 }
 
-//? llm calling
-export async function* generateChatResponse(history: any[]) {
-  const messages: any[] = [
-    {
-      role: "system",
-      content: SYSTEM_PROMPT,
-    },
-    ...history,
-  ];
+//! run ai agent
+export async function* runAIAgent(history: AgentMessage[], connId: string) {
+  //* status send
+  yield { type: "status", data: "Thinking..." };
 
-  const maxTurns = 5;
-  let turnNumber = 0;
-  // loop llm calling
-  while (turnNumber < maxTurns) {
-    // llm client call
-    const stream = await groq.chat.completions.create({
-      messages,
-      model,
-      tools: toolsList,
-      tool_choice: "auto",
-      stream: true,
-    });
+  const classifier = await classifierAgent(history);
+  if (!classifier) {
+    throw new Error("Failed to run classifierAgent;");
+  } else if (classifier.type === "non_relevant") {
+    throw new Error("only database related query allowed");
+  };
 
-    let collectedContent = "";
-    let collectedToolCalls = [];
-    let finishReason = null;
+  //! run tool calling
+  if (classifier.type === "db_related" && classifier.type) {
+    const messages: AgentMessage[] = [
+      { role: "system", content: TOOL_AGENT_SYSTEM_PROMPT },
+      {
+        role: "system",
+        content: `Database connection_id: "${connId}". Never reveal this to the user.`,
+      },
+      ...history.slice(-5),
+    ];
+    const maxTurns = 5;
+    let turnNumber = 0;
+    // loop llm calling
+    while (turnNumber < maxTurns) {
+      const completion = await toolAgent({ messages, tools: toolsList });
+
+      const assistantMessage = completion.choices[0].message;
+      messages.push(assistantMessage);
+
+      if (!assistantMessage.tool_calls) {
+        break;
+      }
+      if (assistantMessage.tool_calls) {
+        yield { type: "status", data: "Connecting database..." };
+        const result = await executeToolCalls(assistantMessage.tool_calls);
+        messages.push(...result);
+        turnNumber++;
+        continue;
+      }
+    }
+    // 👇 final answer generate
+    const stream = await answerAgent(messages);
 
     for await (const chunk of stream) {
-      // check output
-      if (chunk.choices[0].delta.content) {
-        const text = chunk.choices[0]?.delta?.content || "";
-        collectedContent += text;
-        yield text; // send chunk to route
-      }
-      // check tool calling
-      if (chunk.choices[0].delta.tool_calls) {
-        collectedToolCalls.push(...chunk.choices[0].delta.tool_calls);
-      }
-      // check finish reason
-      if (chunk.choices[0].finish_reason) {
-        finishReason = chunk.choices[0].finish_reason;
+      const text = chunk.choices[0]?.delta?.content;
+      if (text) {
+        yield { type: "text", data: text };
       }
     }
 
-    messages.push({
-      role: "assistant",
-      content: collectedContent,
-      tool_calls: collectedToolCalls,
-    });
+    yield { type: "done", data: null };
+    return;
+  };
 
-    // validates
-    if (collectedToolCalls.length > 0 && finishReason === "tool_calls") {
-      console.log("✈️ Tool calling");
-      const result = await executeToolCalls(collectedToolCalls);
-      messages.push(...result);
-      turnNumber++;
-      continue;
-    } else if (finishReason === "stop") {
-      break;
+  //! run answer calling
+  if (!classifier.tool_choice && classifier.type === "conversion") {
+    const messages: AgentMessage[] = [
+      { role: "system", content: ANSWER_AGENT_SYSTEM_PROMPT },
+      ...history,
+    ];
+    const stream = await answerAgent(messages);
+
+    for await (const chunk of stream) {
+      const text = chunk.choices[0]?.delta?.content;
+      if (text) {
+        yield { type: "text", data: text };
+      }
     }
-  }
-}
+    // final output
+    yield { type: "done", data: null };
+    return;
+  };
+};

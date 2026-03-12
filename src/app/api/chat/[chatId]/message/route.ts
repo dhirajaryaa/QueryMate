@@ -1,7 +1,8 @@
 import { db } from "@/db";
 import { chat, message } from "@/db/schema";
 import { auth } from "@/lib/auth";
-import { generateChatResponse } from "@/services/ai-service";
+import { runAIAgent } from "@/services/ai-service";
+import { AgentMessage } from "@/types/agent.types";
 import { PromptMessage } from "@/types/message.types";
 import { and, asc, eq } from "drizzle-orm";
 import { headers } from "next/headers";
@@ -62,6 +63,10 @@ export async function POST(
       .where(eq(chat.id, chatId))
       .limit(1);
 
+    if(!currentChat){
+      throw new Error("Chat not found!");
+    };
+
     if (currentChat.title === "New Chat") {
       const newTitle = prompt.slice(0, 30);
 
@@ -71,11 +76,14 @@ export async function POST(
     //? new message add on history
     messages.push({
       role: "user",
-      content: `${prompt}\n\nConnectionId:${currentChat.connectionId}`,
+      content: prompt,
     });
 
     //! llm calling
-    const completions = generateChatResponse(messages);
+    const completions = runAIAgent(
+      messages as AgentMessage[],
+      currentChat.connectionId,
+    );
 
     // stream response
     let assistantMessage: string = "";
@@ -86,7 +94,9 @@ export async function POST(
         try {
           for await (const text of completions) {
             assistantMessage += text;
-            controller.enqueue(encoder.encode(text));
+            controller.enqueue(
+              encoder.encode(`data: ${JSON.stringify(text)}\n\n`),
+            );
           }
           //? message save on db
           await db.insert(message).values({
@@ -106,7 +116,7 @@ export async function POST(
     // stream response
     return new Response(stream, {
       headers: {
-        "Content-Type": "text/plain; charset=utf-8",
+        "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache",
         Connection: "keep-alive",
       },
