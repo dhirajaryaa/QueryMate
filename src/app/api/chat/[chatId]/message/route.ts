@@ -63,9 +63,9 @@ export async function POST(
       .where(eq(chat.id, chatId))
       .limit(1);
 
-    if(!currentChat){
+    if (!currentChat) {
       throw new Error("Chat not found!");
-    };
+    }
 
     if (currentChat.title === "New Chat") {
       const newTitle = prompt.slice(0, 30);
@@ -92,12 +92,19 @@ export async function POST(
     const stream = new ReadableStream({
       async start(controller) {
         try {
-          for await (const text of completions) {
-            assistantMessage += text;
+          for await (const event of completions) {
+            // collect text for DB
+            if (event.type === "text") {
+              assistantMessage += event.data;
+            }
+
             controller.enqueue(
-              encoder.encode(`data: ${JSON.stringify(text)}\n\n`),
+              encoder.encode(
+                `event: ${event.type}\ndata: ${JSON.stringify(event.data)}\n\n`,
+              ),
             );
           }
+
           //? message save on db
           await db.insert(message).values({
             content: assistantMessage,
@@ -108,7 +115,7 @@ export async function POST(
           controller.close();
         } catch (error) {
           console.error("llm stream error", error);
-          controller.close();
+          controller.error(error);
         }
       },
     });

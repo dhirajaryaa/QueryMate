@@ -55,9 +55,11 @@ export default function MessagePage({
       if (!res.body) {
         throw new Error("no response form body");
       }
-      let assistantMessage = "";
-      const reader = res.body?.getReader();
+      const reader = res.body.getReader();
       const decoder = new TextDecoder();
+
+      let assistantMessage = "";
+      let buffer = "";
 
       const tempId = crypto.randomUUID();
       setMessages((prev) => [
@@ -68,13 +70,38 @@ export default function MessagePage({
       while (true) {
         const { done, value } = await reader?.read();
         if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        assistantMessage += chunk;
-        setMessages((prev) =>
-          prev.map((msg) =>
-            msg.id === tempId ? { ...msg, content: assistantMessage } : msg,
-          ),
-        );
+
+        buffer += decoder.decode(value, { stream: true });
+        const parts = buffer.split("\n\n");
+        buffer = parts.pop() || "";
+
+        for (const part of parts) {
+          const lines = part.split("\n");
+
+          const type = lines[0]?.replace("event: ", "").trim();
+          const rawData = lines[1]?.replace("data: ", "").trim();
+
+          if (!type || !rawData) continue;
+          const data = JSON.parse(rawData);
+
+          if (type === "text") {
+            assistantMessage += data;
+            setMessages((prev) =>
+              prev.map((msg) =>
+                msg.id === tempId ? { ...msg, content: assistantMessage } : msg,
+              ),
+            );
+          }
+
+          if (type === "status") {
+            console.log("status🅰️:", data);
+          }
+
+          if (type === "done") {
+            await reader.cancel();
+            return;
+          }
+        }
       }
     } catch (error) {
       toast.error("Network Error");

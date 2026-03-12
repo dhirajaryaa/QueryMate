@@ -6,3 +6,8 @@ import type {
 export type AgentMessage = ChatCompletionMessageParam;
 
 export type Tool = ChatCompletionTool;
+
+export type AgentEvent =
+  | { type: "status"; data: string }
+  | { type: "text"; data: string }
+  | { type: "done"; data: null };
