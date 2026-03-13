@@ -5,13 +5,14 @@ import { useEffect, useRef, useState } from "react";
 import { SafeMessage } from "@/types/message.types";
 import MessageList from "./message-list";
 import { toast } from "sonner";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 export default function MessagePage({
   initialMessages,
 }: {
   initialMessages: SafeMessage[];
 }) {
+  const router = useRouter();
   const { chatId } = useParams();
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState<string | null>(null);
@@ -51,6 +52,18 @@ export default function MessagePage({
         },
         body: JSON.stringify({ prompt: message }),
       });
+      if (!res.ok) {
+        const error = await res.json();
+        if (error.code === "unauthorized:auth") {
+          router.replace("/login");
+        }else if(error.code === "not_found:chat"){
+          router.replace("/new")
+        }
+        console.log(error);
+        
+        toast.error(error.message);
+        return;
+      }
 
       if (!res.body) {
         throw new Error("no response form body");
@@ -94,11 +107,12 @@ export default function MessagePage({
           }
 
           if (type === "status") {
-            console.log("status🅰️:", data);
-
             setStatus(data);
           }
-
+          if (type === "error") {
+            setStatus(null);
+            toast.error(data);
+          }
           if (type === "done") {
             setStatus(null);
             await reader.cancel();
@@ -107,9 +121,13 @@ export default function MessagePage({
         }
       }
     } catch (error) {
+      console.error("Request failed", error);
       setStatus(null);
-      toast.error("Network Error");
-      console.error("Network error", error);
+      if (!navigator.onLine) {
+        toast.error("You appear to be offline.");
+        return;
+      }
+      toast.error("Network error. Please try again.");
     }
   }
 
@@ -122,7 +140,7 @@ export default function MessagePage({
         {/* chat list  */}
         <div className="flex flex-col gap-4 flex-1 w-full max-w-3xl mx-auto px-6 py-4">
           {/* message list  */}
-          <MessageList messages={messages} status={status}/>
+          <MessageList messages={messages} status={status} />
         </div>
       </section>
       {/* input box  */}

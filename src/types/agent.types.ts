@@ -9,5 +9,6 @@ export type Tool = ChatCompletionTool;
 
 export type AgentEvent =
   | { type: "status"; data: string|null }
+  | { type: "error"; data: string|null }
   | { type: "text"; data: string }
   | { type: "done"; data: null };

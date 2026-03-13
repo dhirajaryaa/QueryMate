@@ -1,6 +1,9 @@
 import { db } from "@/db";
 import { chat, message } from "@/db/schema";
 import { auth } from "@/lib/auth";
+import { ChatBotError } from "@/lib/errors";
+import { logger } from "@/lib/logger";
+import { streamChatResponse } from "@/lib/stream-response";
 import { runAIAgent } from "@/services/ai-service";
 import { AgentMessage } from "@/types/agent.types";
 import { PromptMessage } from "@/types/message.types";
@@ -16,18 +19,30 @@ export async function POST(
     // session check
     const session = await auth.api.getSession({ headers: await headers() });
     if (!session) {
-      return NextResponse.json(
-        { message: "UnAuthorized Request" },
-        { status: 401 },
-      );
+      return new ChatBotError("unauthorized:auth").toResponse();
     }
+
     // get chat id & prompt
     const { chatId } = await params;
     const { prompt } = await req.json();
 
     if (!prompt) {
-      return NextResponse.json({ message: "Bad Request" }, { status: 400 });
+      return new ChatBotError("bad_request:api").toResponse();
     }
+
+    //! update chat title
+    const [currentChat] = await db
+      .select()
+      .from(chat)
+      .where(eq(chat.id, chatId))
+      .limit(1);
+
+    if (!currentChat) {
+      return new ChatBotError("not_found:chat").toResponse();
+    }
+
+    const newTitle = prompt.slice(0, 30);
+    await db.update(chat).set({ title: newTitle }).where(eq(chat.id, chatId));
 
     // get all message form db
     const allMessages = await db
@@ -56,23 +71,6 @@ export async function POST(
       });
     }
 
-    //! update chat title
-    const [currentChat] = await db
-      .select()
-      .from(chat)
-      .where(eq(chat.id, chatId))
-      .limit(1);
-
-    if (!currentChat) {
-      throw new Error("Chat not found!");
-    }
-
-    if (currentChat.title === "New Chat") {
-      const newTitle = prompt.slice(0, 30);
-
-      await db.update(chat).set({ title: newTitle }).where(eq(chat.id, chatId));
-    }
-
     //? new message add on history
     messages.push({
       role: "user",
@@ -86,39 +84,25 @@ export async function POST(
     );
 
     // stream response
-    let assistantMessage: string = "";
-    const encoder = new TextEncoder();
+    const { stream, done, getAssistantMessage } =
+      streamChatResponse(completions);
 
-    const stream = new ReadableStream({
-      async start(controller) {
-        try {
-          for await (const event of completions) {
-            // collect text for DB
-            if (event.type === "text") {
-              assistantMessage += event.data;
-            }
+    console.log(getAssistantMessage());
 
-            controller.enqueue(
-              encoder.encode(
-                `event: ${event.type}\ndata: ${JSON.stringify(event.data)}\n\n`,
-              ),
-            );
-          }
-
-          //? message save on db
-          await db.insert(message).values({
-            content: assistantMessage,
-            role: "assistant",
-            chatId,
-          });
-
-          controller.close();
-        } catch (error) {
-          console.error("llm stream error", error);
-          controller.error(error);
-        }
-      },
-    });
+    // Save assistant message after stream ends
+    done
+      .then(async () => {
+        const content = getAssistantMessage();
+        if (!content) return;
+        await db.insert(message).values({
+          chatId,
+          role: "assistant",
+          content,
+        });
+      })
+      .catch((err) => {
+        logger.error("Assistant message save failed", err);
+      });
 
     // stream response
     return new Response(stream, {
@@ -129,9 +113,9 @@ export async function POST(
       },
     });
   } catch (error) {
-    return NextResponse.json(
-      { error: "Something went wrong!" },
-      { status: 500 },
-    );
+    if (error instanceof ChatBotError) {
+      return error.toResponse();
+    }
+    return new ChatBotError("internal:api").toResponse();
   }
 }

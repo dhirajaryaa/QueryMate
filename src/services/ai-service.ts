@@ -35,9 +35,9 @@ async function executeToolCalls(toolCalls: any) {
     });
   }
   return results;
-}
+};
 
-//! run ai agent
+//? run ai agent
 export async function* runAIAgent(
   history: AgentMessage[],
   connId: string,
@@ -45,12 +45,13 @@ export async function* runAIAgent(
   //* status send
   yield { type: "status", data: "🧠 Thinking..." };
 
+  //! classifier agent
   const classifier = await classifierAgent(history);
   if (!classifier) {
     throw new Error("Failed to run classifierAgent;");
   } else if (classifier.type === "non_relevant") {
     throw new Error("only database related query allowed");
-  }
+  };
 
   //! run tool calling
   if (classifier.type === "db_related" && classifier.type) {
