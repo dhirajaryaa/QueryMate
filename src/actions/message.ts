@@ -16,9 +16,6 @@ export async function getAllMessagesAction({
 }): Promise<GetAllMessages> {
   try {
     // input check
-    console.log("i am run");
-    console.log(chatId);
-
     if (!chatId) {
       throw new AppError("bad_request:chat");
     }
