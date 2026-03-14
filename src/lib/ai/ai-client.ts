@@ -2,7 +2,7 @@ import { Groq } from "groq-sdk";
 import { AgentMessage, Tool } from "@/types/agent.types";
 import { classifierSchema } from "@/schema/agent.schems";
 import z from "zod";
-import { ChatBotError } from "../errors";
+import { AppError } from "../errors";
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const model = process.env.GROQ_AI_MODEL ?? "llama-3.1-8b-instant";
@@ -39,7 +39,7 @@ export async function classifierAgent(messages: AgentMessage[]) {
     const result = classifierSchema.safeParse(rawResult);
     return result.data;
   } catch (error) {
-    throw new ChatBotError("internal:api", "classifier agent failed");
+    throw new AppError("internal:api", "classifier agent failed");
   }
 }
 
@@ -59,7 +59,7 @@ export async function toolAgent({
       tool_choice: "auto",
     });
   } catch (error) {
-    throw new ChatBotError("internal:api", "Tool agent execution failed");
+    throw new AppError("internal:api", "Tool agent execution failed");
   }
 }
 
@@ -73,6 +73,6 @@ export async function answerAgent(messages: AgentMessage[]) {
       stream: true,
     });
   } catch (error) {
-    throw new ChatBotError("internal:stream", "LLM streaming failed");
+    throw new AppError("internal:stream", "LLM streaming failed");
   }
 }

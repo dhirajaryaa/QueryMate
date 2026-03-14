@@ -1,4 +1,5 @@
 import { chat } from "@/db/schema";
+import { AppErrorPayload, AppResponse } from "./app.types";
 
 export type Chat = typeof chat.$inferSelect;
 export type NewChat = typeof chat.$inferInsert;
@@ -8,16 +9,10 @@ export type CreateChatProps = {
   dbId: string;
 };
 
-export type ChatResponse = {
-  success: boolean;
-  data?: { chatId: string; title: string; dbId: string };
-  error?: string;
-};
+
+
+export type ChatResponse = AppResponse<{chatId: Chat["id"],dbId: Chat["connectionId"]}>;
 
 export type ChatHistory = Pick<Chat, "id" | "title">;
 
-export type GetChatHistory = {
-  success: boolean;
-  data?: ChatHistory[];
-  error?: string;
-};
+export type GetChatHistory = AppResponse<ChatHistory[]>;

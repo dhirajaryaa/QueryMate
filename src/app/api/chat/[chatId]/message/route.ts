@@ -1,7 +1,7 @@
 import { db } from "@/db";
 import { chat, message } from "@/db/schema";
 import { auth } from "@/lib/auth";
-import { ChatBotError } from "@/lib/errors";
+import { AppError } from "@/lib/errors";
 import { logger } from "@/lib/logger";
 import { streamChatResponse } from "@/lib/stream-response";
 import { runAIAgent } from "@/services/ai-service";
@@ -19,7 +19,7 @@ export async function POST(
     // session check
     const session = await auth.api.getSession({ headers: await headers() });
     if (!session) {
-      return new ChatBotError("unauthorized:auth").toResponse();
+      return new AppError("unauthorized:auth").toResponse();
     }
 
     // get chat id & prompt
@@ -27,7 +27,7 @@ export async function POST(
     const { prompt } = await req.json();
 
     if (!prompt) {
-      return new ChatBotError("bad_request:api").toResponse();
+      return new AppError("bad_request:api").toResponse();
     }
 
     //! update chat title
@@ -38,7 +38,7 @@ export async function POST(
       .limit(1);
 
     if (!currentChat) {
-      return new ChatBotError("not_found:chat").toResponse();
+      return new AppError("not_found:chat").toResponse();
     }
 
     const newTitle = prompt.slice(0, 30);
@@ -113,9 +113,9 @@ export async function POST(
       },
     });
   } catch (error) {
-    if (error instanceof ChatBotError) {
+    if (error instanceof AppError) {
       return error.toResponse();
     }
-    return new ChatBotError("internal:api").toResponse();
+    return new AppError("internal:api").toResponse();
   }
 }

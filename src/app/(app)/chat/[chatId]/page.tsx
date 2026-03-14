@@ -9,11 +9,9 @@ export default async function ChatPage({
 }) {
   const { chatId } = await params;
   const res = await getAllMessagesAction({ chatId });
-
   if (!res.success) {
     redirect("/new");
   }
-
   const messages = res.success ? (res.data ?? []) : [];
 
   return (

@@ -1,34 +1,20 @@
+import {
+  AppErrorPayload,
+  ErrorCode,
+  ErrorType,
+  Surface,
+} from "@/types/app.types";
 import { logger } from "./logger";
 
-export type ErrorType =
-  | "bad_request"
-  | "unauthorized"
-  | "forbidden"
-  | "not_found"
-  | "rate_limit"
-  | "offline"
-  | "internal";
-
-export type Surface =
-  | "chat"
-  | "auth"
-  | "api"
-  | "stream"
-  | "database"
-  | "history";
-
-export type ErrorCode = `${ErrorType}:${Surface}`;
-
 // error throw class defined
-export class ChatBotError extends Error {
+export class AppError extends Error {
   type: ErrorType;
   surface: Surface;
   statusCode: number;
   cause?: string;
 
-  constructor(errorCode: ErrorCode, cause?: string) {
-    const message = getMessageByErrorCode(errorCode);
-    super(message);
+  constructor(errorCode: ErrorCode, message?: string, cause?: string) {
+    super(message ?? getMessageByErrorCode(errorCode));
 
     const [type, surface] = errorCode.split(":");
 
@@ -37,17 +23,21 @@ export class ChatBotError extends Error {
     this.statusCode = getStatusCodeByType(this.type);
     this.cause = cause;
 
-    Error.captureStackTrace?.(this, ChatBotError);
+    Error.captureStackTrace?.(this, AppError);
   }
 
-  toResponse() {
+  toJson(): AppErrorPayload {
     const code: ErrorCode = `${this.type}:${this.surface}`;
-
-    const payload = {
+    return {
       code,
       message: this.message,
       cause: this.cause,
     };
+  }
+
+  toResponse() {
+    const payload = this.toJson();
+
     // smarter logging
     if (this.type === "internal") {
       logger.error(payload);
@@ -58,7 +48,7 @@ export class ChatBotError extends Error {
     // return http response
     return Response.json(payload, { status: this.statusCode });
   }
-};
+}
 
 export function getMessageByErrorCode(errorCode: ErrorCode): string {
   if (errorCode.includes("database")) {
