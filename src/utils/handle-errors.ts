@@ -1,7 +1,6 @@
 import { AppError } from "@/lib/errors";
 import { logger } from "@/lib/logger";
 import { ActionErrorResponse } from "@/types/app.types";
-import { toast } from "sonner";
 
 export const handleServerActionError = (
   error: unknown,
@@ -23,13 +22,16 @@ export function handlePageError(error: AppErrorPayload): never {
     case "unauthorized:auth":
       redirect("/login");
 
+    case "not_found:chat":
+      redirect("/new");
+
     case "not_found:api":
       notFound();
 
     default:
       notFound();
   }
-}
+};
 
 export const handleClientError = (error: unknown): void => {
   if (error instanceof AppError) {
