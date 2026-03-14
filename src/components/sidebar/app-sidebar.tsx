@@ -6,18 +6,19 @@ import {
   SidebarMenu,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Github, LogOut } from "lucide-react";
+import { Github } from "lucide-react";
 import Logo from "../common/logo";
 import { Suspense } from "react";
 import SidebarNav from "./sidebar-nav";
 import { ChatHistoryList, HistoryLoading } from "./chat-history";
 import { Button } from "../ui/button";
 import { getChatHistoryAction } from "@/actions/chat";
+import { handlePageError } from "@/utils/handle-errors";
 
 export async function AppSidebar() {
-  const initialHistory = await getChatHistoryAction();
-  if (!initialHistory.success) {
-    console.error(initialHistory.error);
+  const res = await getChatHistoryAction();
+  if (!res.success) {
+    handlePageError(res.error);
   }
 
   return (
@@ -32,7 +33,7 @@ export async function AppSidebar() {
           <SidebarNav />
           {/* history  */}
           <Suspense fallback={<HistoryLoading />}>
-            <ChatHistoryList initialHistory={initialHistory?.data ?? []} />
+            <ChatHistoryList initialHistory={res?.data ?? []} />
           </Suspense>
         </div>
       </SidebarContent>

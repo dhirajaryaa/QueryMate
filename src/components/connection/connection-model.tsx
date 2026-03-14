@@ -1,13 +1,13 @@
-'use client';
-import { Button } from "@/components/ui/button"
+"use client";
+import { Button } from "@/components/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Loader2, Plus, Save, ShieldCheck, Zap } from "lucide-react";
 import { Field, FieldError, FieldGroup } from "../ui/field";
@@ -19,156 +19,171 @@ import { Controller, useForm } from "react-hook-form";
 import { connectionSchema } from "@/schema/connection.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ConnectionInput } from "@/types/connection.types";
-import { createNewConnectionAction, testConnectionAction } from "@/actions/connection";
+import {
+  createNewConnectionAction,
+  testConnectionAction,
+} from "@/actions/connection";
 import { toast } from "sonner";
 import { useState } from "react";
+import { handleClientError } from "@/utils/handle-errors";
 
 export function ConnectionModel() {
-    const [showModel, setShowModel] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [isTest, setIsTest] = useState(false);
+  const [showModel, setShowModel] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isTest, setIsTest] = useState(false);
 
-    const { register, control, reset, handleSubmit, watch, formState: { errors } } = useForm<ConnectionInput>({
-        mode: "onBlur",
-        defaultValues: {
-            type: "pg",
-            ssl: false,
-        },
-        resolver: zodResolver(connectionSchema)
-    });
-    const dbType = watch("type");
+  const {
+    register,
+    control,
+    reset,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<ConnectionInput>({
+    mode: "onBlur",
+    defaultValues: {
+      type: "pg",
+      ssl: false,
+    },
+    resolver: zodResolver(connectionSchema),
+  });
+  const dbType = watch("type");
 
-    const handleFormSubmit = async (payload: ConnectionInput) => {
-        setIsLoading(true);
-        const res = await createNewConnectionAction(payload);
-        if (!res.success) {
-            return toast.error(res.error || "connection create failed!")
-        };
+  const handleFormSubmit = async (payload: ConnectionInput) => {
+    setIsLoading(true);
+    try {
+      const res = await createNewConnectionAction(payload);
+      if (!res.success) {
+        return toast.error(res.error.message || "connection create failed!");
+      }
+    } catch (error) {
+      return handleClientError(error);
+    }
 
-        reset();
-        setIsLoading(false);
-        setShowModel(false); // close model
-    };
+    reset();
+    setIsLoading(false);
+    setShowModel(false); // close model
+  };
 
-    //?test connection 
-    const handleTestConnection = async (payload: ConnectionInput) => {
-        setIsTest(true);
-        const res = await testConnectionAction(payload);
+  //?test connection
+  const handleTestConnection = async (payload: ConnectionInput) => {
+    setIsTest(true);
+    const res = await testConnectionAction(payload);
 
-        res.success ? 
-        toast.success("Connection Test Successful.") : 
-        toast.error(res.error || "failed to test connection!")
+    res.success
+      ? toast.success("Connection Test Successful.")
+      : toast.error(res.error.message || "failed to test connection!");
 
-        setIsTest(false);
-    };
+    setIsTest(false);
+  };
 
-    return (
-        <Dialog open={showModel} onOpenChange={() => setShowModel(!showModel)}>
-            <DialogTrigger asChild>
-                <Button size={'sm'}>
-                    <Plus className="mr-1" size={16} />
-                    New Connection
-                </Button>
-            </DialogTrigger>
-            <DialogContent >
-                <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
-                    <DialogHeader>
-                        <DialogTitle>New Connection</DialogTitle>
-                        <DialogDescription>
-                            Add your database connection details.
-                        </DialogDescription>
-                    </DialogHeader>
-                    {/* Database Type */}
-                    <Field>
-                        <Label>
-                            Database Type <span className="text-destructive">*</span>
-                        </Label>
+  return (
+    <Dialog open={showModel} onOpenChange={() => setShowModel(!showModel)}>
+      <DialogTrigger asChild>
+        <Button size={"sm"}>
+          <Plus className="mr-1" size={16} />
+          New Connection
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
+          <DialogHeader>
+            <DialogTitle>New Connection</DialogTitle>
+            <DialogDescription>
+              Add your database connection details.
+            </DialogDescription>
+          </DialogHeader>
+          {/* Database Type */}
+          <Field>
+            <Label>
+              Database Type <span className="text-destructive">*</span>
+            </Label>
 
-                        <Controller
-                            name="type"
-                            control={control}
-                            render={({ field }) => (
-                                <DBTypeSelect
-                                    value={field.value}
-                                    onChange={field.onChange}
-                                />
-                            )}
-                        />
-
-                    </Field>
-                    <FieldGroup>
-                        {/* Connection Name */}
-                        <Field>
-                            <Label htmlFor="name">
-                                Connection Name <span className="text-destructive">*</span>
-                            </Label>
-                            <Input
-                                {...register("name")}
-                                placeholder="Production DB"
-                                aria-invalid={errors.name ? "true" : "false"}
-                            />
-                            <FieldError>
-                                {errors.name?.message}
-                            </FieldError>
-                        </Field>
-                        {/* URI */}
-                        <Field>
-                            <Label htmlFor="uri">
-                                Connection URI <span className="text-destructive">*</span>
-                            </Label>
-                            <Input
-                                {...register("uri")}
-                                placeholder="postgresql://user:pass@host:5432/db"
-                                type="password"
-                                aria-invalid={errors.uri ? "true" : "false"}
-                            />
-                            <FieldError>
-                                {errors.uri?.message}
-                            </FieldError>
-                        </Field>
-                    </FieldGroup>
-                    {/* SSL Toggle */}
-                    {
-                        (dbType === 'pg' || dbType === 'mysql') &&
-                    <Field className="flex items-center justify-between flex-row border-dashed py-4 px-2 my-4 border rounded-md">
-                        <Label htmlFor="ssl">
-                            <span>
-                                <ShieldCheck size={18} className="text-primary" />
-                            </span>
-                            SSL Required
-                        </Label>
-                        <Controller
-                            name="ssl"
-                            control={control}
-                            render={({ field, fieldState }) => (
-                                <Switch
-                                    id="ssl"
-                                    name={field.name}
-                                    checked={field.value}
-                                    onCheckedChange={field.onChange}
-                                    aria-invalid={fieldState.invalid}
-                                />
-                            )}
-                        />
-                    </Field>
-                    }
-                    <DialogFooter className="justify-between sm:justify-between flex-col sm:flex-row">
-                        <Button
-                            onClick={handleSubmit(handleTestConnection)}
-                            type="button"
-                            variant={'outline'}
-                        >
-                            {isTest ? <Loader2 className="size-6 animate-spin" /> :
-                                <Zap fill="currentColor" className="text-yellow-500" />
-                            }
-                            Test Connection</Button>
-                        <div className="space-x-2">
-                            <Button type="submit" className="w-full">
-                                {isLoading ? <Loader2 className="size-6 animate-spin" /> : <Save />}Save</Button>
-                        </div>
-                    </DialogFooter>
-                </form>
-            </DialogContent>
-        </Dialog >
-    )
+            <Controller
+              name="type"
+              control={control}
+              render={({ field }) => (
+                <DBTypeSelect value={field.value} onChange={field.onChange} />
+              )}
+            />
+          </Field>
+          <FieldGroup>
+            {/* Connection Name */}
+            <Field>
+              <Label htmlFor="name">
+                Connection Name <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                {...register("name")}
+                placeholder="Production DB"
+                aria-invalid={errors.name ? "true" : "false"}
+              />
+              <FieldError>{errors.name?.message}</FieldError>
+            </Field>
+            {/* URI */}
+            <Field>
+              <Label htmlFor="uri">
+                Connection URI <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                {...register("uri")}
+                placeholder="postgresql://user:pass@host:5432/db"
+                type="password"
+                aria-invalid={errors.uri ? "true" : "false"}
+              />
+              <FieldError>{errors.uri?.message}</FieldError>
+            </Field>
+          </FieldGroup>
+          {/* SSL Toggle */}
+          {(dbType === "pg" || dbType === "mysql") && (
+            <Field className="flex items-center justify-between flex-row border-dashed py-4 px-2 my-4 border rounded-md">
+              <Label htmlFor="ssl">
+                <span>
+                  <ShieldCheck size={18} className="text-primary" />
+                </span>
+                SSL Required
+              </Label>
+              <Controller
+                name="ssl"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Switch
+                    id="ssl"
+                    name={field.name}
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    aria-invalid={fieldState.invalid}
+                  />
+                )}
+              />
+            </Field>
+          )}
+          <DialogFooter className="justify-between sm:justify-between flex-col sm:flex-row">
+            <Button
+              onClick={handleSubmit(handleTestConnection)}
+              type="button"
+              variant={"outline"}
+            >
+              {isTest ? (
+                <Loader2 className="size-6 animate-spin" />
+              ) : (
+                <Zap fill="currentColor" className="text-yellow-500" />
+              )}
+              Test Connection
+            </Button>
+            <div className="space-x-2">
+              <Button type="submit" className="w-full">
+                {isLoading ? (
+                  <Loader2 className="size-6 animate-spin" />
+                ) : (
+                  <Save />
+                )}
+                Save
+              </Button>
+            </div>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
 }

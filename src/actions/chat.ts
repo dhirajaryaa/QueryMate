@@ -19,13 +19,10 @@ export async function createNewChatAction({
   try {
     // input check
     if (!prompt && !dbId) {
-      return {
-        success: false,
-        error: new AppError(
-          "bad_request:api",
-          "Prompt or database id is required.",
-        ).toJson(),
-      };
+      throw new AppError(
+        "bad_request:api",
+        "Prompt or database id is required.",
+      );
     }
     // session get
     const session = await auth.api.getSession({ headers: await headers() });
@@ -58,7 +55,7 @@ export async function createNewChatAction({
   } catch (error) {
     return handleServerActionError(error);
   }
-};
+}
 
 export async function getChatHistoryAction(): Promise<GetChatHistory> {
   try {
@@ -80,4 +77,4 @@ export async function getChatHistoryAction(): Promise<GetChatHistory> {
   } catch (error) {
     return handleServerActionError(error);
   }
-};
+}

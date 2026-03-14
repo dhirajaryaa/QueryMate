@@ -6,14 +6,16 @@ import { db } from "@/db";
 import { connection } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { testDatabaseConnection } from "@/lib/db/test.connection";
+import { AppError } from "@/lib/errors";
 import { connectionSchema } from "@/schema/connection.schema";
 import {
   ConnectionInput,
   ConnectionResponse,
   ConnectionsList,
   GetConnections,
-  NewConnection,
+  TestConnection,
 } from "@/types/connection.types";
+import { handleServerActionError } from "@/utils/handle-errors";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { z } from "zod";
@@ -24,81 +26,103 @@ export async function createNewConnectionAction(
   // check schema
   const valid = connectionSchema.safeParse(payload);
   if (!valid.success) {
-    return { success: false, error: z.prettifyError(valid.error) };
+    return {
+      success: false,
+      error: new AppError(
+        "bad_request:api",
+        z.prettifyError(valid.error),
+      ).toJson(),
+    };
   }
 
   // session get
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) {
-    return { success: false, error: "UnAuthorized Request!" };
+    throw new AppError("unauthorized:auth");
   }
   // save in db
-  const data = await db
+  const [data] = await db
     .insert(connection)
     .values({
       ...payload,
       userId: session.user.id,
     })
-    .returning();
+    .returning({ id: connection.id });
 
   return { success: true, data };
 }
 
 // test connection
-export async function testConnectionAction(payload: ConnectionInput): Promise<{
-  success: boolean;
-  error?: string;
-}> {
-  return await testDatabaseConnection(payload);
+export async function testConnectionAction(
+  payload: ConnectionInput,
+): Promise<TestConnection> {
+  try {
+    const res = await testDatabaseConnection(payload);
+    if (res.error) {
+      return {
+        success: false,
+        error: new AppError("bad_request:api", res.error).toJson(),
+      };
+    }
+    return { success: true, data: null };
+  } catch (error) {
+    return handleServerActionError(error);
+  }
 }
 
 // get connection list
 export async function getConnectionAction(): Promise<GetConnections> {
-  // session get
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) {
-    return { succuss: false, error: "UnAuthorized Request!" };
+  try {
+    // session get
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) {
+      throw new AppError("unauthorized:auth");
+    }
+    // get all connection
+    const allConn = await db
+      .select()
+      .from(connection)
+      .where(eq(connection.userId, session.user.id));
+
+    // stats list
+    const stats = {
+      total: allConn.length ?? 0,
+      pending: 0,
+      active: 0,
+      issus: 0,
+    };
+    for (const conn of allConn) {
+      if (conn.status === "active") stats.active++;
+      if (conn.status === "issus") stats.issus++;
+      if (conn.status === "pending") stats.pending++;
+    }
+
+    return { success: true, data: {connections:allConn,stats} };
+  } catch (error) {
+    return handleServerActionError(error);
   }
-  // get all connection
-  const allConn = await db
-    .select()
-    .from(connection)
-    .where(eq(connection.userId, session.user.id));
-
-  // stats list
-  const stats = {
-    total: 0,
-    pending: 0,
-    active: 0,
-    issus: 0,
-  };
-  if (allConn && allConn.length < 0) {
-    return { succuss: true, data: [], stats };
-  }
-
-  stats.total = allConn.length;
-  stats.pending = allConn.filter((d) => d.status === "pending").length;
-  stats.active = allConn.filter((d) => d.status === "active").length;
-  stats.issus = allConn.filter((d) => d.status === "issus").length;
-
-  return { succuss: true, data: allConn, stats };
 }
 
+// list all connection
 export async function connectionsListAction(): Promise<ConnectionsList> {
-  // session get
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) {
-    return { success: false, error: "UnAuthorized Request!" };
-  }
-  // get all connection
-  const allConn = await db
-    .select({
-      id: connection.id,
-      name: connection.name,
-      type: connection.type,
-    })
-    .from(connection)
-    .where(eq(connection.userId, session.user.id));
+  try {
+    // session get
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) {
+      throw new AppError("unauthorized:auth");
+    }
+    // get all connection
+    const allConn = await db
+      .select({
+        id: connection.id,
+        name: connection.name,
+        type: connection.type,
+      })
+      .from(connection)
+      .where(eq(connection.userId, session.user.id));
 
-  return { success: true, data: allConn };
-}
+    return { success: true, data: allConn };
+  } catch (error) {
+    return handleServerActionError(error);
+  }
+};

@@ -1,5 +1,5 @@
 import { chat } from "@/db/schema";
-import { AppErrorPayload, AppResponse } from "./app.types";
+import { AppResponse } from "./app.types";
 
 export type Chat = typeof chat.$inferSelect;
 export type NewChat = typeof chat.$inferInsert;

@@ -1,17 +1,37 @@
 import { AppError } from "@/lib/errors";
 import { logger } from "@/lib/logger";
+import { ActionErrorResponse } from "@/types/app.types";
 import { toast } from "sonner";
 
-export const handleServerActionError = (error: unknown): never => {
+export const handleServerActionError = (
+  error: unknown,
+): ActionErrorResponse => {
   if (error instanceof AppError) {
     logger.warn(error);
-    throw error;
+    return { success: false, error: error.toJson() };
   }
   logger.error(error);
-  throw new AppError("internal:api");
+  const err = new AppError("internal:api").toJson();
+  return { success: false, error: err };
 };
 
-export const handleClientError = (error: unknown) => {
+import { notFound, redirect } from "next/navigation";
+import { AppErrorPayload } from "@/types/app.types";
+
+export function handlePageError(error: AppErrorPayload): never {
+  switch (error.code) {
+    case "unauthorized:auth":
+      redirect("/login");
+
+    case "not_found:api":
+      notFound();
+
+    default:
+      notFound();
+  }
+}
+
+export const handleClientError = (error: unknown): void => {
   if (error instanceof AppError) {
     if (process.env.NODE_ENV === "development") {
       console.error(error);

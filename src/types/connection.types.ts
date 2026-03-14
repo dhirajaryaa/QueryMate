@@ -1,6 +1,7 @@
 import { connection } from "@/db/schema";
 import { connectionSchema } from "@/schema/connection.schema";
 import { z } from "zod";
+import { AppErrorPayload, AppResponse } from "./app.types";
 
 export type DBType = "pg" | "mysql" | "sqlite" | "mongodb";
 
@@ -9,26 +10,24 @@ export type NewConnection = typeof connection.$inferInsert;
 
 export type ConnectionInput = z.infer<typeof connectionSchema>;
 
-export type ConnectionResponse = {
-  success: boolean;
-  data?: any;
-  error?: String;
+export type ConnectionResponse = AppResponse<{ id: Connection["id"] }>;
+
+export type ConnectionStats = {
+  total: number;
+  pending: number;
+  active: number;
+  issus: number;
 };
 
-export type GetConnections = {
-  succuss: boolean;
-  stats?: {
-    total: number;
-    pending: number;
-    active: number;
-    issus: number;
-  };
-  error?: string | any;
-  data?: Connection[] | [];
-};
+export type GetConnections =
+  | {
+      success: true;
+      data: { connections: Connection[]; stats: ConnectionStats };
+    }
+  | { success: false; error: AppErrorPayload };
 
-export type ConnectionsList = {
-  success: boolean;
-  data?: Pick<Connection, "id" | "type" | "name">[];
-  error?: string;
-};
+export type TestConnection = AppResponse<null>;
+
+export type ConnectionsList = AppResponse<
+  Pick<Connection, "id" | "type" | "name">[]
+>;

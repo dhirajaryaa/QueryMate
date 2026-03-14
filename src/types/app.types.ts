@@ -23,6 +23,9 @@ export type AppErrorPayload = {
   cause?: string;
 };
 
+export type ActionErrorResponse = { success: false; error: AppErrorPayload };
+
 export type AppResponse<T> =
   | { success: true; data: T }
-  | { success: false; error: AppErrorPayload };
+  | ActionErrorResponse;
+
