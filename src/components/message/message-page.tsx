@@ -5,7 +5,9 @@ import { useEffect, useRef, useState } from "react";
 import { SafeMessage } from "@/types/message.types";
 import MessageList from "./message-list";
 import { toast } from "sonner";
-import { useParams, useRouter } from "next/navigation";
+import { redirect, useParams, useRouter } from "next/navigation";
+import { handleClientError } from "@/utils/handle-errors";
+import { AppErrorPayload } from "@/types/app.types";
 
 export default function MessagePage({
   initialMessages,
@@ -37,14 +39,14 @@ export default function MessagePage({
   }, [messages]);
 
   async function sendMessage(message: string, isInitial = false) {
+    // update state for message
+    if (!isInitial) {
+      setMessages((prev) => [
+        ...prev,
+        { id: crypto.randomUUID(), role: "user", content: message },
+      ]);
+    }
     try {
-      // update state for message
-      if (!isInitial) {
-        setMessages((prev) => [
-          ...prev,
-          { id: crypto.randomUUID(), role: "user", content: message },
-        ]);
-      }
       const res = await fetch(`/api/chat/${chatId}/message`, {
         method: "POST",
         headers: {
@@ -52,21 +54,34 @@ export default function MessagePage({
         },
         body: JSON.stringify({ prompt: message }),
       });
+      // error mapping
       if (!res.ok) {
-        const error = await res.json();
-        if (error.code === "unauthorized:auth") {
-          router.replace("/login");
-        }else if(error.code === "not_found:chat"){
-          router.replace("/new")
+        const error: AppErrorPayload = await res.json();
+
+        res.status === 429 &&
+          toast.error("Too many requests. Please wait a moment.");
+
+        switch (error.code) {
+          case "unauthorized:auth":
+            toast.error(error.message);
+            router.push("/login");
+
+          case "not_found:chat":
+            toast.error(error.message);
+            router.push("/new");
+
+          case "rate_limit:chat":
+            toast.error(error.message);
+            return;
+
+          default:
+            toast.error(error.message || "Something went wrong");
+            return;
         }
-        console.log(error);
-        
-        toast.error(error.message);
-        return;
       }
 
       if (!res.body) {
-        throw new Error("no response form body");
+        throw new Error("Stream missing from response");
       }
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
@@ -121,13 +136,12 @@ export default function MessagePage({
         }
       }
     } catch (error) {
-      console.error("Request failed", error);
-      setStatus(null);
       if (!navigator.onLine) {
         toast.error("You appear to be offline.");
         return;
       }
-      toast.error("Network error. Please try again.");
+      setStatus(null);
+      handleClientError(error);
     }
   }
 

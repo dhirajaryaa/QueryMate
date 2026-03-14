@@ -55,6 +55,10 @@ export async function POST(
       .where(and(eq(message.chatId, chatId), eq(chat.userId, session.user.id)))
       .orderBy(asc(message.createdAt));
 
+    if (allMessages.length <= 0) {
+      return new AppError("not_found:chat").toResponse();
+    };
+
     let messages: PromptMessage[] = [...allMessages];
 
     //! save user message - prevent duplication
