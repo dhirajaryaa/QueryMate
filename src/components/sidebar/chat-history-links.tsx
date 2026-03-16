@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import {
+  SidebarGroup,
   SidebarMenu,
   SidebarMenuAction,
   SidebarMenuButton,
@@ -17,11 +18,12 @@ import {
 import { usePathname } from "next/navigation";
 import { ChatHistory } from "@/types/chat.types";
 
-
 export default function ChatHistoryLink({ links }: { links: ChatHistory[] }) {
   const pathname = usePathname();
   const { isMobile } = useSidebar();
+
   return (
+    <SidebarGroup className="overflow-y-auto">
     <SidebarMenu>
       {links.map((link) => (
         <SidebarMenuItem key={link.id}>
@@ -30,12 +32,9 @@ export default function ChatHistoryLink({ links }: { links: ChatHistory[] }) {
               asChild
               tooltip={link.title}
               isActive={pathname === `/chat/${link.id}`}
-              className="data-[active=true]:bg-primary data-[active=true]:text-background 
-    dark:data-[active=true]:text-white"
+              className="h-8.5 data-[active=true]:bg-sidebar-active text-foreground "
             >
-              <div className="py-4 flex gap-3 text-base sm:text-[15px] px-2 font-medium">
-                <span>{link.title}</span>
-              </div>
+              <span>{link.title}</span>
             </SidebarMenuButton>
 
             <DropdownMenu>
@@ -44,7 +43,7 @@ export default function ChatHistoryLink({ links }: { links: ChatHistory[] }) {
                   <MoreHorizontal
                     className={
                       pathname === `/chat/${link.id}`
-                        ? "text-white hover:text-foreground"
+                        ? "text-foreground hover:text-foreground"
                         : ""
                     }
                   />
@@ -54,15 +53,15 @@ export default function ChatHistoryLink({ links }: { links: ChatHistory[] }) {
               <DropdownMenuContent
                 side={isMobile ? "bottom" : "right"}
                 align={isMobile ? "end" : "start"}
-                className="min-w-56 rounded-lg"
+                className="min-w-36 rounded-lg"
               >
-                <DropdownMenuItem>
-                  <PencilIcon className="text-primary" />
+                <DropdownMenuItem variant="default">
+                  <PencilIcon />
                   Rename
                 </DropdownMenuItem>
 
-                <DropdownMenuItem>
-                  <Trash2 className="text-destructive" />
+                <DropdownMenuItem variant="destructive">
+                  <Trash2 />
                   Delete
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -71,5 +70,6 @@ export default function ChatHistoryLink({ links }: { links: ChatHistory[] }) {
         </SidebarMenuItem>
       ))}
     </SidebarMenu>
+    </SidebarGroup>
   );
 }

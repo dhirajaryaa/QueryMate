@@ -18,7 +18,7 @@ export function ChatHistoryList({ initialHistory }: Props) {
   const [history, setHistory] = useState<ChatHistory[]>(initialHistory);
 
   return (
-    <SidebarGroup className="px-0">
+    <SidebarGroup className="bg-sidebar px-2 z-1 overflow-y-auto">
       <SidebarGroupLabel>Your Chats</SidebarGroupLabel>
       <ChatHistoryLink links={history} />
     </SidebarGroup>
