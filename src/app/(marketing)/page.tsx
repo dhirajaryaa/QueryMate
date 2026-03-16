@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { DatabaseSearch } from "lucide-react";
 import { ThemeToggler } from "@/components/common/theme-toggler";
+import Logo from "@/components/common/logo";
 
 export default function HomePage() {
   return (
@@ -9,7 +10,9 @@ export default function HomePage() {
 
       {/* Navbar */}
       <header className="w-full max-w-6xl mx-auto flex justify-between items-center py-6 px-4">
-        <h2 className="text-xl font-bold text-primary flex items-center justify-center gap-1.5"> <DatabaseSearch />QueryMate</h2>
+
+        <Logo />
+        {/* <h2 className="text-xl font-bold text-primary flex items-center justify-center gap-1.5"> <DatabaseSearch />QueryMate</h2> */}
 
         <div className="flex items-center gap-4">
           <ThemeToggler />
@@ -38,13 +41,13 @@ export default function HomePage() {
 
         <div className="flex gap-4">
           <Link href="/new">
-            <Button className="px-8 py-6 text-lg">
+            <Button >
               Start Chatting
             </Button>
           </Link>
 
           <Link href="/demo">
-            <Button variant="outline" className="px-8 py-6 text-lg">
+            <Button variant="outline" >
               Live Demo
             </Button>
           </Link>
