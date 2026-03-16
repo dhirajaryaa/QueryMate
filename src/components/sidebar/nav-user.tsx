@@ -75,7 +75,7 @@ function NavUser({ user }: { user: Session }) {
             <DropdownMenuGroup>
               {/* profile  */}
               <DropdownMenuItem asChild>
-                <Link href={"/profile"}>
+                <Link href={"#"}>
                   <UserIcon />
                   Profile
                 </Link>
