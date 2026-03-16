@@ -8,7 +8,6 @@ export default async function ChatPage({
   params: Promise<{ chatId: string }>;
 }) {
   const { chatId } = await params;
-  console.log("Chat Page",chatId);
   
   const res = await getAllMessagesAction({ chatId });
   if (!res.success) {

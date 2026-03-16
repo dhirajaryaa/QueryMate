@@ -22,12 +22,12 @@ export default function NewChat() {
       if (!res.success) {
         toast.error(res?.error.message);
         return;
-      }
+      };
 
       router.push(`/chat/${res?.data?.chatId}`);
     } catch (error) {
       return handleClientError(error);
-    }
+    };
   };
 
   const examplesPrompt = [
@@ -43,9 +43,9 @@ export default function NewChat() {
         {examplesPrompt.map((q) => (
           <Button
             key={q}
-            variant={"secondary"}
+            size={'sm'}
+            variant={"outline"}
             onClick={() => sendMessage(q)}
-            className="cursor-pointer text-sm"
           >
             {q}
           </Button>

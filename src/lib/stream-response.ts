@@ -2,14 +2,14 @@ import { AgentEvent } from "@/types/agent.types";
 import { logger } from "./logger";
 
 export function streamChatResponse(completions: AsyncGenerator<AgentEvent>) {
-  // stream response
-  let assistantMessage: string = "";
-  const encoder = new TextEncoder();
+  let assistantMessage = "";
   let closed = false;
 
-  let streamDone: () => void;
+  const encoder = new TextEncoder();
+
+  let resolveDone!: () => void;
   const done = new Promise<void>((resolve) => {
-    streamDone = resolve;
+    resolveDone = resolve;
   });
 
   const stream = new ReadableStream({
@@ -17,17 +17,19 @@ export function streamChatResponse(completions: AsyncGenerator<AgentEvent>) {
       try {
         for await (const event of completions) {
           if (closed) break;
-          // collect text for DB
+
+          // collect assistant text for DB
           if (event.type === "text") {
             assistantMessage += event.data;
           }
+
+          const payload =
+            `event: ${event.type}\n` +
+            `data: ${JSON.stringify(event.data)}\n\n`;
+
           try {
-            controller.enqueue(
-              encoder.encode(
-                `event: ${event.type}\ndata: ${JSON.stringify(event.data)}\n\n`,
-              ),
-            );
-          } catch (error) {
+            controller.enqueue(encoder.encode(payload));
+          } catch {
             closed = true;
             logger.warn("Client disconnected during stream");
             break;
@@ -35,32 +37,26 @@ export function streamChatResponse(completions: AsyncGenerator<AgentEvent>) {
         }
 
         if (!closed) {
-          closed = true;
           controller.close();
+          closed = true;
+          logger.debug("AI stream finished");
         }
       } catch (error) {
         logger.error(error, "AI stream failed");
 
         if (!closed) {
-          try {
-            controller.enqueue(
-              encoder.encode(
-                `event: error\ndata: ${JSON.stringify({
-                  code: "internal:stream",
-                  message: "Response interrupted. Please retry.",
-                })}\n\n`,
-              ),
-            );
-          } catch {}
-
           closed = true;
-          controller.close();
+          controller.error(error);
         }
       } finally {
-        streamDone(); //? to return full assistant message.
+        resolveDone(); // stream finished
       }
     },
   });
 
-  return { stream, done, getAssistantMessage: () => assistantMessage };
+  return {
+    stream,
+    done,
+    getAssistantMessage: () => assistantMessage,
+  };
 }

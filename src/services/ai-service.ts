@@ -31,11 +31,13 @@ async function executeToolCalls(toolCalls: any) {
     results.push({
       tool_call_id: toolCallId,
       role: "tool",
-      content: `ToolResult:${JSON.stringify(functionResponse)}`,
+      content: `${JSON.stringify(functionResponse)}`,
     });
   }
+  console.log("🅰️", results);
+
   return results;
-};
+}
 
 //? run ai agent
 export async function* runAIAgent(
@@ -51,7 +53,7 @@ export async function* runAIAgent(
     throw new Error("Failed to run classifierAgent;");
   } else if (classifier.type === "non_relevant") {
     throw new Error("only database related query allowed");
-  };
+  }
 
   //! run tool calling
   if (classifier.type === "db_related" && classifier.type) {
@@ -86,8 +88,13 @@ export async function* runAIAgent(
     }
 
     const userMessage = history.at(-1); // latest user query
-    const toolResult = messages.at(-1); // tool output
+    const toolResult = messages
+      .slice()
+      .reverse()
+      .find((m) => m.role === "tool"); //tool output last
+
     yield { type: "status", data: "🧠 Generating answer..." };
+
     const stream = await answerAgent([
       { role: "system", content: ANSWER_AGENT_SYSTEM_PROMPT },
       userMessage!,

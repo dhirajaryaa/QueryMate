@@ -25,10 +25,10 @@ export default function ChatInput({
     setIsPrompt("");
   };
   return (
-    <div className="flex w-full flex-col gap-2">
+    <div className="flex w-full flex-col gap-2 ">
       <DbSelect />
       <form onSubmit={handleSubmit}>
-        <div className="flex items-center justify-between gap-2 rounded-2xl border shadow py-1 px-1.5 w-auto">
+        <div className="flex items-center justify-between gap-2 rounded-2xl border shadow py-1 px-1.5 w-auto dark:bg-secondary bg-secondary/50">
           <Input
             autoFocus
             value={isPrompt}

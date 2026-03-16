@@ -91,8 +91,6 @@ export async function POST(
     const { stream, done, getAssistantMessage } =
       streamChatResponse(completions);
 
-    console.log(getAssistantMessage());
-
     // Save assistant message after stream ends
     done
       .then(async () => {

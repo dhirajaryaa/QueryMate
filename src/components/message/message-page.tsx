@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { SafeMessage } from "@/types/message.types";
 import MessageList from "./message-list";
 import { toast } from "sonner";
-import { redirect, useParams, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { handleClientError } from "@/utils/handle-errors";
 import { AppErrorPayload } from "@/types/app.types";
 
@@ -111,6 +111,8 @@ export default function MessagePage({
 
           if (!type || !rawData) continue;
           const data = JSON.parse(rawData);
+
+          console.log("👉️", type, data);
 
           if (type === "text") {
             assistantMessage += data;

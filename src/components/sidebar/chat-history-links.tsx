@@ -24,52 +24,22 @@ export default function ChatHistoryLink({ links }: { links: ChatHistory[] }) {
 
   return (
     <SidebarGroup className="overflow-y-auto">
-    <SidebarMenu>
-      {links.map((link) => (
-        <SidebarMenuItem key={link.id}>
-          <Link href={`/chat/${link.id}`}>
-            <SidebarMenuButton
-              asChild
-              tooltip={link.title}
-              isActive={pathname === `/chat/${link.id}`}
-              className="h-8.5 data-[active=true]:bg-sidebar-active text-foreground "
-            >
-              <span>{link.title}</span>
-            </SidebarMenuButton>
-
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuAction>
-                  <MoreHorizontal
-                    className={
-                      pathname === `/chat/${link.id}`
-                        ? "text-foreground hover:text-foreground"
-                        : ""
-                    }
-                  />
-                </SidebarMenuAction>
-              </DropdownMenuTrigger>
-
-              <DropdownMenuContent
-                side={isMobile ? "bottom" : "right"}
-                align={isMobile ? "end" : "start"}
-                className="min-w-36 rounded-lg"
+      <SidebarMenu>
+        {links.map((link) => (
+          <SidebarMenuItem key={link.id}>
+            <Link href={`/chat/${link.id}`}>
+              <SidebarMenuButton
+                asChild
+                tooltip={link.title}
+                isActive={pathname === `/chat/${link.id}`}
+                className="h-8.5 data-[active=true]:bg-sidebar-active text-foreground truncate"
               >
-                <DropdownMenuItem variant="default">
-                  <PencilIcon />
-                  Rename
-                </DropdownMenuItem>
-
-                <DropdownMenuItem variant="destructive">
-                  <Trash2 />
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </Link>
-        </SidebarMenuItem>
-      ))}
-    </SidebarMenu>
+                <span>{link.title}</span>
+              </SidebarMenuButton>
+            </Link>
+          </SidebarMenuItem>
+        ))}
+      </SidebarMenu>
     </SidebarGroup>
   );
 }
