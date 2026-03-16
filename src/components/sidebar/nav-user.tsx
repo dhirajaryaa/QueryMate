@@ -12,7 +12,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
   Coffee,
   HelpCircle,
-  LogOut,
   MoreHorizontal,
   Settings,
   Star,
@@ -22,6 +21,7 @@ import Link from "next/link";
 import { ThemeToggler } from "../common/theme-toggler";
 import { auth } from "@/lib/auth";
 import { BuyMeCoffeeLink, GithubLink } from "@/lib/constent";
+import LogoutBtn from "../auth/logout";
 
 type Session = typeof auth.$Infer.Session.user;
 
@@ -113,10 +113,7 @@ function NavUser({ user }: { user: Session }) {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             {/* logout  */}
-            <DropdownMenuItem variant="destructive">
-              <LogOut />
-              Log out
-            </DropdownMenuItem>
+            <LogoutBtn />
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
