@@ -20,6 +20,7 @@ import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { z } from "zod";
 
+//new connection
 export async function createNewConnectionAction(
   payload: ConnectionInput,
 ): Promise<ConnectionResponse> {
@@ -71,7 +72,7 @@ export async function testConnectionAction(
 }
 
 // get connection list
-export async function getConnectionAction(): Promise<GetConnections> {
+export async function getConnectionsAction(): Promise<GetConnections> {
   try {
     // session get
     const session = await auth.api.getSession({ headers: await headers() });
@@ -97,7 +98,7 @@ export async function getConnectionAction(): Promise<GetConnections> {
       if (conn.status === "pending") stats.pending++;
     }
 
-    return { success: true, data: {connections:allConn,stats} };
+    return { success: true, data: { connections: allConn, stats } };
   } catch (error) {
     return handleServerActionError(error);
   }
@@ -125,4 +126,4 @@ export async function connectionsListAction(): Promise<ConnectionsList> {
   } catch (error) {
     return handleServerActionError(error);
   }
-};
+}

@@ -1,4 +1,4 @@
-import { getConnectionAction } from "@/actions/connection";
+import { getConnectionsAction } from "@/actions/connection";
 import SectionLayout from "@/components/common/section-layout";
 import ConnectionCard from "@/components/connection/connection-card";
 import { ConnectionModel } from "@/components/connection/connection-model";
@@ -8,7 +8,7 @@ import { handlePageError } from "@/utils/handle-errors";
 
 export default async function ConnectionsPage() {
   // fetch connections
-  const res = await getConnectionAction();
+  const res = await getConnectionsAction();
 
   if (!res.success) {
     handlePageError(res.error);

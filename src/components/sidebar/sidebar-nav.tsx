@@ -33,7 +33,7 @@ export default function SidebarNav() {
             <SidebarMenuButton
               asChild
               tooltip={item.title}
-              isActive={pathname === item.url}
+              isActive={pathname.startsWith(item.url)}
               className="h-9 data-[active=true]:bg-sidebar-active text-neutral-900 dark:text-neutral-100"
             >
               <Link href={item.url}>
