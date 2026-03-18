@@ -31,3 +31,8 @@ export type TestConnection = AppResponse<null>;
 export type ConnectionsList = AppResponse<
   Pick<Connection, "id" | "type" | "name">[]
 >;
+
+export interface SchemaAdapter {
+  getSchema(): string;
+  getRelations(): string;
+}
