@@ -1,16 +1,14 @@
-import { ConnectionInput } from "@/types/connection.types";
 import { Pool, PoolConfig } from "pg";
 import mysql, { Pool as SqlPool, PoolOptions } from "mysql2/promise";
 import { Db, MongoClient } from "mongodb";
-import Database from "better-sqlite3";
-import { AppError } from "../errors";
+import { logger } from "../logger";
 
 //? postgres client
 export class PostgresClient {
-  private pool: Pool;
+  public pool: Pool;
   constructor(config: PoolConfig) {
     this.pool = new Pool(config);
-  }
+  };
 
   async close() {
     await this.pool.end();
@@ -19,7 +17,7 @@ export class PostgresClient {
 
 //? mysql client
 export class MySQLClient {
-  private pool: SqlPool;
+  public pool: SqlPool;
 
   constructor(config: PoolOptions) {
     this.pool = mysql.createPool(config);
@@ -32,8 +30,8 @@ export class MySQLClient {
 
 //? mongo client
 export class MongoDBClient {
-  private client: MongoClient;
-  private db!: Db;
+  public client: MongoClient;
+  public db!: Db;
   dbName: string;
 
   constructor(uri: string, dbName: string) {

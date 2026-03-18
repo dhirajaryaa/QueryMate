@@ -19,6 +19,8 @@ export type ConnectionStats = {
   issus: number;
 };
 
+export type GetConnection = AppResponse<Connection>;
+
 export type GetConnections =
   | {
       success: true;
