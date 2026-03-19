@@ -21,7 +21,7 @@ const validateUriByType = (
   }
 };
 
-export const connectionSchema = z
+export const addConnectionSchema = z
   .object({
     name: z
       .string({ error: "connection name required" })

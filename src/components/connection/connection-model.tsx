@@ -16,7 +16,7 @@ import { Input } from "../ui/input";
 import DBTypeSelect from "./dbtype-select";
 import { Switch } from "../ui/switch";
 import { Controller, useForm } from "react-hook-form";
-import { connectionSchema } from "@/schema/connection.schema";
+import { addConnectionSchema } from "@/schema/connection.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ConnectionInput } from "@/types/connection.types";
 import {
@@ -45,7 +45,7 @@ export function ConnectionModel() {
       type: "pg",
       ssl: false,
     },
-    resolver: zodResolver(connectionSchema),
+    resolver: zodResolver(addConnectionSchema),
   });
   const dbType = watch("type");
 
