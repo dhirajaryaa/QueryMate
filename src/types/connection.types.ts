@@ -39,6 +39,8 @@ export type GetConnections =
 
 export type TestConnection = AppResponse<null>;
 
+export type DeleteConnection = AppResponse<null>;
+
 export type ConnectionsList = AppResponse<
   Pick<Connection, "id" | "type" | "name">[]
 >;

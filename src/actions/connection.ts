@@ -18,13 +18,14 @@ import {
   ConnectionResponse,
   ConnectionSchemaRefresh,
   ConnectionsList,
+  DeleteConnection,
   EditConnection,
   GetConnection,
   GetConnections,
   TestConnection,
 } from "@/types/connection.types";
 import { handleServerActionError } from "@/utils/handle-errors";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { z } from "zod";
 
@@ -254,6 +255,34 @@ export async function connectionSchemaRefreshAction(
       .where(eq(connection.id, conn.id));
 
     return { success: true, data: schema };
+  } catch (error) {
+    return handleServerActionError(error);
+  }
+}
+
+// delete connection
+export async function connectionDeleteAction(
+  connId: string,
+): Promise<DeleteConnection> {
+  try {
+    // session get
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) {
+      throw new AppError("unauthorized:auth");
+    }
+
+    // connection find
+    const [conn] = await db
+      .delete(connection)
+      .where(
+        and(eq(connection.id, connId), eq(connection.userId, session.user.id)),
+      )
+      .returning({ connectionId: connection.id });
+    if (!conn) {
+      throw new AppError("not_found:api", "Connection not found!");
+    }
+
+    return { success: true, data: null };
   } catch (error) {
     return handleServerActionError(error);
   }

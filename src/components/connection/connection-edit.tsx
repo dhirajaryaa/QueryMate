@@ -1,5 +1,5 @@
 "use client";
-import { Edit } from "lucide-react";
+import { Edit, Eye } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   Field,
@@ -41,7 +41,7 @@ export default function ConnectionEdit({
   } = useForm<ConnectionEditInput>({
     defaultValues: {
       name: connection.name,
-      uri: connection.uri ?? "",
+      uri: connection.uri,
       ssl: connection.ssl ?? false,
       type: connection.type,
     },
@@ -55,7 +55,7 @@ export default function ConnectionEdit({
       if (!res.success) {
         return toast.error(res.error.message || "connection update failed!");
       }
-      
+
       setIsEdit(false);
       router.refresh();
     } catch (error) {
@@ -73,7 +73,7 @@ export default function ConnectionEdit({
           size="sm"
           variant="secondary"
           title="Edit Connection"
-          onClick={() => setIsEdit(!isEdit)}
+          onClick={() => setIsEdit((prev) => !prev)}
           className="absolute right-0 -top-1"
         >
           <Edit /> Edit
