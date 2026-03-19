@@ -39,7 +39,7 @@ export default function ConnectionCard({ connection }: { connection: Connection 
                 </ItemDescription>
             </ItemContent>
             {/* Status */}
-            <div className="w-[100px]">
+            <div className="w-25">
                 <StatusBadge status={connection.status} />
             </div>
             {/* Manage */}

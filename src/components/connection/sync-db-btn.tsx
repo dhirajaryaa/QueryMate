@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { RefreshCcw } from "lucide-react";
+import { toast } from "sonner";
 
 export default function SyncDatabaseBtn() {
   const [refresh, setRefresh] = useState(false);
@@ -14,6 +15,7 @@ export default function SyncDatabaseBtn() {
     await new Promise((resolve) => {
       setTimeout(() => resolve("Done"), 4000);
     });
+    toast.success("Database Synced")
     setRefresh(false);
   };
   return (

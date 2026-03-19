@@ -1,5 +1,8 @@
 import { connection } from "@/db/schema";
-import { connectionSchema } from "@/schema/connection.schema";
+import {
+  connectionSchema,
+  editConnectionSchema,
+} from "@/schema/connection.schema";
 import { z } from "zod";
 import { AppErrorPayload, AppResponse } from "./app.types";
 
@@ -9,6 +12,8 @@ export type Connection = typeof connection.$inferSelect;
 export type NewConnection = typeof connection.$inferInsert;
 
 export type ConnectionInput = z.infer<typeof connectionSchema>;
+
+export type ConnectionEditInput = z.infer<typeof editConnectionSchema>;
 
 export type ConnectionResponse = AppResponse<{ id: Connection["id"] }>;
 
@@ -20,6 +25,8 @@ export type ConnectionStats = {
 };
 
 export type GetConnection = AppResponse<Connection>;
+
+export type EditConnection = AppResponse<Connection>;
 
 export type GetConnections =
   | {
