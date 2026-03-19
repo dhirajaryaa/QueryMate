@@ -3,18 +3,20 @@
 //! all exported function use Action end with name to identify easily server action function
 
 import { db } from "@/db";
-import { connection } from "@/db/schema";
+import { connection, connectionSchema } from "@/db/schema";
 import { auth } from "@/lib/auth";
+import { GetDbSchema } from "@/lib/db/schema";
 import { testDatabaseConnection } from "@/lib/db/test.connection";
 import { AppError } from "@/lib/errors";
 import {
-  connectionSchema,
+  addConnectionSchema,
   editConnectionSchema,
 } from "@/schema/connection.schema";
 import {
   ConnectionEditInput,
   ConnectionInput,
   ConnectionResponse,
+  ConnectionSchemaRefresh,
   ConnectionsList,
   EditConnection,
   GetConnection,
@@ -32,7 +34,7 @@ export async function createNewConnectionAction(
 ): Promise<ConnectionResponse> {
   try {
     // check schema
-    const valid = connectionSchema.safeParse(payload);
+    const valid = addConnectionSchema.safeParse(payload);
     if (!valid.success) {
       throw new AppError("bad_request:api", z.prettifyError(valid.error));
     }
@@ -189,6 +191,69 @@ export async function editConnectionAction(
       .returning();
 
     return { success: true, data };
+  } catch (error) {
+    return handleServerActionError(error);
+  }
+}
+
+// connection schema refresh
+export async function connectionSchemaRefreshAction(
+  connId: string,
+): Promise<ConnectionSchemaRefresh> {
+  try {
+    // session get
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) {
+      throw new AppError("unauthorized:auth");
+    }
+
+    // connection find
+    const [conn] = await db
+      .select()
+      .from(connection)
+      .where(eq(connection.id, connId))
+      .limit(1);
+    if (!conn) {
+      throw new AppError("not_found:api", "Connection not found!");
+    }
+
+    const rowSchema = await GetDbSchema(connId);
+
+    if (!rowSchema) {
+      throw new AppError("bad_request:database", "failed to fetch schema");
+    }
+    const [schema] = await db
+      .select()
+      .from(connectionSchema)
+      .where(eq(connectionSchema.connectionId, conn.id));
+
+    if (!schema) {
+      await db
+        .insert(connectionSchema)
+        .values({
+          connectionId: conn.id,
+          structure: rowSchema.schema,
+          relationships: rowSchema.relations,
+        })
+        .returning();
+    }
+
+    // update schema
+    await db
+      .update(connectionSchema)
+      .set({
+        structure: rowSchema.schema,
+        relationships: rowSchema.relations,
+      })
+      .where(eq(connectionSchema.connectionId, conn.id));
+
+    // status updata
+    await db
+      .update(connection)
+      .set({ status: "active" })
+      .where(eq(connection.id, conn.id));
+
+    return { success: true, data: schema };
   } catch (error) {
     return handleServerActionError(error);
   }

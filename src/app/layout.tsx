@@ -40,8 +40,8 @@ export default function RootLayout({
           <TooltipProvider>
             {children}
           </TooltipProvider>
+        <Toaster richColors position="top-center"/>
         </ThemeProvider>
-        <Toaster position="top-center"/>
       </body>
     </html>
   );

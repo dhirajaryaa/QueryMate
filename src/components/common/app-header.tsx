@@ -2,9 +2,9 @@
 import { SidebarTrigger } from "../ui/sidebar";
 import { Button } from "../ui/button";
 import { ArrowLeft, Github, Share2 } from "lucide-react";
-import { GithubLink } from "@/lib/constent";
 import { Separator } from "../ui/separator";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function AppHeader() {
   const router = useRouter();
@@ -20,7 +20,7 @@ export default function AppHeader() {
           <ArrowLeft /> Back
         </Button>
       </div>
-      <Button size={"sm"} variant={"secondary"}>
+      <Button size={"sm"} variant={"secondary"} onClick={()=>toast.info("upcoming feature.")} >
         <Share2 />
         Share
       </Button>

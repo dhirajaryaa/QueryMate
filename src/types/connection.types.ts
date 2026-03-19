@@ -47,3 +47,5 @@ export interface SchemaAdapter {
   getSchema(): string;
   getRelations(): string;
 }
+
+export type ConnectionSchemaRefresh = AppResponse<ConnectionSchema>;
