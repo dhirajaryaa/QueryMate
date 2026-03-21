@@ -1,3 +1,4 @@
+import { AppError } from "@/lib/errors";
 import { DBType, SchemaAdapter } from "@/types/connection.types";
 
 // pg adapter
@@ -56,6 +57,6 @@ export function getAdapter(dbType: DBType): SchemaAdapter {
     case "mysql":
       return mysqlAdapter;
     default:
-      throw new Error(`Unsupported db type: ${dbType}`);
+      throw new AppError("forbidden:database",`Unsupported db type: ${dbType}`);
   }
 }

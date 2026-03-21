@@ -26,11 +26,13 @@ import {
 import { toast } from "sonner";
 import { useState } from "react";
 import { handleClientError } from "@/utils/handle-errors";
+import { useRouter } from "next/navigation";
 
 export function ConnectionModel() {
   const [showModel, setShowModel] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isTest, setIsTest] = useState(false);
+  const router =  useRouter();
 
   const {
     register,
@@ -63,6 +65,7 @@ export function ConnectionModel() {
     reset();
     setIsLoading(false);
     setShowModel(false); // close model
+    router.refresh();
   };
 
   //?test connection
@@ -80,9 +83,9 @@ export function ConnectionModel() {
   return (
     <Dialog open={showModel} onOpenChange={() => setShowModel(!showModel)}>
       <DialogTrigger asChild>
-        <Button size={"sm"}>
+        <Button size={"sm"} title="Add New Connection">
           <Plus className="mr-1" size={16} />
-          New Connection
+          New <span className="hidden sm:inline-block">Connection</span>
         </Button>
       </DialogTrigger>
       <DialogContent>

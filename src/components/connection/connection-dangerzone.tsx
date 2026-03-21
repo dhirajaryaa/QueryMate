@@ -35,7 +35,7 @@ function ConnectionDangerZone() {
     try {
       const res = await connectionDeleteAction(connId as string);
       if (res.success) {
-        toast.success("Connection Delete Successfully");
+        toast.info("Connection Delete Successfully");
         router.push("/connections");
       };
     } catch (error) {

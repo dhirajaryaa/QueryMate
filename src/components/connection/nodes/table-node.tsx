@@ -9,7 +9,7 @@ type TableNode = Node<Props, "string">;
 export default function TableNode({ data }: NodeProps<TableNode>) {
   return (
     <div className="border rounded-lg bg-background min-w-23 text-center shadow-lg overflow-hidden">
-      <div className="font-semibold rounded-tl-lg text-sm px-3 py-1.5 bg-muted uppercase text-emerald-300">
+      <div className="font-semibold rounded-tl-lg text-sm px-3 py-1.5 bg-muted uppercase text-primary">
         {data.tableName}
       </div>
       <Handle type="source" position={Position.Left} />
@@ -17,7 +17,7 @@ export default function TableNode({ data }: NodeProps<TableNode>) {
       <ul className="w-full h-full flex flex-col">
         {data.fields.map((field) => {
           return (
-            <li key={field.name} className="text-xs border-t p-1 px-3">
+            <li key={field.name} className="text-xs border-t p-1 px-3 lowercase">
               {field.name}
             </li>
           );

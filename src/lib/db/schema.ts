@@ -19,6 +19,8 @@ export async function GetDbSchema(connId: string) {
   // select adapter
   const adapter = getAdapter(conn.type);
 
+  if (!adapter) return;
+
   //? postgres
   if (conn.type === "pg") {
     const pgConn = new PostgresClient({
@@ -58,8 +60,7 @@ export async function GetDbSchema(connId: string) {
     } finally {
       await pgConn.close();
     }
-  }
-   else {
-    throw new Error("failed to get Database Schema");
+  } else {
+    return;
   }
 }

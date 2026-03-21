@@ -26,7 +26,7 @@ import {
   TestConnection,
 } from "@/types/connection.types";
 import { handleServerActionError } from "@/utils/handle-errors";
-import { and, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { z } from "zod";
 
@@ -91,7 +91,8 @@ export async function getConnectionsAction(): Promise<GetConnections> {
     const allConn = await db
       .select()
       .from(connection)
-      .where(eq(connection.userId, session.user.id));
+      .where(eq(connection.userId, session.user.id))
+      .orderBy(desc(connection.createdAt));
 
     // stats list
     const stats = {
@@ -157,7 +158,7 @@ export async function getConnectionAction(
       .limit(1);
 
     if (!conn) {
-      throw new AppError("not_found:api", "Connection not found!");
+      throw new AppError("not_found:database", "Connection not found!");
     }
 
     return { success: true, data: conn };
@@ -224,6 +225,7 @@ export async function connectionSchemaRefreshAction(
     if (!rowSchema) {
       throw new AppError("bad_request:database", "failed to fetch schema");
     }
+
     const [schema] = await db
       .select()
       .from(connectionSchema)
@@ -306,9 +308,6 @@ export async function getConnectionSchemaAction(
       .from(connectionSchema)
       .where(and(eq(connectionSchema.connectionId, connId)))
       .limit(1);
-    if (!schema) {
-      throw new AppError("not_found:api", "Connection not found!");
-    }
 
     return { success: true, data: schema };
   } catch (error) {

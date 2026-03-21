@@ -38,7 +38,7 @@ export default function DBTypeSelect({ value, onChange }: DBProps) {
                             <Button
                                 variant="outline"
                                 className={` flex flex-col h-auto
-                font-semibold text-muted-foreground w-[100px] max-w-[100px] 
+                font-semibold text-muted-foreground w-25 max-w-25 
                 grayscale hover:grayscale-0 transition-all text-xs sm:text-sm
                 ${isSelected ? "grayscale-0 border-primary text-primary" : "grayscale"}
               `} >
