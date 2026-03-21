@@ -8,12 +8,16 @@ import {
   BackgroundVariant,
   ControlButton,
   Controls,
+  Edge,
   Node,
   ReactFlow,
+  useEdgesState,
+  useNodesState,
 } from "@xyflow/react";
 import TableNode from "./nodes/table-node";
 import SchemaToNode from "@/utils/schema-to-node";
 import { Expand } from "lucide-react";
+import { schemaToEdge } from "@/utils/schema-to-edge";
 
 export default function ConnectionSchemaFlow({
   schema,
@@ -21,7 +25,6 @@ export default function ConnectionSchemaFlow({
   schema: ConnectionSchema;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [rowSchema, setRowSchema] = useState<ConnectionSchema>(schema);
 
   // handle full screen view
   const handleFullScreen = () => {
@@ -35,25 +38,32 @@ export default function ConnectionSchemaFlow({
       document.exitFullscreen();
     }
   };
-
-  console.log(rowSchema);
-
   const nodeTypes = {
     schemaNode: TableNode,
   };
 
-  const initialNode = SchemaToNode(rowSchema.structure as any);
+  const initialNode: Node[] = SchemaToNode(schema.structure as any);
+  const initialEdge: Edge[] = schemaToEdge(schema.relationships as any);
+
+  const [nodes, setNodes, onNodeChange] = useNodesState(initialNode);
+  const [edges, setEdges, onEdgeChange] = useEdgesState(initialEdge);
 
   return (
     <div style={{ height: "100%", width: "100%" }} ref={containerRef}>
-      <ReactFlow nodes={initialNode} nodeTypes={nodeTypes}>
-     <Background
-        id="1"
-        gap={10}
-        color="#f1f1f1"
-        variant={BackgroundVariant.Lines}
-        bgColor="#fff"
-      />
+      <ReactFlow
+        nodes={nodes}
+        nodeTypes={nodeTypes}
+        onNodesChange={onNodeChange}
+        edges={edges}
+        onEdgesChange={onEdgeChange}
+      >
+        <Background
+          id="1"
+          gap={10}
+          color="#f1f1f1"
+          variant={BackgroundVariant.Lines}
+          bgColor="#fff"
+        />
         <Controls>
           <ControlButton title="full screen view" onClick={handleFullScreen}>
             <Expand />

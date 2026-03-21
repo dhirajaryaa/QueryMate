@@ -58,7 +58,7 @@ export async function ConnectionSchemaVisualizer({
     return handlePageError(res.error);
   }
   return (
-    <section className="w-full h-full rounded-lg border-2 shadow">
+    <section className="w-full h-full rounded-lg border shadow">
       <ConnectionSchemaFlow schema={res.data} />
     </section>
   );

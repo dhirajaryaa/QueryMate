@@ -25,7 +25,7 @@ function SchemaToNode(schema: Schema): Node[] {
     currentRowMaxHeight = Math.max(currentRowMaxHeight, nodeHeight);
 
     nodes.push({
-      id: `${tableName}_${index}`,
+      id: tableName,
       type: "schemaNode",
       data: {
         tableName,

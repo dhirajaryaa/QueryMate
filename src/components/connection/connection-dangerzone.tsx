@@ -45,7 +45,7 @@ function ConnectionDangerZone() {
   };
 
   return (
-    <div className="flex w-full flex-col gap-6 mb-20">
+    <div className="flex w-full flex-col gap-6">
       <Item
         variant="outline"
         className="border-destructive bg-destructive/10 text-destructive"
