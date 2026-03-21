@@ -30,12 +30,10 @@ export type GetConnection = AppResponse<Connection>;
 
 export type EditConnection = AppResponse<Connection>;
 
-export type GetConnections =
-  | {
-      success: true;
-      data: { connections: Connection[]; stats: ConnectionStats };
-    }
-  | { success: false; error: AppErrorPayload };
+export type GetConnections = AppResponse<{
+  connections: Connection[];
+  stats: ConnectionStats;
+}>;
 
 export type TestConnection = AppResponse<null>;
 
@@ -44,6 +42,7 @@ export type DeleteConnection = AppResponse<null>;
 export type ConnectionsList = AppResponse<
   Pick<Connection, "id" | "type" | "name">[]
 >;
+export type GetConnectionSchema = AppResponse<ConnectionSchema>;
 
 export interface SchemaAdapter {
   getSchema(): string;

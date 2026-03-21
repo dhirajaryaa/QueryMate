@@ -22,6 +22,7 @@ import {
   EditConnection,
   GetConnection,
   GetConnections,
+  GetConnectionSchema,
   TestConnection,
 } from "@/types/connection.types";
 import { handleServerActionError } from "@/utils/handle-errors";
@@ -283,6 +284,33 @@ export async function connectionDeleteAction(
     }
 
     return { success: true, data: null };
+  } catch (error) {
+    return handleServerActionError(error);
+  }
+}
+
+//connection schema get
+export async function getConnectionSchemaAction(
+  connId: string,
+): Promise<GetConnectionSchema> {
+  try {
+    // session get
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) {
+      throw new AppError("unauthorized:auth");
+    }
+
+    // connection schema find
+    const [schema] = await db
+      .select()
+      .from(connectionSchema)
+      .where(and(eq(connectionSchema.connectionId, connId)))
+      .limit(1);
+    if (!schema) {
+      throw new AppError("not_found:api", "Connection not found!");
+    }
+
+    return { success: true, data: schema };
   } catch (error) {
     return handleServerActionError(error);
   }
