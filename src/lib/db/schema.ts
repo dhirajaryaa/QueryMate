@@ -1,12 +1,15 @@
-import { MySQLClient, PostgresClient } from "./connection-client";
+import {
+  MongoDBClient,
+  MySQLClient,
+  PostgresClient,
+} from "./connection-client";
 import { db } from "@/db";
 import { connection } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { AppError } from "../errors";
 import { getAdapter } from "@/utils/db-adapter";
 import { logger } from "../logger";
-import { Relation } from "@/types/connection.types";
-import { RowDataPacket } from "mysql2";
+import { Relation, SchemaAdapter } from "@/types/connection.types";
 
 export async function GetDbSchema(connId: string) {
   const [conn] = await db
@@ -18,12 +21,7 @@ export async function GetDbSchema(connId: string) {
     throw new AppError("not_found:api", "Connection not found!");
   }
 
-  // select adapter
-  const adapter = getAdapter(conn.type);
-
-  if (!adapter) return;
-
-  //? postgres
+  //! postgres
   if (conn.type === "pg") {
     const pgConn = new PostgresClient({
       connectionString: conn.uri as string,
@@ -35,6 +33,7 @@ export async function GetDbSchema(connId: string) {
     }
 
     try {
+       const adapter = getAdapter(conn.type);
       const schema = await pgConn.pool.query(adapter.getSchema());
       const relations = await pgConn.pool.query(adapter.getRelations());
 
@@ -74,14 +73,14 @@ export async function GetDbSchema(connId: string) {
       throw new Error("Unable to connect database");
     }
     try {
+      const adapter = getAdapter(conn.type);
       const [schemaRows] = await sqlConn.pool.query(adapter.getSchema());
       const [relationRows] = await sqlConn.pool.query(adapter.getRelations());
 
       // validate
       if (!Array.isArray(schemaRows) || !Array.isArray(relationRows)) {
         throw new Error("Expected SELECT result type");
-      };
-
+      }
 
       const group = schemaRows.reduce<Record<string, Set<string>>>(
         (acc, row: any) => {
@@ -116,6 +115,29 @@ export async function GetDbSchema(connId: string) {
       return error.message;
     } finally {
       await sqlConn.close();
+    }
+  } else if (conn.type === "mongodb") {
+    console.log("😱 I am mongoConn working");
+    const mongoConn = new MongoDBClient(conn.uri);
+
+    try {
+      await mongoConn.connect(); // ✅ MUST
+
+      const schemaRows = await mongoConn.getSchema();
+      const relationRows = await mongoConn.getRelations();
+
+      console.log("Schema:", schemaRows);
+      console.log("Relations:", relationRows);
+
+      return {
+        schema: schemaRows,
+        relations: relationRows,
+      };
+    } catch (error: any) {
+      logger.error(error);
+      return error.message;
+    } finally {
+      await mongoConn.close();
     }
   } else {
     return;

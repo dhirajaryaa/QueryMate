@@ -220,7 +220,7 @@ export async function connectionSchemaRefreshAction(
       throw new AppError("not_found:api", "Connection not found!");
     }
 
-    const rowSchema = await GetDbSchema(connId);
+    const rowSchema = await GetDbSchema(connId);    
 
     if (!rowSchema) {
       throw new AppError("bad_request:database", "failed to fetch schema");
