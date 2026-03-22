@@ -1,4 +1,4 @@
-import { PostgresClient } from "./connection-client";
+import { MySQLClient, PostgresClient } from "./connection-client";
 import { db } from "@/db";
 import { connection } from "@/db/schema";
 import { eq } from "drizzle-orm";
@@ -59,6 +59,50 @@ export async function GetDbSchema(connId: string) {
       return err.message;
     } finally {
       await pgConn.close();
+    }
+
+    //! my sql
+  } else if (conn.type === "mysql") {
+    const sqlConn = new MySQLClient({
+      uri: conn.uri,
+      ssl: conn.ssl ? { rejectUnauthorized: false } : undefined,
+    });
+
+    if (!sqlConn) {
+      throw new Error("Unable to connect database");
+    }
+    try {
+      const [schemaRows] = await sqlConn.pool.query(adapter.getSchema());
+      const [relationRows] = await sqlConn.pool.query(adapter.getRelations());
+
+      if (!Array.isArray(schemaRows)) {
+        throw new Error("Expected SELECT result type");
+      }
+
+      const group = schemaRows.reduce<Record<string, Set<string>>>(
+        (acc, row: any) => {
+          if (!acc[row.table_name]) {
+            acc[row.table_name] = new Set();
+          }
+          acc[row.table_name].add(row.column_name);
+          return acc;
+        },
+        {},
+      );
+
+      const schemaResult = Object.fromEntries(
+        Object.entries(group).map(([table, cols]) => [table, [...cols]]),
+      );
+
+      return {
+        schema: schemaResult,
+        relations: relationRows,
+      };
+    } catch (error: any) {
+      logger.error(error);
+      return error.message;
+    } finally {
+      await sqlConn.close();
     }
   } else {
     return;

@@ -53,7 +53,7 @@ export default function ConnectionSchemaFlow({
   const [edges, setEdges, onEdgeChange] = useEdgesState(initialEdge);
 
   return (
-    <div style={{ height: "100%", width: "100%" }} ref={containerRef} className="bg-accent/70 text-foreground">
+    <div style={{ height: "100%", width: "100%" }} ref={containerRef} className="bg-accent text-foreground">
       <ReactFlow
         nodes={nodes}
         nodeTypes={nodeTypes}

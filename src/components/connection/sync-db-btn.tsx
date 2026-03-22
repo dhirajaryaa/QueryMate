@@ -6,11 +6,12 @@ import { RefreshCcw } from "lucide-react";
 import { toast } from "sonner";
 import { handleClientError } from "@/utils/handle-errors";
 import { connectionSchemaRefreshAction } from "@/actions/connection";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 export default function SyncDatabaseBtn() {
   const [refresh, setRefresh] = useState(false);
   const { connId } = useParams();
+  const router = useRouter();
 
   const handleDbRefresh = async () => {
     console.log("Refreshing Database");
@@ -21,6 +22,7 @@ export default function SyncDatabaseBtn() {
         return handleClientError(res.error);
       };
       toast.success("Database Synced");
+      router.refresh();
     } catch (error) {
       return handleClientError(error);
     } finally {
