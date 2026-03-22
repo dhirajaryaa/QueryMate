@@ -14,7 +14,6 @@ export default function SyncDatabaseBtn() {
   const router = useRouter();
 
   const handleDbRefresh = async () => {
-    console.log("Refreshing Database");
     setRefresh(true);
     try {
       const res = await connectionSchemaRefreshAction(connId as string);
@@ -23,6 +22,7 @@ export default function SyncDatabaseBtn() {
       };
       toast.success("Database Synced");
       router.refresh();
+      
     } catch (error) {
       return handleClientError(error);
     } finally {

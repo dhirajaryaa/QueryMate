@@ -50,3 +50,10 @@ export interface SchemaAdapter {
 }
 
 export type ConnectionSchemaRefresh = AppResponse<ConnectionSchema>;
+
+export type Relation = {
+  table_name: string;
+  column_name: string;
+  foreign_table: string;
+  foreign_column: string;
+};

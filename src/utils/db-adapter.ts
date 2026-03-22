@@ -37,17 +37,18 @@ const mysqlAdapter: SchemaAdapter = {
       WHERE table_schema = DATABASE()
     `;
   },
-  getRelations() {
-    return `
-      SELECT
-        TABLE_NAME,
-        COLUMN_NAME,
-        REFERENCED_TABLE_NAME,
-        REFERENCED_COLUMN_NAME
-      FROM information_schema.KEY_COLUMN_USAGE
-      WHERE REFERENCED_TABLE_NAME IS NOT NULL
-    `;
-  },
+ getRelations() {
+  return `
+    SELECT
+      TABLE_NAME AS table_name,
+      COLUMN_NAME AS column_name,
+      REFERENCED_TABLE_NAME AS referenced_table_name,
+      REFERENCED_COLUMN_NAME AS referenced_column_name
+    FROM information_schema.KEY_COLUMN_USAGE
+    WHERE REFERENCED_TABLE_NAME IS NOT NULL
+      AND TABLE_SCHEMA = DATABASE()
+  `;
+}
 };
 
 export function getAdapter(dbType: DBType): SchemaAdapter {

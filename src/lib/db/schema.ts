@@ -5,6 +5,8 @@ import { eq } from "drizzle-orm";
 import { AppError } from "../errors";
 import { getAdapter } from "@/utils/db-adapter";
 import { logger } from "../logger";
+import { Relation } from "@/types/connection.types";
+import { RowDataPacket } from "mysql2";
 
 export async function GetDbSchema(connId: string) {
   const [conn] = await db
@@ -75,9 +77,11 @@ export async function GetDbSchema(connId: string) {
       const [schemaRows] = await sqlConn.pool.query(adapter.getSchema());
       const [relationRows] = await sqlConn.pool.query(adapter.getRelations());
 
-      if (!Array.isArray(schemaRows)) {
+      // validate
+      if (!Array.isArray(schemaRows) || !Array.isArray(relationRows)) {
         throw new Error("Expected SELECT result type");
-      }
+      };
+
 
       const group = schemaRows.reduce<Record<string, Set<string>>>(
         (acc, row: any) => {
@@ -94,9 +98,18 @@ export async function GetDbSchema(connId: string) {
         Object.entries(group).map(([table, cols]) => [table, [...cols]]),
       );
 
+      const relationsResult: Relation[] = relationRows.map(
+        (relation: any): Relation => ({
+          table_name: relation.table_name,
+          column_name: relation.column_name,
+          foreign_table: relation.referenced_table_name,
+          foreign_column: relation.referenced_column_name,
+        }),
+      );
+
       return {
         schema: schemaResult,
-        relations: relationRows,
+        relations: relationsResult,
       };
     } catch (error: any) {
       logger.error(error);
