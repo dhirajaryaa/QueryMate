@@ -112,8 +112,6 @@ export default function MessagePage({
           if (!type || !rawData) continue;
           const data = JSON.parse(rawData);
 
-          console.log("👉️", type, data);
-
           if (type === "text") {
             assistantMessage += data;
             setMessages((prev) =>
