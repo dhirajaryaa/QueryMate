@@ -275,14 +275,17 @@ export async function connectionDeleteAction(
     }
 
     // connection find
-    const [conn] = await db
+    const result = await db
       .delete(connection)
       .where(
         and(eq(connection.id, connId), eq(connection.userId, session.user.id)),
-      )
-      .returning({ connectionId: connection.id });
-    if (!conn) {
-      throw new AppError("not_found:api", "Connection not found!");
+      );
+
+    if (result.rowCount === 0) {
+      throw new AppError(
+        "forbidden:database",
+        "Connection not found or unauthorized",
+      );
     }
 
     return { success: true, data: null };

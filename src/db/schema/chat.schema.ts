@@ -9,7 +9,7 @@ export const chat = pgTable(
     title: text("title").notNull(),
     connectionId: uuid("connection_id")
       .notNull()
-      .references(() => connection.id),
+      .references(() => connection.id,{onDelete: "cascade"}),
     userId: text("user_id")
       .references(() => user.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").notNull().defaultNow(),

@@ -1,5 +1,5 @@
 "use client";
-import { ShieldAlertIcon, Trash2Icon } from "lucide-react";
+import { Loader2, ShieldAlertIcon, Trash2, Trash2Icon } from "lucide-react";
 import {
   Item,
   ItemActions,
@@ -34,10 +34,11 @@ function ConnectionDangerZone() {
     setIsLoading(true);
     try {
       const res = await connectionDeleteAction(connId as string);
+      
       if (res.success) {
-        toast.info("Connection Delete Successfully");
+        toast.warning("Connection Delete Successfully");
         router.push("/connections");
-      };
+      }
     } catch (error) {
       return handleClientError(error);
     }
@@ -82,6 +83,11 @@ function ConnectionDangerZone() {
                   variant={"destructive"}
                   onClick={handleDelete}
                 >
+                  {isLoading ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    <Trash2 />
+                  )}
                   Delete Connection
                 </AlertDialogAction>
               </AlertDialogFooter>
