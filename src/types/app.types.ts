@@ -1,3 +1,6 @@
+import { reportSchema } from "@/schema/report.schema";
+import z from "zod";
+
 export type ErrorType =
   | "bad_request"
   | "unauthorized"
@@ -25,7 +28,9 @@ export type AppErrorPayload = {
 
 export type ActionErrorResponse = { success: false; error: AppErrorPayload };
 
-export type AppResponse<T> =
-  | { success: true; data: T }
-  | ActionErrorResponse;
+export type AppResponse<T> = { success: true; data: T } | ActionErrorResponse;
 
+// export type ReportFormValues = z.infer<typeof reportSchema>;
+export type ReportPayload = z.infer<typeof reportSchema> & {
+  submittedOn: string | Date;
+};

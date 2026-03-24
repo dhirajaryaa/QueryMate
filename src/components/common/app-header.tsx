@@ -1,7 +1,7 @@
 "use client";
 import { SidebarTrigger } from "../ui/sidebar";
 import { Button } from "../ui/button";
-import { ArrowLeft, Github, Share2 } from "lucide-react";
+import { ArrowLeft,Share2 } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -16,13 +16,23 @@ export default function AppHeader() {
           orientation="vertical"
           className="data-[orientation=vertical]:h-6"
         />
-        <Button size={"sm"} onClick={() => router.back()} variant={"outline"}>
+        <Button
+          size={"sm"}
+          onClick={() => router.back()}
+          title="Go back"
+          variant={"outline"}
+        >
           <ArrowLeft /> Back
         </Button>
       </div>
-      <Button size={"sm"} variant={"secondary"} onClick={()=>toast.info("upcoming feature.")} >
+      <Button
+        size={"sm"}
+        variant={"secondary"}
+        title="Share"
+        onClick={() => toast.info("upcoming feature.")}
+      >
         <Share2 />
-        Share
+        <span className="hidden sm:inline-block">Share</span>
       </Button>
     </header>
   );

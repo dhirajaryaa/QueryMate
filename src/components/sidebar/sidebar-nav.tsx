@@ -34,7 +34,7 @@ export default function SidebarNav() {
               asChild
               tooltip={item.title}
               isActive={pathname.startsWith(item.url)}
-              className="h-9 data-[active=true]:bg-sidebar-active text-neutral-900 dark:text-neutral-100"
+              className="h-9 data-[active=true]:bg-sidebar-active text-neutral-900 dark:text-neutral-100 hover:bg-sidebar-active/70"
             >
               <Link href={item.url}>
                 {item.icon && <item.icon />}

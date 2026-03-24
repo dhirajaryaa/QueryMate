@@ -33,7 +33,7 @@ function NavUser({ user }: { user: Session }) {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="hover:bg-sidebar-active text-neutral-900 dark:text-neutral-100"
+              className="text-neutral-900 dark:text-neutral-100 hover:bg-sidebar-active/70"
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.image ?? ""} alt={user.name} />

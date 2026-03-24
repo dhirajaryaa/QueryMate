@@ -1,5 +1,4 @@
-"use client";
-import { ChatHistory } from "@/types/chat.types";
+import { handlePageError } from "@/utils/handle-errors";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -8,19 +7,18 @@ import {
   SidebarMenuSkeleton,
 } from "../ui/sidebar";
 import ChatHistoryLink from "./chat-history-links";
-import { useState } from "react";
+import { getChatHistoryAction } from "@/actions/chat";
 
-type Props = {
-  initialHistory: ChatHistory[];
-};
-
-export function ChatHistoryList({ initialHistory }: Props) {
-  const [history, setHistory] = useState<ChatHistory[]>(initialHistory);
+export async function ChatHistoryList() {
+  const res = await getChatHistoryAction();
+  if (!res.success) {
+    handlePageError(res.error);
+  }
 
   return (
     <SidebarGroup className="bg-sidebar px-2 z-1 overflow-y-auto">
       <SidebarGroupLabel>Your Chats</SidebarGroupLabel>
-      <ChatHistoryLink links={history} />
+      <ChatHistoryLink links={res.data} />
     </SidebarGroup>
   );
 }

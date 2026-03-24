@@ -1,5 +1,5 @@
 "use client";
-import { DatabaseSearch } from "lucide-react";
+import { DatabaseSearch, FlaskConical } from "lucide-react";
 import {
   SidebarMenu,
   SidebarMenuItem,
@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
+import { Badge } from "../ui/badge";
 
 export default function Logo() {
   const isMobile = useIsMobile();
@@ -19,9 +20,20 @@ export default function Logo() {
             <DatabaseSearch className="size-4" />
           </div>
           <div className="grid flex-1 text-left text-sm leading-tight">
-            <span className="truncate font-semibold text-[18px] mx-0">
+            <div className="font-semibold text-[18px] mx-0 flex items-center gap-2">
               QueryMate
-            </span>
+              <Badge
+                title="Currently QueryMate running is Beta version"
+                variant={"outline"}
+                className="bg-violet-200 border-violet-600 text-violet-600 text-xs"
+              >
+                <FlaskConical
+                  fill="currentColor"
+                  className="text-violet-600 animate-pulse"
+                />
+                Beta
+              </Badge>
+            </div>
             <span className="truncate text-xs text-muted-foreground">
               Chat with Database
             </span>

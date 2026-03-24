@@ -3,24 +3,14 @@ import Link from "next/link";
 import {
   SidebarGroup,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from "../ui/sidebar";
-import { MoreHorizontal, PencilIcon, Trash2 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
 import { usePathname } from "next/navigation";
 import { ChatHistory } from "@/types/chat.types";
 
 export default function ChatHistoryLink({ links }: { links: ChatHistory[] }) {
   const pathname = usePathname();
-  const { isMobile } = useSidebar();
 
   return (
     <SidebarGroup className="overflow-y-auto">
@@ -32,7 +22,7 @@ export default function ChatHistoryLink({ links }: { links: ChatHistory[] }) {
                 asChild
                 tooltip={link.title}
                 isActive={pathname === `/chat/${link.id}`}
-                className="h-8.5 data-[active=true]:bg-sidebar-active text-foreground truncate"
+                className="h-8.5 data-[active=true]:bg-sidebar-active text-foreground truncate hover:bg-sidebar-active/70"
               >
                 <span>{link.title}</span>
               </SidebarMenuButton>
