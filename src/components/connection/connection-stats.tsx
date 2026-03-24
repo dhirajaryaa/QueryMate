@@ -4,7 +4,7 @@ import { CheckIcon, Hourglass, Info, Layers } from "lucide-react";
 
 export default function ConnectionStats({stats}:{stats:Stats}) {
   return (
-    <section className="flex flex-wrap items-center  gap-4">
+    <section className="flex flex-wrap sm:flex-nowrap items-center  gap-4">
       <StatusCard
         title="Active"
         icon={CheckIcon}

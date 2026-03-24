@@ -13,14 +13,7 @@ export const logger = pino({
               colorize: true,
               translateTime: "SYS:standard",
             },
-          },
-          {
-            target: "pino/file",
-            options: {
-              destination: "./logs/dev.log",
-              mkdir: true,
-            },
-          },
+          }
         ]
       : [
           {
