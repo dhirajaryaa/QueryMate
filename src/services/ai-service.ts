@@ -37,7 +37,7 @@ async function executeToolCalls(toolCalls: any) {
   console.log("🅰️", results);
 
   return results;
-}
+};
 
 //? run ai agent
 export async function* runAIAgent(

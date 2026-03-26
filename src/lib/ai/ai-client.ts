@@ -14,7 +14,7 @@ export async function classifierAgent(messages: AgentMessage[]) {
     if (!lastMessage) return;
 
     const response = await groq.chat.completions.create({
-      model: "moonshotai/kimi-k2-instruct-0905",
+      model: "openai/gpt-oss-20b",
       messages: [
         {
           role: "system",

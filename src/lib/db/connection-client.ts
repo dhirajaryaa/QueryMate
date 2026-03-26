@@ -88,7 +88,7 @@ export class MongoDBClient {
 
     await this.connecting;
   }
-//? extract field
+  //? extract field
   private extractFields(obj: any, prefix = "", set = new Set<string>()) {
     for (const key in obj) {
       const fullKey = prefix ? `${prefix}.${key}` : key;
@@ -119,7 +119,7 @@ export class MongoDBClient {
     }
   }
 
-  // get schema 
+  // get schema
   async getSchema(): Promise<Record<string, string[]>> {
     await this.connect();
 

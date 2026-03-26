@@ -9,7 +9,7 @@ import { eq } from "drizzle-orm";
 import { AppError } from "../errors";
 import { getAdapter } from "@/utils/db-adapter";
 import { logger } from "../logger";
-import { Relation, SchemaAdapter } from "@/types/connection.types";
+import { Relation } from "@/types/connection.types";
 
 export async function GetDbSchema(connId: string) {
   const [conn] = await db
@@ -24,7 +24,7 @@ export async function GetDbSchema(connId: string) {
   //! postgres
   if (conn.type === "pg") {
     const pgConn = new PostgresClient({
-      connectionString: conn.uri as string,
+      connectionString: conn.uri ,
       ssl: conn.ssl ? { rejectUnauthorized: false } : false,
     });
 
