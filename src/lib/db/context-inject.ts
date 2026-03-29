@@ -32,7 +32,7 @@ export function injectDBResultContext(history:AgentMessage[],result:string){
 
   const updateMessage = {
     ...lastMessage,
-    content: `question: ${lastMessage.content}, dbResult: ${result}`,
+    content: `question: ${lastMessage.content}, queryResult: ${result}`,
   };
 
   return [...history.slice(0, -1), updateMessage];
