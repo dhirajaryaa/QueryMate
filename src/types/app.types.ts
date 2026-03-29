@@ -14,6 +14,7 @@ export type Surface =
   | "chat"
   | "auth"
   | "api"
+  | "service"
   | "stream"
   | "database"
   | "history";

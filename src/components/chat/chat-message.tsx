@@ -37,6 +37,17 @@ function MarkdownRenderer({ message }: Props) {
             return <p className=" text-foreground text-base">{children}</p>;
           },
 
+          /* images */
+          img({ src, alt }) {
+            return (
+              <img
+                src={src}
+                alt={alt}
+                className="max-w-12 w-full h-auto rounded-md"
+              />
+            );
+          },
+
           /* LISTS */
 
           ul({ children }) {
@@ -49,7 +60,9 @@ function MarkdownRenderer({ message }: Props) {
 
           li({ className, children }) {
             return (
-              <li className={cn("ml-1 text-base list-disc", className)}>{children}</li>
+              <li className={cn("ml-1 text-base list-disc", className)}>
+                {children}
+              </li>
             );
           },
 
@@ -98,9 +111,13 @@ function MarkdownRenderer({ message }: Props) {
             );
           },
 
+         tr({ children }) {
+            return <tr className="border border-border">{children}</tr>;
+          },
+
           td({ children }) {
             return (
-              <td className="border border-border px-3 py-2">{children}</td>
+              <td className="border border-border p-2">{children}</td>
             );
           },
 

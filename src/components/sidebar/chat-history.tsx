@@ -18,7 +18,13 @@ export async function ChatHistoryList() {
   return (
     <SidebarGroup className="bg-sidebar px-2 z-1 overflow-y-auto">
       <SidebarGroupLabel>Your Chats</SidebarGroupLabel>
-      <ChatHistoryLink links={res.data} />
+      {res.data.length === 0 ? (
+        <div className="px-2 py-1 my-5 text-sm text-muted-foreground">
+          No chat history found.
+        </div>
+      ) : (
+        <ChatHistoryLink links={res.data} />
+      )}
     </SidebarGroup>
   );
 }

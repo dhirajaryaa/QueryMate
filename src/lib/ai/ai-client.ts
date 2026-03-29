@@ -1,76 +1,73 @@
 import { Groq } from "groq-sdk";
-import { AgentMessage, Tool } from "@/types/agent.types";
-import { classifierSchema } from "@/schema/agent.schems";
+import { AgentMessage } from "@/types/agent.types";
 import z from "zod";
 import { AppError } from "../errors";
+import { ANSWER_AGENT_SYSTEM_PROMPT, QUERY_AGENT_SYSTEM_PROMPT } from "./prompts";
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const model = process.env.GROQ_AI_MODEL ?? "llama-3.1-8b-instant";
 
-//? ================ Classification Agent ==================
-export async function classifierAgent(messages: AgentMessage[]) {
-  try {
-    const lastMessage = messages.at(-1);
-    if (!lastMessage) return;
 
-    const response = await groq.chat.completions.create({
-      model: "openai/gpt-oss-20b",
-      messages: [
-        {
-          role: "system",
-          content: `Your are classifier. your task is Decide if the user's message needs a database query. only db related query and normal conversation allowed. Response Format: valid json, no extra any expiation.
-           Examples:
-           what types db support -> conversation
-           what user in database -> db_related
-           `,
-        },
-        lastMessage, //user message last pushed from messages array
-      ],
-      response_format: {
-        type: "json_schema",
-        json_schema: {
-          name: "tool_use_classifier",
-          schema: z.toJSONSchema(classifierSchema),
-        },
+//! ================  Classification Agent ==================
+export async function classificationAgent(
+  messages: AgentMessage[],
+): Promise<"conversation" | "db_query" | "error"> {
+  const lastMessage = messages.at(-1);
+  if (!lastMessage) return "error";
+
+  const toolSchema = z.object({ type: z.enum(["conversation", "db_query"]) });
+
+  const response = await groq.chat.completions.create({
+    model,
+    messages: [
+      {
+        role: "system",
+        content:
+          "Your are classifier. your task to decide user query any type of database query need or not.no extra expiation. Return valid json Like { type: 'conversation'|'db_query' }",
       },
-    });
+      lastMessage,
+    ],
+    temperature: 0,
+    response_format: { type: "json_object" },
+  });
 
-    const rawResult = JSON.parse(response.choices[0].message.content || "{}");
-    const result = classifierSchema.safeParse(rawResult);
-    return result.data;
-  } catch (error) {
-    throw new AppError("internal:api", "classifier agent failed");
+  const rawResult = JSON.parse(response.choices[0].message.content || "{}");
+  const result = toolSchema.safeParse(rawResult);
+  if (!result.success) {
+    return "error";
   }
+  return result.data.type;
 }
 
-//? ================ Tool Agent ==================
-export async function toolAgent({
-  messages,
-  tools,
-}: {
-  messages: AgentMessage[];
-  tools: Tool[];
-}) {
-  try {
-    return groq.chat.completions.create({
-      model,
-      messages,
-      tools,
-      tool_choice: "auto",
-    });
-  } catch (error) {
-    throw new AppError("internal:api", "Tool agent execution failed");
-  }
+//! ================  Query Agent ==================
+export async function QueryAgent(messages: AgentMessage[]) {
+  const response = await groq.chat.completions.create({
+    model,
+    messages: [
+      { role: "system", content: QUERY_AGENT_SYSTEM_PROMPT },
+      ...messages,
+    ],
+    max_completion_tokens: 1000,
+    temperature: 0,
+    response_format: { type: "json_object" },
+  });
+
+  return response;
 }
 
-//? ================ Answer Agent ==================
+//! ================ Answer Agent ==================
 export async function answerAgent(messages: AgentMessage[]) {
   try {
     return groq.chat.completions.create({
       model,
-      messages,
-      tool_choice: "none",
+      messages: [
+      { role: "system", content: ANSWER_AGENT_SYSTEM_PROMPT },
+      ...messages,
+    ],
       stream: true,
+      temperature: 0.3,
+      max_completion_tokens: 1000,
+      response_format: {type: 'text'}
     });
   } catch (error) {
     throw new AppError("internal:stream", "LLM streaming failed");

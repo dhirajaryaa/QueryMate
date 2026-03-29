@@ -10,7 +10,7 @@ export async function runDBQuery({
 }: {
   query: string;
   connId: string;
-}):Promise<string> {
+}): Promise<string> {
   const [conn] = await db
     .select()
     .from(connection)
@@ -34,14 +34,19 @@ export async function runDBQuery({
 
       const res = await pgConn.pool.query(query);
 
-      console.log("DB query Result 🍞:", JSON.stringify(res, null, 2));
+      // console.log("DB query Result 🍞:", JSON.stringify(res, null, 2));
 
-      return res;
+      return JSON.stringify({
+        rows: res.rows,
+        rowCount: res.rowCount,
+      });
     } catch (error) {
       logger.error(error);
-      return error;
+      return JSON.stringify({
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
     }
-  };
+  }
 
-  return "Database not support this time."
+  return "Database not support this time.";
 }

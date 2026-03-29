@@ -41,8 +41,10 @@ export async function POST(
       return new AppError("not_found:chat").toResponse();
     }
 
-    const newTitle = prompt.slice(0, 30);
-    await db.update(chat).set({ title: newTitle }).where(eq(chat.id, chatId));
+    if (currentChat.title === "New Chat") {
+      const newTitle = prompt.slice(0, 30);
+      await db.update(chat).set({ title: newTitle }).where(eq(chat.id, chatId));
+    };
 
     // get all message form db
     const allMessages = await db
