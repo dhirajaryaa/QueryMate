@@ -37,7 +37,7 @@ function NavUser({ user }: { user: Session }) {
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.image ?? ""} alt={user.name} />
-                <AvatarFallback className="rounded-lg">
+                <AvatarFallback className="rounded-lg uppercase font-semibold">
                   {user.name.slice(0, 2)}
                 </AvatarFallback>
               </Avatar>
