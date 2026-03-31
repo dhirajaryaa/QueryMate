@@ -50,7 +50,6 @@ export default function ReportBugFeaturePage() {
   const handleFormSubmit = async (payload: ReportFormValues) => {
     setIsLoading(true);
     try {
-      console.log(payload);
       const res = await sendReportAction({
         ...payload,
         submittedOn: new Date().toLocaleString(),
