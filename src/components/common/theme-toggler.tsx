@@ -38,11 +38,11 @@ export function ThemeToggler({
       onClick={handleToggleTheme}
       variant={variant}
     >
-      {isDark ? <Moon /> : <Sun />}
+      {!isDark ? <Moon /> : <Sun />}
     </Button>
   ) : (
     <DropdownMenuItem onClick={handleToggleTheme} >
-      {isDark ? (
+      {!isDark ? (
         <>
           <Moon /> Dark Mode
         </>
