@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
 import { handleClientError } from "@/utils/handle-errors";
 import { AppErrorPayload } from "@/types/app.types";
+import { ErrorMessage } from "../chat/chat-message";
 
 export default function MessagePage({
   initialMessages,
@@ -18,6 +19,7 @@ export default function MessagePage({
   const { chatId } = useParams();
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [messages, setMessages] = useState<SafeMessage[]>(initialMessages);
 
   // last message llm call
@@ -126,21 +128,25 @@ export default function MessagePage({
           }
           if (type === "error") {
             setStatus(null);
-            toast.error(data);
+            setError(data);
           }
           if (type === "done") {
             setStatus(null);
+            setError(null);
             await reader.cancel();
             return;
           }
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       if (!navigator.onLine) {
         toast.error("You appear to be offline.");
         return;
       }
       setStatus(null);
+      setError(
+        error?.message || "An error occurred while sending the message.",
+      );
       handleClientError(error);
     }
   }
@@ -155,6 +161,8 @@ export default function MessagePage({
         <div className="flex flex-col gap-4 flex-1 w-full max-w-3xl mx-auto px-6 py-4">
           {/* message list  */}
           <MessageList messages={messages} status={status} />
+          {/* error  */}
+          {error && <ErrorMessage message={error} />}
         </div>
       </section>
       {/* input box  */}

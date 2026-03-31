@@ -3,6 +3,16 @@ import { cn } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemMedia,
+  ItemTitle,
+} from "../ui/item";
+import { ShieldAlertIcon } from "lucide-react";
+import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
 
 type Props = {
   message: string;
@@ -111,14 +121,12 @@ function MarkdownRenderer({ message }: Props) {
             );
           },
 
-         tr({ children }) {
+          tr({ children }) {
             return <tr className="border border-border">{children}</tr>;
           },
 
           td({ children }) {
-            return (
-              <td className="border border-border p-2">{children}</td>
-            );
+            return <td className="border border-border p-2">{children}</td>;
           },
 
           /* CODE BLOCK WRAPPER */
@@ -180,5 +188,27 @@ export function AssistantChatMessage({ message }: Props) {
     <div className="w-full p-2 prose dark:prose-invert max-w-none">
       <MarkdownRenderer message={message} />
     </div>
+  );
+}
+
+export function ErrorMessage({ message }: Props) {
+  const router = useRouter();
+  const handleRefresh = () => {
+    router.refresh();
+  };
+  return (
+    <Item variant="outline" className="border-destructive bg-destructive/10">
+      <ItemMedia variant="icon">
+        <ShieldAlertIcon />
+      </ItemMedia>
+      <ItemContent>
+        <ItemTitle>{message}</ItemTitle>
+      </ItemContent>
+      <ItemActions>
+        <Button size="sm" variant="outline" onClick={handleRefresh}>
+          Refresh
+        </Button>
+      </ItemActions>
+    </Item>
   );
 }
