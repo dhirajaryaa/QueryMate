@@ -31,7 +31,7 @@ export default function Logo() {
                   fill="currentColor"
                   className="text-violet-600 animate-pulse"
                 />
-                Beta
+                Preview
               </Badge>
             </div>
             <span className="truncate text-xs text-muted-foreground">
@@ -39,9 +39,7 @@ export default function Logo() {
             </span>
           </div>
           {isMobile && (
-            <Button variant={"secondary"} size={"icon"} asChild>
               <SidebarTrigger />
-            </Button>
           )}
         </div>
       </SidebarMenuItem>

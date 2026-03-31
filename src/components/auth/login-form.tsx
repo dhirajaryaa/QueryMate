@@ -20,6 +20,7 @@ import PasswordField from "./password-field";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { redirect } from "next/navigation";
+import GoogleLoginBtn from "./google-login";
 
 type LoginInput = z.infer<typeof LoginSchema>;
 
@@ -99,6 +100,8 @@ export function LoginForm() {
                         Don&apos;t have an account? <Link href="/signup">Sign up</Link>
                     </FieldDescription>
                 </Field>
+                  {/* google  */}
+                          <GoogleLoginBtn />
             </FieldGroup>
         </form>
 

@@ -2,8 +2,9 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { DatabaseSearch } from "lucide-react";
 import { ThemeToggler } from "@/components/common/theme-toggler";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
-export default function HomePage() {
+export default function DemoPage() {
   return (
     <main className="min-h-screen bg-linear-to-b from-white to-primary/20 dark:from-black">
 
@@ -14,44 +15,24 @@ export default function HomePage() {
         <div className="flex items-center gap-2 sm:gap-4">
           <ThemeToggler variant="ghost"/>
           <Link href="/login">
-            <Button>Login</Button>
+            <Button size={"sm"}>Login</Button>
           </Link>
         </div>
       </header>
 
 
       {/* Hero */}
-      <section className="flex flex-col items-center justify-center text-center px-4 mt-20">
+      <section className="flex flex-col items-center justify-center text-center px-4 mt-8">
 
-        <h1 className="text-5xl md:text-6xl font-extrabold text-primary mb-6">
-          Query Database with
-          <span className="block text-foreground">Natural Language</span>
-        </h1>
-
-        <p className="text-lg text-muted-foreground max-w-xl mb-8">
-          Connect your database and get insights instantly.
-          No SQL knowledge required.
-        </p>
-
-        <div className="flex gap-4 flex-col sm:flex-row">
-          <Link href="/new">
-            <Button className="px-8 py-6 text-lg">
-              Start Chatting
-            </Button>
-          </Link>
-
-          <Link href="/demo">
-            <Button variant="outline" className="px-8 py-6 text-lg">
-              Live Demo
-            </Button>
-          </Link>
-        </div>
+      <AspectRatio ratio={16 / 9} className="rounded-lg bg-muted border shadow-lg w-full max-w-4xl mx-auto">
+      <iframe className="w-full h-full rounded-lg" src="https://www.youtube.com/embed/z9KL74Jio_s?si=OWAVubxut6XvJaQl" title="YouTube video player"  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+      </AspectRatio>
 
       </section>
 
 
       {/* Footer */}
-      <footer className="text-center text-sm text-muted-foreground mt-32 pb-6">
+      <footer className="text-center text-sm text-muted-foreground mt-8 pb-6">
         © 2026
         <a href={process.env.NEXT_PUBLIC_APP_URL} target="_blank" rel="noopener noreferrer" className="underline ml-1">
           QueryMate
