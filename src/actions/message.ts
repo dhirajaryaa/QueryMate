@@ -3,7 +3,9 @@
 import { db } from "@/db";
 import { chat, message } from "@/db/schema";
 import { auth } from "@/lib/auth";
+import { AppError } from "@/lib/errors";
 import { GetAllMessages } from "@/types/message.types";
+import { handleServerActionError } from "@/utils/handle-errors";
 import { and, asc, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 
@@ -15,12 +17,12 @@ export async function getAllMessagesAction({
   try {
     // input check
     if (!chatId) {
-      return { success: false, error: "Bad Request" };
+      throw new AppError("bad_request:chat");
     }
     // session get
     const session = await auth.api.getSession({ headers: await headers() });
     if (!session) {
-      return { success: false, error: "UnAuthorized Request!" };
+      throw new AppError("unauthorized:auth");
     }
 
     // check user chat
@@ -28,8 +30,9 @@ export async function getAllMessagesAction({
       .select()
       .from(chat)
       .where(and(eq(chat.id, chatId), eq(chat.userId, session.user.id)));
+
     if (!chatExists) {
-      return { success: false, error: "Bad Request" };
+      throw new AppError("not_found:chat");
     }
 
     const allMessages = await db
@@ -38,15 +41,12 @@ export async function getAllMessagesAction({
       .where(eq(message.chatId, chatId))
       .orderBy(asc(message.createdAt));
 
-    if (allMessages.length === 0) {
-      return { success: false, error: "Chat not found!" };
+    if (allMessages.length <= 0) {
+      throw new AppError("not_found:chat");
     }
 
     return { success: true, data: allMessages };
   } catch (error) {
-    return {
-      success: false,
-      error: "Something went wrong!",
-    };
+    return handleServerActionError(error);
   }
 }

@@ -3,6 +3,16 @@ import { cn } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemMedia,
+  ItemTitle,
+} from "../ui/item";
+import { ShieldAlertIcon } from "lucide-react";
+import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
 
 type Props = {
   message: string;
@@ -18,7 +28,9 @@ function MarkdownRenderer({ message }: Props) {
           /* HEADINGS */
 
           h1({ children }) {
-            return <h1 className="text-2xl font-semibold mt-6 mb-3 ">{children}</h1>;
+            return (
+              <h1 className="text-2xl font-semibold mt-6 mb-3 ">{children}</h1>
+            );
           },
 
           h2({ children }) {
@@ -35,6 +47,17 @@ function MarkdownRenderer({ message }: Props) {
             return <p className=" text-foreground text-base">{children}</p>;
           },
 
+          /* images */
+          img({ src, alt }) {
+            return (
+              <img
+                src={src}
+                alt={alt}
+                className="max-w-12 w-full h-auto rounded-md"
+              />
+            );
+          },
+
           /* LISTS */
 
           ul({ children }) {
@@ -45,8 +68,12 @@ function MarkdownRenderer({ message }: Props) {
             return <ol className="list-decimal ml-6  space-y-1">{children}</ol>;
           },
 
-          li({ className,children }) {
-            return <li className={cn("ml-1 list-disc",className)}>{children}</li>;
+          li({ className, children }) {
+            return (
+              <li className={cn("ml-1 text-base list-disc", className)}>
+                {children}
+              </li>
+            );
           },
 
           /* BLOCKQUOTE */
@@ -94,10 +121,12 @@ function MarkdownRenderer({ message }: Props) {
             );
           },
 
+          tr({ children }) {
+            return <tr className="border border-border">{children}</tr>;
+          },
+
           td({ children }) {
-            return (
-              <td className="border border-border px-3 py-2">{children}</td>
-            );
+            return <td className="border border-border p-2">{children}</td>;
           },
 
           /* CODE BLOCK WRAPPER */
@@ -159,5 +188,27 @@ export function AssistantChatMessage({ message }: Props) {
     <div className="w-full p-2 prose dark:prose-invert max-w-none">
       <MarkdownRenderer message={message} />
     </div>
+  );
+}
+
+export function ErrorMessage({ message }: Props) {
+  const router = useRouter();
+  const handleRefresh = () => {
+    router.refresh();
+  };
+  return (
+    <Item variant="outline" className="border-destructive bg-destructive/10">
+      <ItemMedia variant="icon">
+        <ShieldAlertIcon />
+      </ItemMedia>
+      <ItemContent>
+        <ItemTitle>{message}</ItemTitle>
+      </ItemContent>
+      <ItemActions>
+        <Button size="sm" variant="outline" onClick={handleRefresh}>
+          Refresh
+        </Button>
+      </ItemActions>
+    </Item>
   );
 }

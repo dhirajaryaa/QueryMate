@@ -1,23 +1,39 @@
-import { Suspense } from "react";
+"use client";
 import { SidebarTrigger } from "../ui/sidebar";
-import { ThemeToggler } from "./theme-toggler";
-import UserProfile from "../profile/user-profile";
-import { Skeleton } from "../ui/skeleton";
+import { Button } from "../ui/button";
+import { ArrowLeft,Share2 } from "lucide-react";
+import { Separator } from "../ui/separator";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function AppHeader() {
-    return (
-        <header className="flex items-center justify-between w-full px-4 py-2 shadow border-b sticky top-0 z-50 bg-background">
-            {/* sidebar trigger */}
-            <SidebarTrigger className="" />
-            {/* theme  */}
-            <div className="gap-x-2 flex items-center">
-                <ThemeToggler variant="ghost" />
-                <div className="size-10 rounded-full overflow-hidden flex items-center justify-center">
-                    <Suspense fallback={<Skeleton />}>
-                        <UserProfile />
-                    </Suspense>
-                </div>
-            </div>
-        </header>
-    );
+  const router = useRouter();
+  return (
+    <header className="flex items-center justify-between py-2 px-4 shadow-xs sticky top-0 bg-background/30 backdrop-blur-sm z-50">
+      <div className="flex items-center gap-2">
+        <SidebarTrigger variant={"secondary"} size={"icon-sm"} />
+        <Separator
+          orientation="vertical"
+          className="data-[orientation=vertical]:h-6"
+        />
+        <Button
+          size={"sm"}
+          onClick={() => router.back()}
+          title="Go back"
+          variant={"outline"}
+        >
+          <ArrowLeft /> Back
+        </Button>
+      </div>
+      <Button
+        size={"sm"}
+        variant={"secondary"}
+        title="Share"
+        onClick={() => toast.info("upcoming feature.")}
+      >
+        <Share2 />
+        <span className="hidden sm:inline-block">Share</span>
+      </Button>
+    </header>
+  );
 }

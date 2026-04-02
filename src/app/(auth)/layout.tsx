@@ -14,7 +14,7 @@ export default async function AuthLayout({
     });
     //? session exists, redirect to dashboard
     if (session) { 
-        redirect("/app")
+        redirect("/new")
     };
 
     return (

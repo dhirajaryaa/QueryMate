@@ -33,6 +33,7 @@ export default function DbSelect() {
 
   // handle change
   const handleChange = (id: string) => {
+    if (id === "none") return;
     setDbId(id);
     localStorage.setItem("querymate_selected_db", id);
   };
@@ -42,20 +43,28 @@ export default function DbSelect() {
       <SelectTrigger
         size="sm"
         className="rounded-xl text-muted-foreground ml-1"
+        aria-invalid={!dbId}
       >
-        {loading && <Loader2 className="animate-spin text-primary" />}
-        <SelectValue placeholder="Select Database" />
+        {loading ? (
+          <Loader2 className="animate-spin text-primary" />
+        ) : (
+          <SelectValue placeholder="Select Database" />
+        )}
       </SelectTrigger>
       <SelectContent>
-        {connections?.map((conn) => {
-          const Icon = databaseIcons[conn.type];
-          return (
-            <SelectItem key={conn.id} value={conn.id} className="capitalize">
-              {Icon && <Icon className="size-4" />}
-              {conn.name}
-            </SelectItem>
-          );
-        })}
+        {connections.length !== 0 ? (
+          connections?.map((conn) => {
+            const Icon = databaseIcons[conn.type];
+            return (
+              <SelectItem key={conn.id} value={conn.id} className="capitalize">
+                {Icon && <Icon className="size-4" />}
+                {conn.name}
+              </SelectItem>
+            );
+          })
+        ) : (
+          <SelectItem value="none">No DB Connections.</SelectItem>
+        )}
       </SelectContent>
     </Select>
   );

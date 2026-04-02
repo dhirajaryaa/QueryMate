@@ -68,4 +68,4 @@ export async function testDatabaseConnection(
       error: err.message,
     };
   }
-}
+};

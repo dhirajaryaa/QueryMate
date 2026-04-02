@@ -11,13 +11,10 @@ export default function HomePage() {
       <header className="w-full max-w-6xl mx-auto flex justify-between items-center py-6 px-4">
         <h2 className="text-xl font-bold text-primary flex items-center justify-center gap-1.5"> <DatabaseSearch />QueryMate</h2>
 
-        <div className="flex items-center gap-4">
-          <ThemeToggler />
+        <div className="flex items-center gap-2 sm:gap-4">
+          <ThemeToggler variant="ghost"/>
           <Link href="/login">
             <Button>Login</Button>
-          </Link>
-          <Link href="/signup">
-            <Button variant={"secondary"}>Signup</Button>
           </Link>
         </div>
       </header>
@@ -36,7 +33,7 @@ export default function HomePage() {
           No SQL knowledge required.
         </p>
 
-        <div className="flex gap-4">
+        <div className="flex gap-4 flex-col sm:flex-row">
           <Link href="/new">
             <Button className="px-8 py-6 text-lg">
               Start Chatting

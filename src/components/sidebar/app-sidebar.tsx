@@ -3,55 +3,47 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Github, LogOut } from "lucide-react";
 import Logo from "../common/logo";
-import { Suspense } from "react";
 import SidebarNav from "./sidebar-nav";
 import { ChatHistoryList, HistoryLoading } from "./chat-history";
-import { Button } from "../ui/button";
-import { getChatHistoryAction } from "@/actions/chat";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import NavUser from "./nav-user";
+import { redirect } from "next/navigation";
+import { Suspense } from "react";
+import ReportBugOrFeature from "./report-bug-feature";
 
 export async function AppSidebar() {
-  const initialHistory = await getChatHistoryAction();
-  if (!initialHistory.success) {
-    console.error(initialHistory.error);
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session) {
+    redirect("/login");
   }
 
   return (
-    <Sidebar>
-      <SidebarHeader>
-        {/* logo  */}
-        <Logo />
-      </SidebarHeader>
-      <SidebarContent>
-        <div className="bg-sidebar mx-auto w-[90%]">
-          {/* links  */}
+    <>
+      <Sidebar defaultValue={"open"}>
+        {/* Logo */}
+        <SidebarHeader>
+          <Logo />
+        </SidebarHeader>
+        <SidebarContent className="relative overflow-hidden">
+          {/* main nav  */}
           <SidebarNav />
-          {/* history  */}
+          {/* chat history  */}
           <Suspense fallback={<HistoryLoading />}>
-            <ChatHistoryList initialHistory={initialHistory?.data ?? []} />
+            <ChatHistoryList />
           </Suspense>
-        </div>
-      </SidebarContent>
-      <SidebarFooter>
-        {/* give me start  */}
-        <SidebarMenu>
-          <SidebarMenuItem className="w-[90%] mx-auto">
-            <Button className="w-full h-8" asChild>
-              <a
-                href="https://github.com/dhirajaryaa/querymate"
-                target="_blank"
-              >
-                <Github />
-                Star on Github
-              </a>
-            </Button>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
-    </Sidebar>
+        </SidebarContent>
+        <SidebarFooter>
+          {/* report bug */}
+          <ReportBugOrFeature />
+          {/* <user dropdown /> */}
+          <NavUser user={session.user} />
+        </SidebarFooter>
+      </Sidebar>
+    </>
   );
 }

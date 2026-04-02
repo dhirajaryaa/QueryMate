@@ -8,6 +8,20 @@
       "when": 1772695107407,
       "tag": "0000_rainy_proteus",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1773884173841,
+      "tag": "0001_lush_lethal_legion",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1774187060665,
+      "tag": "0002_yummy_jamie_braddock",
+      "breakpoints": true
     }
   ]
 }

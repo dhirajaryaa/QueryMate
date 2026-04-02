@@ -4,28 +4,30 @@ import ChatInput from "@/components/chat/chat-input";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
+import { handleClientError } from "@/utils/handle-errors";
 
 export default function NewChat() {
   const router = useRouter();
   const sendMessage = async (message: string) => {
     // post api call for new conversion id [chat id ] create
+    const dbId = localStorage.getItem("querymate_selected_db");
+    if (!dbId) {
+      toast.error("Please Select Database First!");
+      return;
+    }
+    if (!prompt) return;
     try {
-      const dbId = localStorage.getItem("querymate_selected_db");
-      if (!dbId) {
-        toast.error("Please Select Database First!");
-        return;
-      }
       const res = await createNewChatAction({ prompt: message, dbId });
 
       if (!res.success) {
-        toast.error(res?.error);
+        toast.error(res?.error.message);
         return;
-      }
+      };
 
       router.push(`/chat/${res?.data?.chatId}`);
-    } catch (error: any) {
-      toast.error("Network error");
-    }
+    } catch (error) {
+      return handleClientError(error);
+    };
   };
 
   const examplesPrompt = [
@@ -40,10 +42,10 @@ export default function NewChat() {
       <section className="flex flex-wrap items-center justify-center gap-3">
         {examplesPrompt.map((q) => (
           <Button
-          key={q}
-            variant={"secondary"}
+            key={q}
+            size={'sm'}
+            variant={"outline"}
             onClick={() => sendMessage(q)}
-            className="cursor-pointer text-sm"
           >
             {q}
           </Button>
