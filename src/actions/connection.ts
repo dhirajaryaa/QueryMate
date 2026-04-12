@@ -5,6 +5,7 @@
 import { db } from "@/db";
 import { connection, connectionSchema } from "@/db/schema";
 import { auth } from "@/lib/auth";
+import { decrypt, encrypt } from "@/lib/crypto";
 import { GetDbSchema } from "@/lib/db/schema";
 import { testDatabaseConnection } from "@/lib/db/test.connection";
 import { AppError } from "@/lib/errors";
@@ -45,12 +46,18 @@ export async function createNewConnectionAction(
     const session = await auth.api.getSession({ headers: await headers() });
     if (!session) {
       throw new AppError("unauthorized:auth");
-    }
+    };
+    //? encrypt connection uri for security
+    const secretUri = encrypt(payload.uri, session.user.id);
+
     // save in db
     const [data] = await db
       .insert(connection)
       .values({
-        ...payload,
+        name: payload.name,
+        ssl: payload.ssl,
+        type: payload.type,
+        uri: secretUri,
         userId: session.user.id,
       })
       .returning({ id: connection.id });
@@ -159,9 +166,11 @@ export async function getConnectionAction(
 
     if (!conn) {
       throw new AppError("not_found:database", "Connection not found!");
-    }
+    };
 
-    return { success: true, data: conn };
+    const decrypted = decrypt(conn.uri, conn.userId); 
+
+    return { success: true, data: {...conn,uri:decrypted} };
   } catch (error) {
     return handleServerActionError(error);
   }
@@ -184,11 +193,16 @@ export async function editConnectionAction(
     if (!session) {
       throw new AppError("unauthorized:auth");
     }
+    //? encrypt connection uri for security
+    const secretUri = encrypt(payload.uri, session.user.id);
     // save in db
     const [data] = await db
       .update(connection)
       .set({
-        ...payload,
+        name: payload.name,
+        ssl: payload.ssl,
+        type: payload.type,
+        uri: secretUri,
       })
       .where(eq(connection.id, connId))
       .returning();
@@ -220,7 +234,7 @@ export async function connectionSchemaRefreshAction(
       throw new AppError("not_found:api", "Connection not found!");
     }
 
-    const rowSchema = await GetDbSchema(connId);    
+    const rowSchema = await GetDbSchema(connId);
 
     if (!rowSchema) {
       throw new AppError("bad_request:database", "failed to fetch schema");

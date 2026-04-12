@@ -1,5 +1,5 @@
 "use client";
-import { Edit, Eye } from "lucide-react";
+import { Edit } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   Field,
