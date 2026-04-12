@@ -3,6 +3,7 @@ import { connection } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { PostgresClient } from "./connection-client";
 import { logger } from "../logger";
+import { decrypt } from "../crypto";
 
 export async function runDBQuery({
   query,
@@ -19,13 +20,15 @@ export async function runDBQuery({
 
   if (!conn) {
     return "Connection Not found!";
-  }
+  };
+   //? decode secret
+     const decryptedUri = decrypt(conn.uri, conn.userId); 
 
   //?   postgres
   if (conn.type === "pg") {
     try {
       const pgConn = new PostgresClient({
-        connectionString: conn.uri,
+        connectionString: decryptedUri,
         ssl: conn.ssl ? { rejectUnauthorized: false } : false,
       });
       if (!pgConn) {

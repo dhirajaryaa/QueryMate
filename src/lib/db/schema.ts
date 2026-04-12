@@ -10,6 +10,7 @@ import { AppError } from "../errors";
 import { getAdapter } from "@/utils/db-adapter";
 import { logger } from "../logger";
 import { Relation } from "@/types/connection.types";
+import { decrypt } from "../crypto";
 
 export async function GetDbSchema(connId: string) {
   const [conn] = await db
@@ -19,12 +20,14 @@ export async function GetDbSchema(connId: string) {
     .limit(1);
   if (!conn) {
     throw new AppError("not_found:api", "Connection not found!");
-  }
+  };
+  //? decode secret
+   const decryptedUri = decrypt(conn.uri, conn.userId); 
 
   //! postgres
   if (conn.type === "pg") {
     const pgConn = new PostgresClient({
-      connectionString: conn.uri ,
+      connectionString: decryptedUri ,
       ssl: conn.ssl ? { rejectUnauthorized: false } : false,
     });
 
@@ -65,7 +68,7 @@ export async function GetDbSchema(connId: string) {
     //! my sql
   } else if (conn.type === "mysql") {
     const sqlConn = new MySQLClient({
-      uri: conn.uri,
+      uri: decryptedUri,
       ssl: conn.ssl ? { rejectUnauthorized: false } : undefined,
     });
 
@@ -118,7 +121,7 @@ export async function GetDbSchema(connId: string) {
     }
   } else if (conn.type === "mongodb") {
     console.log("😱 I am mongoConn working");
-    const mongoConn = new MongoDBClient(conn.uri);
+    const mongoConn = new MongoDBClient(decryptedUri);
 
     try {
       await mongoConn.connect(); // ✅ MUST
