@@ -7,20 +7,13 @@ import {
 import Logo from "../common/logo";
 import SidebarNav from "./sidebar-nav";
 import { ChatHistoryList, HistoryLoading } from "./chat-history";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
 import NavUser from "./nav-user";
-import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import ReportBugOrFeature from "./report-bug-feature";
+import { ensureAuth } from "@/modules/auth/utils/auth-utils";
 
 export async function AppSidebar() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-  if (!session) {
-    redirect("/login");
-  }
+ const user =  await ensureAuth();
 
   return (
     <>
@@ -41,7 +34,7 @@ export async function AppSidebar() {
           {/* report bug */}
           <ReportBugOrFeature />
           {/* <user dropdown /> */}
-          <NavUser user={session.user} />
+          <NavUser user={user} />
         </SidebarFooter>
       </Sidebar>
     </>

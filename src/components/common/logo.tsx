@@ -22,17 +22,6 @@ export default function Logo() {
           <div className="grid flex-1 text-left text-sm leading-tight">
             <div className="font-semibold text-[18px] mx-0 flex items-center gap-2">
               QueryMate
-              <Badge
-                title="Currently QueryMate running is Beta version"
-                variant={"outline"}
-                className="bg-violet-200 border-violet-600 text-violet-600 text-xs"
-              >
-                <FlaskConical
-                  fill="currentColor"
-                  className="text-violet-600 animate-pulse"
-                />
-                Preview
-              </Badge>
             </div>
             <span className="truncate text-xs text-muted-foreground">
               Chat with Database

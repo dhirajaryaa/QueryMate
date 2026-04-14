@@ -7,15 +7,28 @@ import {
   SidebarMenuItem,
 } from "../ui/sidebar";
 import { usePathname } from "next/navigation";
-import { ChatHistory } from "@/types/chat.types";
+import { ChatHistory } from "@/modules/chat/types/chat.types";
+import { useChatStore } from "@/stores/useChatStore";
+import { useEffect } from "react";
 
-export default function ChatHistoryLink({ links }: { links: ChatHistory[] }) {
+export default function ChatHistoryLink({
+  history,
+}: {
+  history: ChatHistory[];
+}) {
   const pathname = usePathname();
+  // set on store
+  const setChatHistory = useChatStore((state) => state.setChatHistory);
+  const chatHistory = useChatStore((state) => state.chatHistory);
+
+  useEffect(() => {
+    setChatHistory(history);
+  }, [history, setChatHistory]);
 
   return (
     <SidebarGroup className="overflow-y-auto">
       <SidebarMenu>
-        {links.map((link) => (
+        {chatHistory.map((link) => (
           <SidebarMenuItem key={link.id}>
             <Link href={`/chat/${link.id}`}>
               <SidebarMenuButton

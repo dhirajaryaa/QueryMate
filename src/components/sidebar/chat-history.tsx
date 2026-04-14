@@ -5,7 +5,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuSkeleton,
-} from "../ui/sidebar";
+} from "@/components/ui/sidebar";
 import ChatHistoryLink from "./chat-history-links";
 import { getChatHistoryAction } from "@/actions/chat";
 
@@ -13,7 +13,7 @@ export async function ChatHistoryList() {
   const res = await getChatHistoryAction();
   if (!res.success) {
     handlePageError(res.error);
-  }
+  };
 
   return (
     <SidebarGroup className="bg-sidebar px-2 z-1 overflow-y-auto">
@@ -23,7 +23,7 @@ export async function ChatHistoryList() {
           No chat history found.
         </div>
       ) : (
-        <ChatHistoryLink links={res.data} />
+        <ChatHistoryLink history={res.data} />
       )}
     </SidebarGroup>
   );
