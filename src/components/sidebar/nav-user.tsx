@@ -21,7 +21,7 @@ import Link from "next/link";
 import { ThemeToggler } from "../common/theme-toggler";
 import { auth } from "@/lib/auth";
 import { BuyMeCoffeeLink, GithubLink } from "@/lib/constent";
-import LogoutBtn from "../auth/logout";
+import LogoutBtn from "@/modules/auth/components/logout";
 
 type Session = typeof auth.$Infer.Session.user;
 

@@ -1,6 +1,6 @@
-'use client';
+"use client";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { authClient } from "@/lib/auth-client";
-import { DropdownMenuItem } from "../ui/dropdown-menu";
 import { Loader2, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -24,9 +24,8 @@ export default function LogoutBtn() {
 
   return (
     <DropdownMenuItem variant="destructive" onClick={handleLogout}>
-    {loading ? <Loader2 className="animate-spin" />:<LogOut />}  
+      {loading ? <Loader2 className="animate-spin" /> : <LogOut />}
       Log out
     </DropdownMenuItem>
   );
 }
-
