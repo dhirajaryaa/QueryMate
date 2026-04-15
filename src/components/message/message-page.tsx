@@ -1,6 +1,6 @@
 "use client";
 
-import ChatInput from "../chat/chat-input";
+// import ChatInput from "../chat/chat-input";
 import { useEffect, useRef, useState } from "react";
 import { SafeMessage } from "@/types/message.types";
 import MessageList from "./message-list";
@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
 import { handleClientError } from "@/utils/handle-errors";
 import { AppErrorPayload } from "@/types/app.types";
-import { ErrorMessage } from "../chat/chat-message";
+// import { ErrorMessage } from "../chat/chat-message";
 
 export default function MessagePage({
   initialMessages,
@@ -162,12 +162,12 @@ export default function MessagePage({
           {/* message list  */}
           <MessageList messages={messages} status={status} />
           {/* error  */}
-          {error && <ErrorMessage message={error} />}
+          {/* {error && <ErrorMessage message={error} />} */}
         </div>
       </section>
       {/* input box  */}
       <section className="w-full sticky bottom-0 bg-background z-1 max-w-3xl mx-auto px-4 pb-4">
-        <ChatInput sendMessage={sendMessage} />
+        {/* <ChatInput sendMessage={sendMessage} /> */}
       </section>
     </>
   );

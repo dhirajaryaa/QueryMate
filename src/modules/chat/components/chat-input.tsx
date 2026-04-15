@@ -7,7 +7,9 @@ import DbSelect from "@/modules/chat/components/db-select";
 
 function ChatInputBox({
   sendMessage,
+  isLoading,
 }: {
+  isLoading?: boolean;
   sendMessage: (message: string) => void;
 }) {
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
@@ -63,12 +65,12 @@ function ChatInputBox({
             onKeyDown={handleKeyDown}
             placeholder="Type your message here..."
             rows={1}
-            className="w-full resize-none overflow-hidden rounded-lg border-0  outline-none max-h-40 bg-transparent dark:bg-transparent p-2 overflow-y-auto scrollbar-thin"
+            className="w-full resize-none overflow-hidden rounded-lg border-0  outline-none max-h-40 bg-transparent dark:bg-transparent p-2 overflow-y-auto scrollbar-thin text-sm sm:text-base"
           />
           <div className="w-full flex flex-1 items-center justify-between">
             <DbSelect />
-            <Button size={"sm"} type="submit" className="rounded-lg">
-              Send
+            <Button size={"sm"} type="submit" className="rounded-lg" disabled={isLoading} >
+              {isLoading ? "Sending..." : "Send"}
             </Button>
           </div>
         </div>

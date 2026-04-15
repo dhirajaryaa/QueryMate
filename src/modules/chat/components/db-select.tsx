@@ -46,7 +46,7 @@ export default function DbSelect() {
   // ✅ empty state
   if (!isLoading && connections.length === 0) {
     return (
-      <Button asChild variant="secondary" className="border" size="sm">
+      <Button asChild variant="secondary" className="border" size="sm" title="Add New Connection" >
         <Link href="/connections">
           <ArrowUpRight className="mr-1" />
           Create Connection
@@ -57,12 +57,11 @@ export default function DbSelect() {
 
   return (
     <Select value={dbId} onValueChange={handleChange}>
-      <SelectTrigger size="sm" className="rounded-lg text-muted-foreground">
+      <SelectTrigger size="sm" className="rounded-lg text-muted-foreground text-sm">
         <SelectValue
           placeholder={isLoading ? "Loading databases..." : "Select Database"}
         />
       </SelectTrigger>
-
       <SelectContent>
         {isLoading ? (
           <SelectItem value="loading" disabled>
@@ -72,8 +71,8 @@ export default function DbSelect() {
           connections.map((conn) => {
             const Icon = databaseIcons[conn.type];
             return (
-              <SelectItem key={conn.id} value={conn.id}>
-                {Icon && <Icon className="size-4 mr-2" />}
+              <SelectItem key={conn.id} value={conn.id} >
+                {Icon && <Icon className="size-4" />}
                 {conn.name}
               </SelectItem>
             );
