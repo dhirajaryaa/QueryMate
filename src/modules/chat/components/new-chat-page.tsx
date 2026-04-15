@@ -6,9 +6,11 @@ import { useRouter } from "next/navigation";
 import { handleClientError } from "@/utils/handle-errors";
 import { createNewChat } from "@/modules/chat/actions/create-chat";
 import { useState } from "react";
+import { useChatStore } from "@/stores/useChatStore";
 
 function NewChatPage() {
   const router = useRouter();
+  const appendChatHistory = useChatStore((state) => state.appendHistory);
   const [isLoading, setIsLoading] = useState(false);
 
   const sendMessage = async (message: string) => {
@@ -23,6 +25,7 @@ function NewChatPage() {
       setIsLoading(true);
       const res = await createNewChat({ prompt: message, dbId });
       if (res.success) {
+        appendChatHistory({ id: res.data.chatId, title: message }); // Append new chat to history
         router.push(`/chat/${res.data.chatId}`);
       } else {
         toast.error(res.error?.message || "Failed to create chat.");

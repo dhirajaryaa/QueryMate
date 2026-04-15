@@ -7,10 +7,10 @@ import {
   SidebarMenuSkeleton,
 } from "@/components/ui/sidebar";
 import ChatHistoryLink from "./chat-history-links";
-import { getChatHistoryAction } from "@/actions/chat";
+import { getChatHistory } from "@/modules/chat/actions/chat-history";
 
 export async function ChatHistoryList() {
-  const res = await getChatHistoryAction();
+  const res = await getChatHistory();
   if (!res.success) {
     handlePageError(res.error);
   };

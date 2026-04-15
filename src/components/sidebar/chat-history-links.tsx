@@ -17,31 +17,36 @@ export default function ChatHistoryLink({
   history: ChatHistory[];
 }) {
   const pathname = usePathname();
-  // set on store
-  const setChatHistory = useChatStore((state) => state.setChatHistory);
+  //! set on store
   const chatHistory = useChatStore((state) => state.chatHistory);
+  const setChatHistory = useChatStore((state) => state.setChatHistory);
 
-  useEffect(() => {
+  if (chatHistory.length === 0 && history?.length) {
     setChatHistory(history);
-  }, [history, setChatHistory]);
+  }
+
+  const data = chatHistory.length ? chatHistory : history;
 
   return (
     <SidebarGroup className="overflow-y-auto">
       <SidebarMenu>
-        {chatHistory.map((link) => (
-          <SidebarMenuItem key={link.id}>
-            <Link href={`/chat/${link.id}`}>
-              <SidebarMenuButton
-                asChild
-                tooltip={link.title}
-                isActive={pathname === `/chat/${link.id}`}
-                className="h-8.5 data-[active=true]:bg-sidebar-active text-foreground truncate hover:bg-sidebar-active/70"
-              >
-                <span>{link.title}</span>
-              </SidebarMenuButton>
-            </Link>
-          </SidebarMenuItem>
-        ))}
+        {data
+          .slice()
+          .reverse()
+          .map((link) => (
+            <SidebarMenuItem key={link.id}>
+              <Link href={`/chat/${link.id}`}>
+                <SidebarMenuButton
+                  asChild
+                  tooltip={link.title}
+                  isActive={pathname === `/chat/${link.id}`}
+                  className="h-8.5 data-[active=true]:bg-sidebar-active text-foreground truncate hover:bg-sidebar-active/70"
+                >
+                  <span>{link.title}</span>
+                </SidebarMenuButton>
+              </Link>
+            </SidebarMenuItem>
+          ))}
       </SidebarMenu>
     </SidebarGroup>
   );

@@ -4,7 +4,7 @@ import { create } from "zustand";
 type ChatStates = {
     chatHistory: ChatHistory[];
     setChatHistory: (chats: ChatHistory[]) => void;
-    addHistory: (chat: ChatHistory) => void;
+    appendHistory: (chat: ChatHistory) => void;
     removeHistory: (id: string) => void;
     clearHistory: () => void;
 };
@@ -14,7 +14,7 @@ export const useChatStore = create<ChatStates>((set) => ({
     // set chats 
     setChatHistory: (chats: ChatHistory[]) => set((state) => ({ chatHistory: chats })),
     // add one chat 
-    addHistory: (newChat) =>
+    appendHistory: (newChat) =>
         set((state) => ({
             chatHistory: [...state.chatHistory, newChat],
         })),
