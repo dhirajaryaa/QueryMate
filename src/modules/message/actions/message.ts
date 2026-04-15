@@ -2,34 +2,32 @@
 
 import { db } from "@/db";
 import { chat, message } from "@/db/schema";
-import { auth } from "@/lib/auth";
-import { AppError } from "@/lib/errors";
-import { GetAllMessages } from "@/types/message.types";
-import { handleServerActionError } from "@/utils/handle-errors";
 import { and, asc, eq } from "drizzle-orm";
 import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
+import { AppError } from "@/lib/errors";
+import { GetAllMessages } from "@/modules/message/types/message.types";
+import { handleServerActionError } from "@/utils/handle-errors";
+import { requireUser } from "@/modules/auth/utils/require-user";
 
 export async function getAllMessages({
   chatId,
 }: {
   chatId: string;
 }): Promise<GetAllMessages> {
-    try {
+  try {
     // input check
     if (!chatId) {
       throw new AppError("bad_request:chat");
     }
     // session get
-    const session = await auth.api.getSession({ headers: await headers() });
-    if (!session) {
-      throw new AppError("unauthorized:auth");
-    }
+    const user = await requireUser();
 
     // check user chat
     const chatExists = await db
       .select()
       .from(chat)
-      .where(and(eq(chat.id, chatId), eq(chat.userId, session.user.id)));
+      .where(and(eq(chat.id, chatId), eq(chat.userId, user.id)));
 
     if (!chatExists) {
       throw new AppError("not_found:chat");

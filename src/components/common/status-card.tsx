@@ -18,7 +18,12 @@ function StatusCard({
   iconClassName,
 }: Props) {
   return (
-    <Card className={cn("shadow-sm sm:min-w-40 w-40 sm:max-w-full sm:w-full p-1.5", className)}>
+    <Card
+      className={cn(
+        "shadow-sm sm:min-w-40 w-40 sm:max-w-full sm:w-full p-1.5",
+        className,
+      )}
+    >
       <CardContent className="flex items-center gap-4 p-2 w-full max-w-sm">
         <Icon
           className={cn("w-9 h-9 p-2 rounded-full text-primary", iconClassName)}

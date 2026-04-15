@@ -1,0 +1,35 @@
+"use server";
+
+import { db } from "@/db";
+import { and, eq } from "drizzle-orm";
+import { connection } from "@/db/schema";
+import { AppError } from "@/lib/errors";
+import { requireUser } from "@/modules/auth/utils/require-user";
+import { GetConnection } from "@/types/connection.types";
+import { handleServerActionError } from "@/utils/handle-errors";
+
+export async function getConnection(
+  connId: string,
+): Promise<GetConnection> {
+  try {
+    if (!connId) {
+      throw new AppError("bad_request:api", "connection id is invalid.");
+    }
+    // session get
+    const user = await requireUser();
+    // get connection
+    const [conn] = await db
+      .select()
+      .from(connection)
+      .where(and(eq(connection.id, connId), eq(connection.userId, user.id)))
+      .limit(1);
+
+    if (!conn) {
+      throw new AppError("not_found:database", "Connection not found!");
+    };
+
+    return { success: true, data: conn };
+  } catch (error) {
+    return handleServerActionError(error);
+  }
+}

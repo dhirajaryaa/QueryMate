@@ -10,9 +10,9 @@ import {
   ItemContent,
   ItemMedia,
   ItemTitle,
-} from "../ui/item";
+} from "@/components/ui/item";
 import { ShieldAlertIcon } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
 type Props = {
@@ -174,6 +174,8 @@ function MarkdownRenderer({ message }: Props) {
   );
 }
 
+//? User Chat Message Component
+
 export function UserChatMessage({ message }: Props) {
   if (!message.trim()) return;
   return (
@@ -181,7 +183,9 @@ export function UserChatMessage({ message }: Props) {
       <MarkdownRenderer message={message} />
     </div>
   );
-}
+};
+
+//? Assistant Chat Message Component
 
 export function AssistantChatMessage({ message }: Props) {
   if (!message.trim()) return;
@@ -190,7 +194,7 @@ export function AssistantChatMessage({ message }: Props) {
       <MarkdownRenderer message={message} />
     </div>
   );
-}
+};
 
 export function ErrorMessage({ message }: Props) {
   const router = useRouter();
@@ -212,4 +216,4 @@ export function ErrorMessage({ message }: Props) {
       </ItemActions>
     </Item>
   );
-}
+};

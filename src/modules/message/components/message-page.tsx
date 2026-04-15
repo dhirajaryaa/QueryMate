@@ -1,13 +1,14 @@
 "use client";
 
-// import ChatInput from "../chat/chat-input";
-import { useEffect, useRef, useState } from "react";
-import { SafeMessage } from "@/types/message.types";
-import MessageList from "./message-list";
 import { toast } from "sonner";
+import { useEffect, useRef, useState } from "react";
+import MessageList from "./message-list";
 import { useParams, useRouter } from "next/navigation";
 import { handleClientError } from "@/utils/handle-errors";
 import { AppErrorPayload } from "@/types/app.types";
+import { SafeMessage } from "@/modules/message/types/message.types";
+import { ErrorMessage } from "./message-ui";
+import ChatInputBox from "@/modules/chat/components/chat-input";
 
 export default function MessagePage({
   initialMessages,
@@ -19,6 +20,7 @@ export default function MessagePage({
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [messages, setMessages] = useState<SafeMessage[]>(initialMessages);
 
   // last message llm call
@@ -31,7 +33,7 @@ export default function MessagePage({
     }
   }, []);
 
-  // auto scroll
+  //? auto scroll
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
@@ -48,6 +50,7 @@ export default function MessagePage({
       ]);
     }
     try {
+      setIsLoading(true);
       const res = await fetch(`/api/chat/${chatId}/message`, {
         method: "POST",
         headers: {
@@ -147,6 +150,8 @@ export default function MessagePage({
         error?.message || "An error occurred while sending the message.",
       );
       handleClientError(error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -161,12 +166,12 @@ export default function MessagePage({
           {/* message list  */}
           <MessageList messages={messages} status={status} />
           {/* error  */}
-          {/* {error && <ErrorMessage message={error} />} */}
+          {error && <ErrorMessage message={error} />}
         </div>
       </section>
       {/* input box  */}
       <section className="w-full sticky bottom-0 bg-background z-1 max-w-3xl mx-auto px-4 pb-4">
-        {/* <ChatInput sendMessage={sendMessage} /> */}
+        <ChatInputBox sendMessage={sendMessage} isLoading={isLoading} />
       </section>
     </>
   );
