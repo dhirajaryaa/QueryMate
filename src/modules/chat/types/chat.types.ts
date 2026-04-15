@@ -9,8 +9,6 @@ export type CreateChatProps = {
   dbId: string;
 };
 
-
-
 export type ChatResponse = AppResponse<{chatId: Chat["id"],dbId: Chat["connectionId"]}>;
 
 export type ChatHistory = Pick<Chat, "id" | "title">;

@@ -1,6 +1,6 @@
-import NewChat from "@/components/chat/new-chat";
+import NewChatPage from "@/modules/chat/components/new-chat-page";
 
-export default function AppPage() {
+export default function NewChat() {
   return (
     <div className="w-full flex-1 overflow-hidden flex items-center justify-center  py-2 px-4">
       {/* Heading */}
@@ -14,7 +14,7 @@ export default function AppPage() {
           </p>
         </section>
         {/* new chat input  */}
-        <NewChat />
+        <NewChatPage />
       </div>
     </div>
   );

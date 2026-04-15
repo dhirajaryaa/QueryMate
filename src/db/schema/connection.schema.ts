@@ -10,6 +10,7 @@ import {
   jsonb,
 } from "drizzle-orm/pg-core";
 import { user } from "./user.schema";
+import { relations } from "drizzle-orm";
 
 export const dbTypeEnum = pgEnum("type", ["pg", "mysql", "sqlite", "mongodb"]);
 export const statusEnum = pgEnum("status", ["active", "pending", "issus"]);
@@ -52,3 +53,11 @@ export const connectionSchema = pgTable(
     uniqueIndex("connection_schemas_connection_id_uidx").on(table.connectionId),
   ],
 );
+
+// relation
+export const connectionRelations = relations(connection, ({ one }) => ({
+  users: one(user, {
+    fields: [connection.userId],
+    references: [user.id]
+  })
+}));

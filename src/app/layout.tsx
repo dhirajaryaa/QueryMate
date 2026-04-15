@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import Script from "next/script";
 import { ThemeProvider } from "@/components/provider/theme-provider";
+import QueryProvider from "@/components/provider/query-provider";
 
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -46,15 +47,17 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <TooltipProvider>{children}</TooltipProvider>
-          <Toaster richColors position="top-center" />
-        </ThemeProvider>
+        <QueryProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <TooltipProvider>{children}</TooltipProvider>
+            <Toaster richColors position="top-center" />
+          </ThemeProvider>
+        </QueryProvider>
       </body>
     </html>
   );

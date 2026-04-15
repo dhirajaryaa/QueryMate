@@ -1,4 +1,8 @@
 "use client";
+import MongoDBIcon from "@/components/icons/mongodb";
+import MySQLIcon from "@/components/icons/mysql";
+import PostgresIcon from "@/components/icons/postgres";
+import SqliteIcon from "@/components/icons/sqllite";
 import {
   Select,
   SelectContent,
@@ -6,22 +10,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useConnections } from "@/hooks/use-connections";
-import { Loader2 } from "lucide-react";
-import PostgresIcon from "../icons/postgres";
-import MySQLIcon from "../icons/mysql";
-import SqliteIcon from "../icons/sqllite";
-import MongoDBIcon from "../icons/mongodb";
 import { useEffect, useState } from "react";
+import { useConnections } from "@/modules/connection/hooks/use-connections";
 
 export default function DbSelect() {
-  const { connections, loading } = useConnections();
   const [dbId, setDbId] = useState<string>("");
 
-  // load from localstorage
+  const { connections, isLoading } = useConnections();
+
+  //* load from localstorage */
   useEffect(() => {
-    const id = localStorage.getItem("querymate_selected_db");
-    id && setDbId(id);
+    const selectedDb = localStorage.getItem("querymate_selected_db");
+    if (selectedDb) {
+      setDbId(selectedDb);
+    }
   }, []);
 
   const databaseIcons = {
@@ -31,28 +33,22 @@ export default function DbSelect() {
     mongodb: MongoDBIcon,
   };
 
-  // handle change
+  //? handle change
   const handleChange = (id: string) => {
-    if (id === "none") return;
+    if (!id) return;
     setDbId(id);
     localStorage.setItem("querymate_selected_db", id);
   };
 
   return (
     <Select value={dbId} onValueChange={handleChange}>
-      <SelectTrigger
-        size="sm"
-        className="rounded-xl text-muted-foreground ml-1"
-        aria-invalid={!dbId}
-      >
-        {loading ? (
-          <Loader2 className="animate-spin text-primary" />
-        ) : (
-          <SelectValue placeholder="Select Database" />
-        )}
+      <SelectTrigger size="sm" className="rounded-lg text-muted-foreground">
+        <SelectValue
+          placeholder={isLoading ? "Loading databases..." : "Select Database"}
+        />
       </SelectTrigger>
       <SelectContent>
-        {connections.length !== 0 ? (
+        {!isLoading && connections?.length > 0 ? (
           connections?.map((conn) => {
             const Icon = databaseIcons[conn.type];
             return (
@@ -63,7 +59,9 @@ export default function DbSelect() {
             );
           })
         ) : (
-          <SelectItem value="none">No DB Connections.</SelectItem>
+          <SelectItem value="none" disabled>
+            No DB Connections
+          </SelectItem>
         )}
       </SelectContent>
     </Select>
