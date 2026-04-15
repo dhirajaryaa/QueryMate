@@ -20,7 +20,7 @@ function StatusCard({
   return (
     <Card
       className={cn(
-        "shadow-sm sm:min-w-40 w-40 sm:max-w-full sm:w-full p-1.5",
+        "shadow-sm sm:min-w-40 w-full  p-1.5",
         className,
       )}
     >

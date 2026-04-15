@@ -4,7 +4,7 @@ import StatusCard from "@/components/common/status-card";
 
 export default function ConnectionStats({stats}:{stats:Stats}) {
   return (
-    <section className="flex flex-wrap items-center gap-4">
+    <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 items-center gap-4">
       <StatusCard
         title="Active"
         icon={CheckIcon}

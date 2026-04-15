@@ -13,7 +13,7 @@ import {
   useEdgesState,
   useNodesState,
 } from "@xyflow/react";
-import TableNode from "./nodes/table-node";
+import TableNode from "@/modules/connection/components/edit/table-node";
 import SchemaToNode from "@/utils/schema-to-node";
 import { Expand } from "lucide-react";
 import { schemaToEdge } from "@/utils/schema-to-edge";
@@ -26,7 +26,7 @@ export default function ConnectionSchemaFlow({
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // handle full screen view
+  //? handle full screen view
   const handleFullScreen = () => {
     const el = containerRef.current;
 
@@ -42,9 +42,8 @@ export default function ConnectionSchemaFlow({
     schemaNode: TableNode,
   };
 
-  const {resolvedTheme } = useTheme();
+  const { resolvedTheme } = useTheme();
   if (!resolvedTheme) return null;
-
 
   const initialNode: Node[] = SchemaToNode(schema.structure as any);
   const initialEdge: Edge[] = schemaToEdge(schema.relationships as any);
@@ -53,16 +52,20 @@ export default function ConnectionSchemaFlow({
   const [edges, setEdges, onEdgeChange] = useEdgesState(initialEdge);
 
   return (
-    <div style={{ height: "100%", width: "100%" }} ref={containerRef} className="bg-accent text-foreground">
+    <div
+      style={{ height: "100%", width: "100%" }}
+      ref={containerRef}
+      className="bg-accent text-foreground w-full"
+    >
       <ReactFlow
         nodes={nodes}
         nodeTypes={nodeTypes}
         onNodesChange={onNodeChange}
         edges={edges}
         onEdgesChange={onEdgeChange}
-         colorMode={resolvedTheme === "dark" ? "dark" : "light"}
+        colorMode={resolvedTheme === "dark" ? "dark" : "light"}
       >
-        <Background/>
+        <Background />
         <Controls>
           <ControlButton title="full screen view" onClick={handleFullScreen}>
             <Expand />

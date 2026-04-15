@@ -25,18 +25,19 @@ import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { handleClientError } from "@/utils/handle-errors";
+import { connectionRemove } from "../../actions/remove-connection";
 
 function ConnectionDangerZone() {
-  const { connId } = useParams();
+  const { connId }: { connId: string } = useParams();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // handle delete 
+  // handle delete
   const handleDelete = async () => {
     setIsLoading(true);
     try {
-      const res = await connectionDeleteAction(connId as string);
-      
+      const res = await connectionRemove(connId);
+
       if (res.success) {
         toast.warning("Connection Delete Successfully");
         router.push("/connections");

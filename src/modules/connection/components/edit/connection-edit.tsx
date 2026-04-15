@@ -1,6 +1,6 @@
 "use client";
 import { Edit, Eye } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Field,
   FieldDescription,
@@ -9,15 +9,15 @@ import {
   FieldLabel,
   FieldLegend,
   FieldSet,
-} from "../ui/field";
-import { Input } from "../ui/input";
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Connection, ConnectionEditInput } from "@/types/connection.types";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { editConnectionSchema } from "@/schema/connection.schema";
-import { Switch } from "../ui/switch";
-import { Label } from "../ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { handleClientError } from "@/utils/handle-errors";
 import { editConnectionAction } from "@/actions/connection";
