@@ -12,6 +12,9 @@ import {
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
 import { useConnections } from "@/modules/connection/hooks/use-connections";
+import { Button } from "@/components/ui/button";
+import { ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 
 export default function DbSelect() {
   const [dbId, setDbId] = useState<string>("");
@@ -40,6 +43,18 @@ export default function DbSelect() {
     localStorage.setItem("querymate_selected_db", id);
   };
 
+  // ✅ empty state
+  if (!isLoading && connections.length === 0) {
+    return (
+      <Button asChild variant="secondary" className="border" size="sm">
+        <Link href="/connections">
+          <ArrowUpRight className="mr-1" />
+          Create Connection
+        </Link>
+      </Button>
+    );
+  }
+
   return (
     <Select value={dbId} onValueChange={handleChange}>
       <SelectTrigger size="sm" className="rounded-lg text-muted-foreground">
@@ -47,21 +62,22 @@ export default function DbSelect() {
           placeholder={isLoading ? "Loading databases..." : "Select Database"}
         />
       </SelectTrigger>
+
       <SelectContent>
-        {!isLoading && connections?.length > 0 ? (
-          connections?.map((conn) => {
+        {isLoading ? (
+          <SelectItem value="loading" disabled>
+            Loading databases...
+          </SelectItem>
+        ) : (
+          connections.map((conn) => {
             const Icon = databaseIcons[conn.type];
             return (
-              <SelectItem key={conn.id} value={conn.id} className="capitalize">
-                {Icon && <Icon className="size-4" />}
+              <SelectItem key={conn.id} value={conn.id}>
+                {Icon && <Icon className="size-4 mr-2" />}
                 {conn.name}
               </SelectItem>
             );
           })
-        ) : (
-          <SelectItem value="none" disabled>
-            No DB Connections
-          </SelectItem>
         )}
       </SelectContent>
     </Select>
