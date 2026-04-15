@@ -25,7 +25,7 @@ function NewChatPage() {
       setIsLoading(true);
       const res = await createNewChat({ prompt: message, dbId });
       if (res.success) {
-        appendChatHistory({ id: res.data.chatId, title: message }); // Append new chat to history
+        appendChatHistory({ id: res.data.chatId, title: "New Chat" }); // Append new chat to history
         router.push(`/chat/${res.data.chatId}`);
       } else {
         toast.error(res.error?.message || "Failed to create chat.");
