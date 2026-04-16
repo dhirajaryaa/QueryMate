@@ -108,7 +108,7 @@ export default function ConnectionEdit({
               <Input
                 id="uri"
                 {...register("uri")}
-                type="password"
+                type="text"
                 aria-invalid={errors.uri ? "true" : "false"}
                 readOnly={!isEdit}
               />

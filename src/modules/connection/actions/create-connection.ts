@@ -8,6 +8,7 @@ import { addConnectionSchema } from "@/modules/connection/schema/connection";
 import { ConnectionInput, ConnectionResponse } from "@/modules/connection/types/connection.types";
 import { requireUser } from "@/modules/auth/utils/require-user";
 import { handleServerActionError } from "@/utils/handle-errors";
+import { encrypt } from "@/modules/connection/utils/crypto";
 
 //new connection
 export async function createNewConnection(
@@ -25,15 +26,17 @@ export async function createNewConnection(
     const user = await requireUser();
 
     // save in db
+    const secureUri = encrypt(valid.data.uri);
     const [data] = await db
       .insert(connection)
       .values({
-        ...payload,
+        ...valid.data,
+        uri: secureUri,
         userId: user.id,
       })
       .returning({ id: connection.id });
 
-      // Todo: trigger pg pubsub feature to schema fetching
+    // Todo: trigger pg pubsub feature to schema fetching
 
 
     return { success: true, data };

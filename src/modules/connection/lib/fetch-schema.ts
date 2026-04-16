@@ -9,7 +9,8 @@ import { eq } from "drizzle-orm";
 import { AppError } from "@/lib/errors";
 import { getAdapter } from "@/utils/db-adapter";
 import { logger } from "@/lib/logger";
-import { Relation } from "@/types/connection.types";
+import { Relation } from "@/modules/connection/types/connection.types";
+import { decrypt } from "../utils/crypto";
 
 export async function fetchDBSchema(connId: string) {
   const [conn] = await db
@@ -17,14 +18,17 @@ export async function fetchDBSchema(connId: string) {
     .from(connection)
     .where(eq(connection.id, connId))
     .limit(1);
+
   if (!conn) {
     throw new AppError("not_found:api", "Connection not found!");
-  }
+  };
+
+  const secretUri = decrypt(conn.uri);
 
   //! Postgres
   if (conn.type === "pg") {
     const pgConn = new PostgresClient({
-      connectionString: conn.uri,
+      connectionString: secretUri,
       ssl: conn.ssl ? { rejectUnauthorized: false } : false,
     });
 
@@ -67,7 +71,7 @@ export async function fetchDBSchema(connId: string) {
   //! MySql
   else if (conn.type === "mysql") {
     const sqlConn = new MySQLClient({
-      uri: conn.uri,
+      uri: secretUri,
       ssl: conn.ssl ? { rejectUnauthorized: false } : undefined,
     });
 
@@ -121,7 +125,7 @@ export async function fetchDBSchema(connId: string) {
   }
   //! Mongodb - Experimental
   else if (conn.type === "mongodb") {
-    const mongoConn = new MongoDBClient(conn.uri);
+    const mongoConn = new MongoDBClient(secretUri);
 
     try {
       await mongoConn.connect(); // ✅ MUST
