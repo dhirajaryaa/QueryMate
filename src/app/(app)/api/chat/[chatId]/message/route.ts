@@ -1,15 +1,15 @@
 import { db } from "@/db";
 import { chat, message } from "@/db/schema";
-import { auth } from "@/lib/auth";
+import { auth } from "@/modules/auth/lib/auth";
 import { AppError } from "@/lib/errors";
 import { logger } from "@/lib/logger";
 import { streamChatResponse } from "@/lib/stream-response";
 import { runAIAgent } from "@/services/ai-service";
 import { AgentMessage } from "@/types/agent.types";
-import { PromptMessage } from "@/types/message.types";
+import { PromptMessage } from "@/modules/message/types/message.types";
 import { and, asc, eq } from "drizzle-orm";
 import { headers } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
 export async function POST(
   req: NextRequest,
