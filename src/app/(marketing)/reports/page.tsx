@@ -1,5 +1,4 @@
 "use client";
-import { sendReportAction } from "@/actions/report";
 import SectionLayout from "@/components/common/section-layout";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,13 +14,13 @@ import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { reportSchema } from "@/schema/report.schema";
+import { sendReport } from "@/modules/report/actions";
+import { reportSchema } from "@/modules/report/schema/report";
 import { handleClientError } from "@/utils/handle-errors";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
@@ -50,7 +49,7 @@ export default function ReportBugFeaturePage() {
   const handleFormSubmit = async (payload: ReportFormValues) => {
     setIsLoading(true);
     try {
-      const res = await sendReportAction({
+      const res = await sendReport({
         ...payload,
         submittedOn: new Date().toLocaleString(),
       });

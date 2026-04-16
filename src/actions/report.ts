@@ -3,7 +3,7 @@
 import { auth } from "@/lib/auth";
 import { AppError } from "@/lib/errors";
 import { reportSchema } from "@/schema/report.schema";
-import { telegramMessageSend } from "@/services/telegram-service";
+import { telegramMessageSend } from "@/modules/report/services/telegram-service";
 import { AppResponse, ReportPayload } from "@/types/app.types";
 import { handleServerActionError } from "@/utils/handle-errors";
 import { headers } from "next/headers";
