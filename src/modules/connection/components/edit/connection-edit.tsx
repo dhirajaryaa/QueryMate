@@ -1,5 +1,6 @@
 "use client";
-import { Edit, Eye } from "lucide-react";
+
+import { Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -10,18 +11,18 @@ import {
   FieldLegend,
   FieldSet,
 } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 import { useState } from "react";
-import { Connection, ConnectionEditInput } from "@/types/connection.types";
+import { Input } from "@/components/ui/input";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { Connection, ConnectionEditInput } from "@/types/connection.types";
 import { editConnectionSchema } from "@/schema/connection.schema";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
 import { handleClientError } from "@/utils/handle-errors";
-import { editConnectionAction } from "@/actions/connection";
-import { useRouter } from "next/navigation";
+import { updateConnection } from "@/modules/connection/actions/update-connection";
 
 export default function ConnectionEdit({
   connection,
@@ -51,7 +52,7 @@ export default function ConnectionEdit({
   const handleFormSubmit = async (payload: ConnectionEditInput) => {
     setIsLoading(true);
     try {
-      const res = await editConnectionAction(connection.id, payload);
+      const res = await updateConnection(connection.id, payload);
       if (!res.success) {
         return toast.error(res.error.message || "connection update failed!");
       }

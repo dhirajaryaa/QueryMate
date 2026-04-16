@@ -1,6 +1,6 @@
 "use client";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/modules/auth/lib/auth-client";
 import { Loader2, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";

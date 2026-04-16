@@ -33,7 +33,7 @@ function LoginUI() {
         </div>
       </section>
       {/* right side  */}
-      <section className="space-y-4 w-full md:w-1/2 text-center md:text-left">
+      <section className="space-y-4 w-full sm:w-2/3 md:w-1/2 text-center md:text-left">
         {/* Auth block */}
         <h2 className="text-3xl sm:text-4xl font-bold mb-1.5">Welcome Back</h2>
         <p className="text-sm text-muted-foreground mb-6">

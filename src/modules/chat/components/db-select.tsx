@@ -26,6 +26,12 @@ export default function DbSelect() {
     const selectedDb = localStorage.getItem("querymate_selected_db");
     if (selectedDb) {
       setDbId(selectedDb);
+    } else {
+      //? if no db selected, set first db as selected
+      if (connections.length > 0) {
+        setDbId(connections[0].id);
+        localStorage.setItem("querymate_selected_db", connections[0].id);
+      }
     }
   }, []);
 
@@ -46,7 +52,13 @@ export default function DbSelect() {
   // ✅ empty state
   if (!isLoading && connections.length === 0) {
     return (
-      <Button asChild variant="secondary" className="border" size="sm" title="Add New Connection" >
+      <Button
+        asChild
+        variant="secondary"
+        className="border"
+        size="sm"
+        title="Add New Connection"
+      >
         <Link href="/connections">
           <ArrowUpRight className="mr-1" />
           Create Connection
@@ -57,7 +69,10 @@ export default function DbSelect() {
 
   return (
     <Select value={dbId} onValueChange={handleChange}>
-      <SelectTrigger size="sm" className="rounded-lg text-muted-foreground text-sm">
+      <SelectTrigger
+        size="sm"
+        className="rounded-lg text-muted-foreground text-sm"
+      >
         <SelectValue
           placeholder={isLoading ? "Loading databases..." : "Select Database"}
         />
@@ -71,7 +86,7 @@ export default function DbSelect() {
           connections.map((conn) => {
             const Icon = databaseIcons[conn.type];
             return (
-              <SelectItem key={conn.id} value={conn.id} >
+              <SelectItem key={conn.id} value={conn.id}>
                 {Icon && <Icon className="size-4" />}
                 {conn.name}
               </SelectItem>
