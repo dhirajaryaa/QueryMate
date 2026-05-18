@@ -1,13 +1,11 @@
 "use client";
-import { DatabaseSearch, FlaskConical } from "lucide-react";
+import { DatabaseSearch } from "lucide-react";
 import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Button } from "@/components/ui/button";
-import { Badge } from "../ui/badge";
 
 export default function Logo() {
   const isMobile = useIsMobile();

@@ -17,11 +17,12 @@ import { useRouter } from "next/navigation";
 
 type Props = {
   message: string;
+  className?: string;
 };
 
 function MarkdownRenderer({ message }: Props) {
   return (
-    <div className="w-full text-sm leading-relaxed wrap-break-word space-y-2">
+    <div className="w-full leading-relaxed wrap-break-word space-y-2">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight]}
@@ -176,25 +177,32 @@ function MarkdownRenderer({ message }: Props) {
 
 //? User Chat Message Component
 
-export function UserChatMessage({ message }: Props) {
+export function UserChatMessage({ message, className }: Props) {
   if (!message.trim()) return;
   return (
-    <div className="w-auto max-w-xl self-end bg-secondary py-2 px-4 rounded-3xl">
+    <div
+      className={cn(
+        "w-auto max-w-xl self-end bg-secondary py-2 px-4 rounded-3xl",
+        className,
+      )}
+    >
       <MarkdownRenderer message={message} />
     </div>
   );
-};
+}
 
 //? Assistant Chat Message Component
 
-export function AssistantChatMessage({ message }: Props) {
+export function AssistantChatMessage({ message, className }: Props) {
   if (!message.trim()) return;
   return (
-    <div className="w-full p-2 prose dark:prose-invert max-w-none">
+    <div
+      className={cn("w-full p-2 prose dark:prose-invert max-w-none", className)}
+    >
       <MarkdownRenderer message={message} />
     </div>
   );
-};
+}
 
 export function ErrorMessage({ message }: Props) {
   const router = useRouter();
@@ -216,4 +224,4 @@ export function ErrorMessage({ message }: Props) {
       </ItemActions>
     </Item>
   );
-};
+}
