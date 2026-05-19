@@ -24,8 +24,8 @@ function GoogleLoginBtn() {
 
   return (
     <Button
-      size={"lg"}
-      className="w-full h-10 sm:h-12 text-base font-medium"
+      size={"xl"}
+      className="w-full"
       onClick={handleGoogleLogin}
       variant={"outline"}
       disabled={loading}

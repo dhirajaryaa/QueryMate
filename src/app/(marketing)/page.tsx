@@ -68,15 +68,21 @@ export default function HomePage() {
               size={"xl"}
               variant={"default"}
               className="hover:scale-99 duration-200 w-full sm:w-fit"
+              asChild
             >
+              <Link href={"/new"}>
               Start For Free <ArrowRight size={16} />
+              </Link>
             </Button>
             <Button
               size={"xl"}
               variant={"outline"}
               className="hover:scale-99 duration-200 w-full sm:w-fit"
+              asChild
             >
+              <Link href={"/demo"}>
               Watch Demo <ChevronRight size={16} />
+              </Link>
             </Button>
           </div>
         </section>

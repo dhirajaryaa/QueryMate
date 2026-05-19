@@ -19,9 +19,9 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggler } from "../common/theme-toggler";
-import { auth } from "@/lib/auth";
 import { BuyMeCoffeeLink, GithubLink } from "@/lib/constant";
 import LogoutBtn from "@/modules/auth/components/logout";
+import { auth } from "@/modules/auth/lib/auth";
 
 type Session = typeof auth.$Infer.Session.user;
 

@@ -9,7 +9,7 @@ import { eq } from "drizzle-orm";
 import { AppError } from "../errors";
 import { getAdapter } from "@/utils/db-adapter";
 import { logger } from "../logger";
-import { Relation } from "@/types/connection.types";
+import { Relation } from "@/modules/connection/types/connection.types";
 
 export async function GetDbSchema(connId: string) {
   const [conn] = await db
@@ -24,7 +24,7 @@ export async function GetDbSchema(connId: string) {
   //! postgres
   if (conn.type === "pg") {
     const pgConn = new PostgresClient({
-      connectionString: conn.uri ,
+      connectionString: conn.uri,
       ssl: conn.ssl ? { rejectUnauthorized: false } : false,
     });
 
@@ -33,12 +33,12 @@ export async function GetDbSchema(connId: string) {
     }
 
     try {
-       const adapter = getAdapter(conn.type);
+      const adapter = getAdapter(conn.type);
       const schema = await pgConn.pool.query(adapter.getSchema());
       const relations = await pgConn.pool.query(adapter.getRelations());
 
       const group = schema.rows.reduce<Record<string, Set<string>>>(
-        (acc, row) => {
+        (acc: any, row: any) => {
           if (!acc[row.table_name]) {
             acc[row.table_name] = new Set();
           }
@@ -47,9 +47,12 @@ export async function GetDbSchema(connId: string) {
         },
         {},
       );
-      const schemaResult = Object.fromEntries(
-        Object.entries(group).map(([table, cols]) => [table, [...cols]]),
-      );
+    const schemaResult: Record<string, string[]> = Object.fromEntries(
+  Object.entries(group).map(([table, cols]) => [
+    table,
+    [...cols],
+  ])
+);
 
       return {
         schema: schemaResult,
