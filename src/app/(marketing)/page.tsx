@@ -2,8 +2,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   ArrowRight,
-  Bot,
   ChevronRight,
+  Database,
   DatabaseSearch,
   Sparkles,
 } from "lucide-react";
@@ -11,6 +11,8 @@ import { ThemeToggler } from "@/components/common/theme-toggler";
 import { StarsBackground } from "@/components/home/star-background";
 import { PreviewWindow } from "@/components/home/preview-window";
 import { Badge } from "@/components/ui/badge";
+import Feature from "@/components/home/Feature";
+import HowItWork from "@/components/home/how-it-work";
 
 export default function HomePage() {
   return (
@@ -31,20 +33,20 @@ export default function HomePage() {
           <div className="flex gap-2 items-center">
             <ThemeToggler variant="ghost" />
             <Button className="px-4" size={"sm"} asChild>
-              <Link href={"/login"}>SignIn</Link>
+              <Link href={"/login"}>Sign In</Link>
             </Button>
           </div>
         </div>
       </header>
       {/* star background  */}
       <StarsBackground />
-
+      {/* main page  */}
       <main className="w-full relative py-10 md:py-14 max-w-5xl mx-auto">
         {/* hero section */}
         <section className="w-full pt-32 pb-16 px-6">
           <div className="w-full flex items-center justify-center">
             {/* badge  */}
-            <Badge className=" uppercase bg-green-100 border-green-500 tracking-widest text-green-600 font-semibold px-3 py-1 mb-4 border-2 shadow-md hover:shadow-lg shadow-green-400/20 md:[&>svg]:size-4 flex items-center justify-center hover:-translate-y-0.5 cursor-pointer duration-200 transition-all">
+            <Badge className=" uppercase bg-green-100 border-green-500 tracking-widest text-green-600 font-semibold px-3 py-1 mb-4 border-2 shadow-md hover:shadow-lg shadow-green-400/20 md:[&>svg]:size-4 flex items-center justify-center hover:-translate-y-0.5 cursor-pointer duration-200 transition-all text-xs">
               <Sparkles />
               AI-Powered Database Interface
             </Badge>
@@ -80,10 +82,40 @@ export default function HomePage() {
           </div>
         </section>
         {/* preview  */}
-        <section className="w-full px-1 sm:px-4">
+        <section className="w-full px-1 sm:px-2 md:px-6">
           <PreviewWindow />
         </section>
+
+        {/* how it work  */}
+        <HowItWork />
+
+        {/* features  */}
+        <Feature />
+
+        
       </main>
+      {/* ── FOOTER ── */}
+      <footer className="relative py-4 px-6 flex items-center justify-between max-w-5xl mx-auto w-full mask-t-from-90%">
+        <div className="flex items-center gap-2  text-sm text-primary">
+          <DatabaseSearch className="w-4 h-4" /> QueryMate
+        </div>
+        <div className="text-sm text-muted-foreground tracking-wide text-center">
+          © 2025 QueryMate.
+          <br/> Built and ❤️ by Dhiraj Arya.
+        </div>
+        <ul className="flex gap-6 list-none">
+          {["Docs", "GitHub", "Twitter"].map((l) => (
+            <li key={l}>
+              <a
+                href="#"
+                className="text-xs text-muted-foreground uppercase tracking-widest hover:text-foreground transition-colors duration-150 no-underline"
+              >
+                {l}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </footer>
     </div>
   );
 }
