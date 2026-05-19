@@ -36,7 +36,7 @@ function StepCard({ num, icon, title, desc, accentClass }: StepProps) {
 
 function HowItWork() {
   return (
-    <section id="how" className="relative z-10 py-24 px-6 mt-20">
+    <section id="how" className="relative z-10 py-24 px-6 ">
       <div className=" mx-auto">
         <div className="mb-14 text-center">
           <span className="text-[11px] text-primary uppercase tracking-[.18em] mb-3">
