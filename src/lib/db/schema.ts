@@ -47,20 +47,25 @@ export async function GetDbSchema(connId: string) {
         },
         {},
       );
-    const schemaResult: Record<string, string[]> = Object.fromEntries(
-  Object.entries(group).map(([table, cols]) => [
-    table,
-    [...cols],
-  ])
-);
+      const entries = Object.entries(group) as [string, Set<string>][];
+
+      const schemaResult: Record<string, string[]> = Object.fromEntries(
+        entries.map(([table, cols]) => [
+          table,
+          [...cols],
+        ]),
+      );
 
       return {
         schema: schemaResult,
         relations: relations.rows,
       };
-    } catch (err: any) {
+    } catch (err) {
       logger.error(err);
-      return err.message;
+
+      return err instanceof Error
+        ? err.message
+        : "Unknown error";
     } finally {
       await pgConn.close();
     }

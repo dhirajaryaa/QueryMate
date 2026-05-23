@@ -1,4 +1,5 @@
-import { reportSchema } from "@/schema/report.schema";
+
+import { reportSchema } from "@/modules/report/schema/report";
 import z from "zod";
 
 export type ErrorType =

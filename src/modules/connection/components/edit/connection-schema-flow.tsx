@@ -1,8 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import { ConnectionSchema } from "@/types/connection.types";
 import "@xyflow/react/dist/style.css";
+import { ConnectionSchema } from "@/modules/connection/types/connection.types";
 import {
   Background,
   ControlButton,

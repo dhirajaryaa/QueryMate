@@ -1,5 +1,5 @@
 import { AppError } from "@/lib/errors";
-import { DBType, SchemaAdapter } from "@/types/connection.types";
+import { DBType, SchemaAdapter } from "@/modules/connection/types/connection.types";
 
 // pg adapter
 const pgAdapter: SchemaAdapter = {

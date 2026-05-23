@@ -1,10 +1,9 @@
 import { connection, connectionSchema } from "@/db/schema";
-import {
-  addConnectionSchema,
-  editConnectionSchema,
-} from "@/schema/connection.schema";
+
 import { AppResponse } from "@/types/app.types";
 import { z } from "zod";
+import { addConnectionSchema, editConnectionSchema } from "../schema/connection";
+
 
 export type DBType = "pg" | "mysql" | "sqlite" | "mongodb";
 

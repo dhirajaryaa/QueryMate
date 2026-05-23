@@ -3,8 +3,6 @@
 import { db } from "@/db";
 import { chat, message } from "@/db/schema";
 import { and, asc, eq } from "drizzle-orm";
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
 import { AppError } from "@/lib/errors";
 import { GetAllMessages } from "@/modules/message/types/message.types";
 import { handleServerActionError } from "@/utils/handle-errors";

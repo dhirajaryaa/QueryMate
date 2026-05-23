@@ -42,7 +42,7 @@ export async function fetchDBSchema(connId: string) {
       const relations = await pgConn.pool.query(adapter.getRelations());
 
       const group = schema.rows.reduce<Record<string, Set<string>>>(
-        (acc, row) => {
+        (acc: any, row: any) => {
           if (!acc[row.table_name]) {
             acc[row.table_name] = new Set();
           }
@@ -51,8 +51,13 @@ export async function fetchDBSchema(connId: string) {
         },
         {},
       );
-      const schemaResult = Object.fromEntries(
-        Object.entries(group).map(([table, cols]) => [table, [...cols]]),
+      const entries = Object.entries(group) as [string, Set<string>][];
+
+      const schemaResult: Record<string, string[]> = Object.fromEntries(
+        entries.map(([table, cols]) => [
+          table,
+          [...cols],
+        ]),
       );
 
       return {

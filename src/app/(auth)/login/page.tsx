@@ -10,9 +10,9 @@ export default async function LoginPage() {
 
   return (
     <main className="flex h-dvh w-full items-center justify-center p-6">
-      <div className="max-w-5xl mx-auto w-full flex items-center gap-12 justify-center">
+      <section className="max-w-5xl mx-auto w-full flex items-center gap-12 justify-center">
         {/* left side  */}
-        <section className="space-y-4 w-1/2 hidden md:block">
+        <div className="space-y-4 w-1/2 hidden md:block">
           {/* Logo */}
           <div className="flex items-center gap-3 mb-10">
             <div className="size-8 rounded-full bg-accent shadow flex items-center justify-center p-2">
@@ -33,9 +33,9 @@ export default async function LoginPage() {
               database query assistant.
             </p>
           </div>
-        </section>
+        </div>
         {/* right side  */}
-        <section className="space-y-4 w-full sm:w-2/3 md:w-1/2 text-center md:text-left">
+        <div className="space-y-4 w-full sm:w-2/3 md:w-1/2 text-center md:text-left">
           {/* Auth block */}
           <h2 className="text-2xl sm:text-3xl font-bold mb-1.5">
             Welcome Back
@@ -71,8 +71,8 @@ export default async function LoginPage() {
               </Link>
             </p>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </main>
   );
 }

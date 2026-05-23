@@ -1,4 +1,4 @@
-import { SafeMessage } from "@/types/message.types";
+import { SafeMessage } from "@/modules/message/types/message.types";
 import MessageLoading from "./message-loading";
 import { Badge } from "@/components/ui/badge";
 import { AssistantChatMessage, UserChatMessage } from "./message-ui";

@@ -84,7 +84,7 @@ export default function DbSelect() {
           </SelectItem>
         ) : (
           connections.map((conn) => {
-            const Icon = databaseIcons[conn.type];
+            const Icon = databaseIcons[conn.type as keyof typeof databaseIcons];
             return (
               <SelectItem key={conn.id} value={conn.id}>
                 {Icon && <Icon className="size-4" />}

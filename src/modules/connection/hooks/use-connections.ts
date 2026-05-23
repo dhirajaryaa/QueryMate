@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Connection } from "@/types/connection.types";
+import { Connection } from "@/modules/connection/types/connection.types";
 import { connectionList } from "@/modules/connection/actions/connection-list";
 import { handleClientError } from "@/utils/handle-errors";
 
