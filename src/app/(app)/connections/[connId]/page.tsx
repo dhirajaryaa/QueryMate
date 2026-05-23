@@ -1,19 +1,23 @@
-import {
-  getConnectionAction,
-  getConnectionSchemaAction,
-} from "@/actions/connection";
-import SectionLayout from "@/components/common/section-layout";
-import ConnectionDangerZone from "@/components/connection/connection-dangerzone";
-import ConnectionEdit from "@/components/connection/connection-edit";
-import ConnectionSchemaFlow from "@/components/connection/connection-schema-flow";
-import SyncDatabaseBtn from "@/components/connection/sync-db-btn";
-import { Button } from "@/components/ui/button";
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Connection } from "@/types/connection.types";
-import { handlePageError } from "@/utils/handle-errors";
-import { Table } from "lucide-react";
 import { Suspense } from "react";
+import { Table } from "lucide-react";
+import { handlePageError } from "@/utils/handle-errors";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { getConnection } from "@/modules/connection/actions/get-connection";
+import SectionLayout from "@/components/common/section-layout";
+import SyncDatabaseBtn from "@/modules/connection/components/edit/sync-db-btn";
+import ConnectionEdit from "@/modules/connection/components/edit/connection-edit";
+import ConnectionDangerZone from "@/modules/connection/components/edit/connection-danger-zone";
+import { Connection } from "@/modules/connection/types/connection.types";
+import { getConnectionSchema } from "@/modules/connection/actions/connection-schema";
+import ConnectionSchemaFlow from "@/modules/connection/components/edit/connection-schema-flow";
 
 export default async function ConnectionPage({
   params,
@@ -22,7 +26,7 @@ export default async function ConnectionPage({
 }) {
   const { connId } = await params;
 
-  const res = await getConnectionAction(connId);
+  const res = await getConnection(connId);
   if (!res.success) {
     handlePageError(res.error);
   }
@@ -57,8 +61,8 @@ export async function ConnectionSchemaVisualizer({
 }: {
   connection: Connection;
 }) {
-  const res = await getConnectionSchemaAction(connection.id);
-  
+  const res = await getConnectionSchema(connection.id);
+
   if (!res.success) {
     return handlePageError(res.error);
   }
@@ -80,7 +84,8 @@ export async function ConnectionSchemaVisualizer({
               </EmptyDescription>
             </EmptyHeader>
             <EmptyContent>
-                <SyncDatabaseBtn />
+              {/* sync database btn  */}
+              <SyncDatabaseBtn />
             </EmptyContent>
           </Empty>
         </>

@@ -1,15 +1,17 @@
 "use client";
+
 import { SidebarTrigger } from "../ui/sidebar";
 import { Button } from "../ui/button";
-import { ArrowLeft,Share2 } from "lucide-react";
+import { ArrowLeft, Share2 } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export default function AppHeader() {
   const router = useRouter();
+
   return (
-    <header className="flex items-center justify-between py-2 px-4 shadow-xs sticky top-0 bg-background/30 backdrop-blur-sm z-50">
+    <header className="flex items-center justify-between shrink-0 py-2 px-4 shadow-xs sticky top-0 bg-background/30 backdrop-blur-sm z-50">
       <div className="flex items-center gap-2">
         <SidebarTrigger variant={"secondary"} size={"icon-sm"} />
         <Separator
@@ -25,15 +27,17 @@ export default function AppHeader() {
           <ArrowLeft /> Back
         </Button>
       </div>
-      <Button
-        size={"sm"}
-        variant={"secondary"}
-        title="Share"
-        onClick={() => toast.info("upcoming feature.")}
-      >
-        <Share2 />
-        <span className="hidden sm:inline-block">Share</span>
-      </Button>
+      <div className="flex items-center gap-2">
+        <Button
+          size={"sm"}
+          variant={"secondary"}
+          title="Share"
+          onClick={() => toast.info("upcoming feature.")}
+        >
+          <Share2 />
+          <span className="hidden sm:inline-block">Share</span>
+        </Button>
+      </div>
     </header>
   );
 }

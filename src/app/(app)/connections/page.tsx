@@ -1,18 +1,21 @@
-import { getConnectionsAction } from "@/actions/connection";
 import SectionLayout from "@/components/common/section-layout";
-import ConnectionCard from "@/components/connection/connection-card";
-import { ConnectionModel } from "@/components/connection/connection-model";
-import ConnectionStats from "@/components/connection/connection-stats";
-import EmptyConnection from "@/components/connection/empty-connection";
+import { ensureAuth } from "@/modules/auth/utils/auth-utils";
+import { getAllConnections } from "@/modules/connection/actions/all-connections";
+import ConnectionCard from "@/modules/connection/components/connection-card";
+import { ConnectionModel } from "@/modules/connection/components/connection-model";
+import ConnectionStats from "@/modules/connection/components/connection-stats";
+import EmptyConnection from "@/modules/connection/components/empty-connection";
 import { handlePageError } from "@/utils/handle-errors";
 
+
 export default async function ConnectionsPage() {
+  await ensureAuth();
   // fetch connections
-  const res = await getConnectionsAction();
+  const res = await getAllConnections();
 
   if (!res.success) {
     handlePageError(res.error);
-  }
+  };
   const { connections, stats } = res.data;
 
   return (
@@ -22,7 +25,7 @@ export default async function ConnectionsPage() {
         description="Securely manage and monitor all your connected data sources in one place."
         actionUI={<ConnectionModel />}
       >
-        <div className=" w-full h-fit">
+        <div className="w-full h-fit">
           {/* list all connections stats  */}
           <ConnectionStats stats={stats} />
 

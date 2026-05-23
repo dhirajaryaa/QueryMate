@@ -24,8 +24,8 @@ export default function DemoPage() {
       {/* Hero */}
       <section className="flex flex-col items-center justify-center text-center px-4 mt-8">
 
-      <AspectRatio ratio={16 / 9} className="rounded-lg bg-muted border shadow-lg w-full max-w-4xl mx-auto">
-      <iframe className="w-full h-full rounded-lg" src="https://www.youtube.com/embed/z9KL74Jio_s?si=OWAVubxut6XvJaQl" title="YouTube video player"  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+      <AspectRatio ratio={16 / 9} className="rounded-xl bg-muted border-8 shadow-lg w-full max-w-4xl mx-auto aspect-video border-border">
+      <iframe className="w-full rounded-[16px] aspect-video bg-muted" src="https://www.youtube.com/embed/z9KL74Jio_s?si=OWAVubxut6XvJaQl" title="YouTube video player"  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
       </AspectRatio>
 
       </section>

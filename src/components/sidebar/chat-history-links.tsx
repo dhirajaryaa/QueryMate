@@ -7,28 +7,46 @@ import {
   SidebarMenuItem,
 } from "../ui/sidebar";
 import { usePathname } from "next/navigation";
-import { ChatHistory } from "@/types/chat.types";
+import { ChatHistory } from "@/modules/chat/types/chat.types";
+import { useChatStore } from "@/stores/useChatStore";
+import { useEffect } from "react";
 
-export default function ChatHistoryLink({ links }: { links: ChatHistory[] }) {
+export default function ChatHistoryLink({
+  history,
+}: {
+  history: ChatHistory[];
+}) {
   const pathname = usePathname();
+  //! set on store
+  const chatHistory = useChatStore((state) => state.chatHistory);
+  const setChatHistory = useChatStore((state) => state.setChatHistory);
+
+  if (chatHistory.length === 0 && history?.length) {
+    setChatHistory(history);
+  }
+
+  const data = chatHistory.length ? chatHistory : history;
 
   return (
     <SidebarGroup className="overflow-y-auto">
       <SidebarMenu>
-        {links.map((link) => (
-          <SidebarMenuItem key={link.id}>
-            <Link href={`/chat/${link.id}`}>
-              <SidebarMenuButton
-                asChild
-                tooltip={link.title}
-                isActive={pathname === `/chat/${link.id}`}
-                className="h-8.5 data-[active=true]:bg-sidebar-active text-foreground truncate hover:bg-sidebar-active/70"
-              >
-                <span>{link.title}</span>
-              </SidebarMenuButton>
-            </Link>
-          </SidebarMenuItem>
-        ))}
+        {data
+          .slice()
+          .reverse()
+          .map((link) => (
+            <SidebarMenuItem key={link.id}>
+              <Link href={`/chat/${link.id}`}>
+                <SidebarMenuButton
+                  asChild
+                  tooltip={link.title}
+                  isActive={pathname === `/chat/${link.id}`}
+                  className="h-8.5 data-[active=true]:bg-sidebar-active text-foreground truncate hover:bg-sidebar-active/70"
+                >
+                  <span>{link.title}</span>
+                </SidebarMenuButton>
+              </Link>
+            </SidebarMenuItem>
+          ))}
       </SidebarMenu>
     </SidebarGroup>
   );

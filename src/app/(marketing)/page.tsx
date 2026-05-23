@@ -1,64 +1,108 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { DatabaseSearch } from "lucide-react";
+import {
+  ArrowRight,
+  ChevronRight,
+  DatabaseSearch,
+  Sparkles,
+} from "lucide-react";
 import { ThemeToggler } from "@/components/common/theme-toggler";
+import { StarsBackground } from "@/components/home/star-background";
+import { PreviewWindow } from "@/components/home/preview-window";
+import { Badge } from "@/components/ui/badge";
+import Feature from "@/components/home/Feature";
+import HowItWork from "@/components/home/how-it-work";
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-linear-to-b from-white to-primary/20 dark:from-black">
-
-      {/* Navbar */}
-      <header className="w-full max-w-6xl mx-auto flex justify-between items-center py-6 px-4">
-        <h2 className="text-xl font-bold text-primary flex items-center justify-center gap-1.5"> <DatabaseSearch />QueryMate</h2>
-
-        <div className="flex items-center gap-2 sm:gap-4">
-          <ThemeToggler variant="ghost"/>
-          <Link href="/login">
-            <Button>Login</Button>
-          </Link>
+    <div className="flex flex-col w-full min-h-screen relative">
+      {/* header  */}
+      <header className="w-full z-50 px-4 py-4 fixed inset-x-0 top-0 bg-background/5 backdrop-blur-md mask-b-from-80%">
+        <div className="w-full h-full max-w-5xl mx-auto flex items-center justify-between">
+          {/* logo  */}
+          <div className="flex gap-2 items-center">
+            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-foreground text-background">
+              <DatabaseSearch className="size-4" />
+            </div>
+            <div className="text-2xl font-semibold text-transparent bg-clip-text bg-linear-to-br from-foreground via-muted-foreground to-foreground">
+              QueryMate
+            </div>
+          </div>
+          {/* theme toggle + action btn  */}
+          <div className="flex gap-2 items-center">
+            <ThemeToggler variant="ghost" />
+            <Button className="px-4" size={"sm"} asChild>
+              <Link href={"/login"}>Sign In</Link>
+            </Button>
+          </div>
         </div>
       </header>
-
-
-      {/* Hero */}
-      <section className="flex flex-col items-center justify-center text-center px-4 mt-20">
-
-        <h1 className="text-5xl md:text-6xl font-extrabold text-primary mb-6">
-          Query Database with
-          <span className="block text-foreground">Natural Language</span>
-        </h1>
-
-        <p className="text-lg text-muted-foreground max-w-xl mb-8">
-          Connect your database and get insights instantly.
-          No SQL knowledge required.
-        </p>
-
-        <div className="flex gap-4 flex-col sm:flex-row">
-          <Link href="/new">
-            <Button className="px-8 py-6 text-lg">
-              Start Chatting
+      {/* star background  */}
+      <StarsBackground />
+      {/* main page  */}
+      <main className="w-full relative py-10 md:py-14 max-w-5xl mx-auto">
+        {/* hero section */}
+        <section className="w-full pt-32 pb-16 px-6">
+          <div className="w-full flex items-center justify-center">
+            {/* badge  */}
+            <Badge className=" uppercase bg-green-100 border-green-500 tracking-widest text-green-600 font-semibold px-3 py-1 mb-4 border-2 shadow-md hover:shadow-lg shadow-green-400/20 md:[&>svg]:size-4 flex items-center justify-center hover:-translate-y-0.5 cursor-pointer duration-200 transition-all text-xs">
+              <Sparkles />
+              AI-Powered Database Interface
+            </Badge>
+          </div>
+          <h1 className="text-5xl sm:text-7xl lg:text-[7.5rem] capitalize text- font-extrabold text-foreground/80 text-center">
+            Your database,
+            <br />
+            <span className="text-transparent bg-clip-text bg-linear-to-br from-sky-400 via-blue-500 to-blue-800">
+              finally speaks.
+            </span>
+          </h1>
+          <p className="text-muted-foreground max-w-3xl text-sm sm:text-base mx-auto text-center pt-10">
+            Stop writing complex SQL. Just ask QueryMate in plain English — it
+            understands your schema,
+            <br /> runs the query, and explains the results.
+          </p>
+          {/* action btn  */}
+          <div className="flex gap-x-6 gap-y-4 py-10 items-center justify-center sm:flex-row flex-col">
+            <Button
+              size={"xl"}
+              variant={"default"}
+              className="hover:scale-99 duration-200 w-full sm:w-fit"
+              asChild
+            >
+              <Link href={"/new"}>
+              Start For Free <ArrowRight size={16} />
+              </Link>
             </Button>
-          </Link>
-
-          <Link href="/demo">
-            <Button variant="outline" className="px-8 py-6 text-lg">
-              Live Demo
+            <Button
+              size={"xl"}
+              variant={"outline"}
+              className="hover:scale-99 duration-200 w-full sm:w-fit"
+              asChild
+            >
+              <Link href={"/demo"}>
+              Watch Demo <ChevronRight size={16} />
+              </Link>
             </Button>
-          </Link>
+          </div>
+        </section>
+        {/* preview  */}
+        <section className="w-full px-1 sm:px-2 md:px-6 [permeative-1000]">
+          <PreviewWindow />
+        </section>
+
+        {/* how it work  */}
+        <HowItWork />
+
+        {/* features  */}
+        <Feature />
+      </main>
+      {/* ── FOOTER ── */}
+      <footer className="relative py-4 px-6 flex items-center justify-between max-w-5xl mx-auto w-full bg-background/5 backdrop-blur-md">
+        <div className="text-sm text-muted-foreground tracking-wide text-center w-full  mask-t-from-90% ">
+          Built and ❤️ by Dhiraj Arya.
         </div>
-
-      </section>
-
-
-      {/* Footer */}
-      <footer className="text-center text-sm text-muted-foreground mt-32 pb-6">
-        © 2026
-        <a href={process.env.NEXT_PUBLIC_APP_URL} target="_blank" rel="noopener noreferrer" className="underline ml-1">
-          QueryMate
-        </a>
-        . All rights reserved.
       </footer>
-
-    </main>
+    </div>
   );
 }

@@ -1,7 +1,7 @@
 import { Pool, PoolConfig } from "pg";
 import mysql, { Pool as SqlPool, PoolOptions } from "mysql2/promise";
 import { Db, MongoClient, ObjectId } from "mongodb";
-import { Relation } from "@/types/connection.types";
+import { Relation } from "@/modules/connection/types/connection.types";
 
 //? postgres client
 export class PostgresClient {
