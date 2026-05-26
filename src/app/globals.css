@@ -128,6 +128,9 @@
   html {
     @apply font-sans;
   }
+  .text-brand {
+    @apply text-transparent bg-clip-text bg-linear-to-br from-sky-400 via-blue-500 to-blue-800;
+  }
 }
 
 /* custom css  */

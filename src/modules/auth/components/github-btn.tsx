@@ -9,17 +9,26 @@ function GithubLoginBtn() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleGithubLogin = async () => {
-    setLoading(true);
-    try {
-      await authClient.signIn.social({
+    await authClient.signIn.social(
+      {
         provider: "github",
         callbackURL: "/new",
-      });
-    } catch (error) {
-      return handleClientError(error);
-    } finally {
-      setLoading(false);
-    }
+      },
+      {
+        onRequest: () => {
+          setLoading(true);
+        },
+
+        onSuccess: () => {
+          setLoading(false);
+        },
+
+        onError: (error) => {
+          setLoading(false);
+          handleClientError(error);
+        },
+      }
+    );
   };
 
   return (

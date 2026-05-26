@@ -26,7 +26,9 @@ export default async function LoginPage() {
             <h1 className="text-4xl sm:text-5xl font-black leading-tight -tracking-wider mb-5 max-w-xl">
               Talk to Your Database.
               <br />
+              <span className="text-brand">
               Get Answers Instantly.
+              </span>
             </h1>
             <p className="text-base leading-relaxed max-w-sm text-muted-foreground">
               Supercharge your team to get data faster with the most advanced AI
