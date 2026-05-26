@@ -9,17 +9,26 @@ function GoogleLoginBtn() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleGoogleLogin = async () => {
-    setLoading(true);
-    try {
-      await authClient.signIn.social({
+    await authClient.signIn.social(
+      {
         provider: "google",
         callbackURL: "/new",
-      });
-    } catch (error) {
-      return handleClientError(error);
-    } finally {
-      setLoading(false);
-    }
+      },
+      {
+        onRequest: () => {
+          setLoading(true);
+        },
+
+        onSuccess: () => {
+          setLoading(false);
+        },
+
+        onError: (error) => {
+          setLoading(false);
+          handleClientError(error);
+        },
+      }
+    );
   };
 
   return (
