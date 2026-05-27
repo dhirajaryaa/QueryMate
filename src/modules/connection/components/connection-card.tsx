@@ -1,4 +1,4 @@
-import { Connection } from "@/modules/connection/types/connection.types";
+import { ConnectionMinified } from "@/modules/connection/types/connection.types";
 import {
   Item,
   ItemActions,
@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/item";
 import PostgresIcon from "@/components/icons/postgres";
 import MySQLIcon from "@/components/icons/mysql";
-import SqliteIcon from "@/components/icons/sqllite";
 import MongoDBIcon from "@/components/icons/mongodb";
 import StatusBadge from "@/components/common/status-badge";
 import { Button } from "@/components/ui/button";
@@ -19,12 +18,11 @@ import Link from "next/link";
 export default function ConnectionCard({
   connection,
 }: {
-  connection: Connection;
+  connection: ConnectionMinified;
 }) {
   const databaseIcons = {
     pg: PostgresIcon,
     mysql: MySQLIcon,
-    sqlite: SqliteIcon,
     mongodb: MongoDBIcon,
   } as const;
 

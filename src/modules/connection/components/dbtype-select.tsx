@@ -1,11 +1,9 @@
 "use client";
 
 import { Toggle } from "@/components/ui/toggle";
-import { Button } from "@/components/ui/button";
 import { DBType } from "@/modules/connection/types/connection.types";
 import PostgresIcon from "@/components/icons/postgres";
 import MySQLIcon from "@/components/icons/mysql";
-import SqliteIcon from "@/components/icons/sqllite";
 import MongoDBIcon from "@/components/icons/mongodb";
 
 type DBProps = {
@@ -17,13 +15,12 @@ export default function DBTypeSelect({ value, onChange }: DBProps) {
   const databases = [
     { id: "postgres", label: "PostgreSQL", icon: PostgresIcon, value: "pg" },
     { id: "mysql", label: "MySQL", icon: MySQLIcon, value: "mysql" },
-    { id: "sqlite", label: "SQLite", icon: SqliteIcon, value: "sqlite" },
     { id: "mongodb", label: "MongoDB", icon: MongoDBIcon, value: "mongodb" },
   ] as const;
 
   return (
     <>
-      <div className="flex flex-wrap sm:flex-nowrap items-center justify-center gap-2 overflow-hidden">
+      <div className="flex items-center justify-center gap-2 overflow-hidden p-1">
         {databases.map((db) => {
           const isSelected = value?.toLowerCase() === db.value?.toLowerCase();
 
@@ -34,18 +31,17 @@ export default function DBTypeSelect({ value, onChange }: DBProps) {
               pressed={isSelected}
               onPressedChange={() => onChange(db.value)}
             >
-              <Button
-                variant="outline"
+              <button
                 className={` flex flex-col h-auto
-                font-semibold text-muted-foreground w-25 max-w-25 
-                border-2  border-border
-                text-xs sm:text-sm
-                ${isSelected ? "border-primary border-2 text-primary" : ""}
+                font-semibold w-full 
+                rounded-md px-3 py-2 ring-1 ring-transparent hover:ring-primary/50 focus-visible:ring-primary/50 hover:grayscale-75
+                text-xs sm:text-sm my-1 transition-colors border border-muted
+                ${isSelected ? "border-primary border-2 text-primary grayscale-0 " : "text-muted-foreground/80 grayscale-100"}
               `}
               >
                 <db.icon className="size-7" />
                 {db.label}
-              </Button>
+              </button>
             </Toggle>
           );
         })}

@@ -18,6 +18,7 @@ export default async function ConnectionsPage() {
   };
   const { connections, stats } = res.data;
 
+
   return (
     <>
       <SectionLayout

@@ -1,15 +1,14 @@
 import { z } from "zod";
-const connectionTypeEnum = z.enum(["pg", "mysql", "sqlite", "mongodb"]);
+const connectionTypeEnum = z.enum(["pg", "mysql", "mongodb"]);
 
 const regexMap = {
   pg: /^postgres(ql)?:\/\/[^:\s]+:[^@\s]+@[^:\s]+(:\d+)?\/[^\s]+$/,
   mysql: /^mysql:\/\/[^:\s]+:[^@\s]+@[^:\s]+(:\d+)?\/[^\s]+$/,
   mongodb: /^mongodb(\+srv)?:\/\/.+@.+\/?.*$/,
-  sqlite: /^(file:|sqlite:\/\/\/).+\.db$/,
 } as const;
 
 const validateUriByType = (
-  data: { type: "pg" | "mysql" | "sqlite" | "mongodb"; uri: string },
+  data: { type: "pg" | "mysql" | "mongodb"; uri: string },
   ctx: z.RefinementCtx,
 ) => {
   if (!regexMap[data.type].test(data.uri)) {

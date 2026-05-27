@@ -1,5 +1,5 @@
 {
-  "id": "30bd3a67-7303-496f-85a7-2d7c3074c520",
+  "id": "c622c915-5699-4b89-9ce6-45c24eaa23ee",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -382,6 +382,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "mask_uri": {
+          "name": "mask_uri",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "user_id": {
           "name": "user_id",
           "type": "text",
@@ -722,7 +728,6 @@
       "values": [
         "pg",
         "mysql",
-        "sqlite",
         "mongodb"
       ]
     },

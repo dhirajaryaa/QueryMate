@@ -26,12 +26,14 @@ export type ConnectionStats = {
   issus: number;
 };
 
+export type ConnectionMinified = Pick<Connection, "id" | "type" | "name" | "updatedAt" | "status">
+
 export type GetConnection = AppResponse<Connection>;
 
 export type EditConnection = AppResponse<Connection>;
 
 export type GetConnections = AppResponse<{
-  connections: Connection[];
+  connections: ConnectionMinified[];
   stats: ConnectionStats;
 }>;
 
