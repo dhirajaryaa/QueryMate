@@ -11,7 +11,7 @@ export async function requireUser() {
 
     if (!session) {
         throw new AppError("unauthorized:auth");
-    }
+    };
 
     return session.user;
 };

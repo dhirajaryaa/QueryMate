@@ -1,9 +1,11 @@
 "use client";
+
 import GoogleIcon from "@/components/icons/google";
 import { Button } from "@/components/ui/button";
 import { handleClientError } from "@/utils/handle-errors";
 import { useState } from "react";
 import { authClient } from "@/modules/auth/lib/auth-client";
+import { AuthRedirectPath } from "@/lib/constant";
 
 function GoogleLoginBtn() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -12,7 +14,7 @@ function GoogleLoginBtn() {
     await authClient.signIn.social(
       {
         provider: "google",
-        callbackURL: "/new",
+        callbackURL: AuthRedirectPath,
       },
       {
         onRequest: () => {

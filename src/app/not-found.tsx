@@ -12,7 +12,7 @@ export default function NotFound() {
   return (
     <main className="h-screen bg-linear-to-b from-white to-primary/20 dark:from-black flex flex-col items-center justify-center p-4">
       <section className="flex flex-col items-center justify-center text-center px-4">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-primary mb-6">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-brand mb-6 leading-20">
           404 - Page Not Found
         </h1>
         <p className="text-lg text-muted-foreground max-w-xl mb-8">
