@@ -9,6 +9,8 @@ import { editConnectionSchema } from "@/modules/connection/schema/connection";
 import { ConnectionEditInput, EditConnection } from "@/modules/connection/types/connection.types";
 import { requireUser } from "@/modules/auth/utils/require-user";
 import { handleServerActionError } from "@/utils/handle-errors";
+import { maskSecret } from "@/modules/connection/utils/mask-secret";
+import { encrypt } from "@/modules/connection/utils/crypto";
 
 export async function updateConnection(
     connId: string,
@@ -25,10 +27,15 @@ export async function updateConnection(
         const user = await requireUser();
 
         // save in db
+        const secureUri = encrypt(valid.data.uri);
+        const maskedUri = maskSecret(valid.data.uri);
+
         const [data] = await db
             .update(connection)
             .set({
-                ...payload,
+                name: valid.data.name,
+                uri: secureUri,
+                maskUri: maskedUri
             })
             .where(eq(connection.id, connId))
             .returning();
