@@ -27,16 +27,25 @@ export async function updateConnection(
         const user = await requireUser();
 
         // save in db
-        const secureUri = encrypt(valid.data.uri);
-        const maskedUri = maskSecret(valid.data.uri);
+        const updatablePayload: ConnectionEditInput = {
+            ...payload,
+            ...(valid.data.name && {
+                name: valid.data.name,
+            }),
+
+            ...(valid.data.ssl !== undefined && {
+                ssl: valid.data.ssl,
+            }),
+
+            ...(valid.data.uri && {
+                uri: encrypt(valid.data.uri),
+                maskUri: maskSecret(valid.data.uri),
+            }),
+        };
 
         const [data] = await db
             .update(connection)
-            .set({
-                name: valid.data.name,
-                uri: secureUri,
-                maskUri: maskedUri
-            })
+            .set(updatablePayload)
             .where(eq(connection.id, connId))
             .returning();
 
