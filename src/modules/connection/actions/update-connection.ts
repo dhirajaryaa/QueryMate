@@ -43,6 +43,8 @@ export async function updateConnection(
             }),
         };
 
+        
+
         const [data] = await db
             .update(connection)
             .set(updatablePayload)

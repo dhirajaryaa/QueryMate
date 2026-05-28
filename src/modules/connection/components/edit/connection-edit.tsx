@@ -60,7 +60,7 @@ export default function ConnectionEdit({
     };
 
     try {
-      const res = await updateConnection(connection.id, { ...payload, uri: hasUriChanged ? payload.uri : null });
+      const res = await updateConnection(connection.id, { ...payload, uri: hasUriChanged ? payload.uri : undefined });
       if (!res.success) {
         return toast.error(res.error.message || "connection update failed!");
       }
