@@ -8,7 +8,7 @@ import { connection } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { AppError } from "../errors";
 import { getAdapter } from "@/utils/db-adapter";
-import { logger } from "../logger";
+import { console } from "../console";
 import { Relation } from "@/modules/connection/types/connection.types";
 
 export async function GetDbSchema(connId: string) {
@@ -61,7 +61,7 @@ export async function GetDbSchema(connId: string) {
         relations: relations.rows,
       };
     } catch (err) {
-      logger.error(err);
+      console.error(err);
 
       return err instanceof Error
         ? err.message
@@ -119,7 +119,7 @@ export async function GetDbSchema(connId: string) {
         relations: relationsResult,
       };
     } catch (error: any) {
-      logger.error(error);
+      console.error(error);
       return error.message;
     } finally {
       await sqlConn.close();
@@ -142,7 +142,7 @@ export async function GetDbSchema(connId: string) {
         relations: relationRows,
       };
     } catch (error: any) {
-      logger.error(error);
+      console.error(error);
       return error.message;
     } finally {
       await mongoConn.close();

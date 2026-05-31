@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { connection } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { PostgresClient } from "./connection-client";
-import { logger } from "../logger";
+import { console } from "../console";
 
 export async function runDBQuery({
   query,
@@ -41,7 +41,7 @@ export async function runDBQuery({
         rowCount: res.rowCount,
       });
     } catch (error) {
-      logger.error(error);
+      console.error(error);
       return JSON.stringify({
         error: error instanceof Error ? error.message : "Unknown error",
       });

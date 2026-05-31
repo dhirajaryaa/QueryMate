@@ -1,5 +1,4 @@
 import { AgentEvent } from "@/types/agent.types";
-import { logger } from "./logger";
 
 export function streamChatResponse(completions: AsyncGenerator<AgentEvent>) {
   let assistantMessage = "";
@@ -31,7 +30,7 @@ export function streamChatResponse(completions: AsyncGenerator<AgentEvent>) {
             controller.enqueue(encoder.encode(payload));
           } catch {
             closed = true;
-            logger.warn("Client disconnected during stream");
+            console.warn("Client disconnected during stream");
             break;
           }
         }
@@ -39,10 +38,10 @@ export function streamChatResponse(completions: AsyncGenerator<AgentEvent>) {
         if (!closed) {
           controller.close();
           closed = true;
-          logger.debug("AI stream finished");
+          console.debug("AI stream finished");
         }
       } catch (error) {
-        logger.error(error, "AI stream failed");
+        console.error(error, "AI stream failed");
 
         if (!closed) {
           closed = true;

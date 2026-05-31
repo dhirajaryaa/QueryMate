@@ -23,17 +23,26 @@ export default function DbSelect() {
 
   //* load from localstorage */
   useEffect(() => {
+
+    if (connections.length === 0) return; //? if no connections, do nothing
+
     const selectedDb = localStorage.getItem("querymate_selected_db");
-    if (selectedDb) {
+
+    const exists = connections.some((conn) => conn.id === selectedDb);
+
+    if (selectedDb && exists) {
       setDbId(selectedDb);
-    } else {
-      //? if no db selected, set first db as selected
-      if (connections.length > 0) {
-        setDbId(connections[0].id);
-        localStorage.setItem("querymate_selected_db", connections[0].id);
-      }
+      return;
     }
-  }, []);
+
+    const firstId = connections[0].id;
+
+    setDbId(firstId);
+    localStorage.setItem(
+      "querymate_selected_db",
+      firstId
+    );
+  }, [connections]);
 
   const databaseIcons = {
     pg: PostgresIcon,
@@ -70,8 +79,9 @@ export default function DbSelect() {
   return (
     <Select value={dbId} onValueChange={handleChange}>
       <SelectTrigger
+        title="Select Database"
         size="sm"
-        className="rounded-lg text-muted-foreground text-sm"
+        className="rounded-lg text-muted-foreground text-sm max-w-50 truncate"
       >
         <SelectValue
           placeholder={isLoading ? "Loading databases..." : "Select Database"}
@@ -86,9 +96,9 @@ export default function DbSelect() {
           connections.map((conn) => {
             const Icon = databaseIcons[conn.type as keyof typeof databaseIcons];
             return (
-              <SelectItem key={conn.id} value={conn.id}>
+              <SelectItem key={conn.id} value={conn.id} title={conn.name}>
                 {Icon && <Icon className="size-4" />}
-                {conn.name}
+                <span className="max-w-46 truncate">{conn.name}</span>
               </SelectItem>
             );
           })

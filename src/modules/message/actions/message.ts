@@ -29,7 +29,7 @@ export async function getAllMessages({
 
     if (!chatExists) {
       throw new AppError("not_found:chat");
-    }
+    };
 
     const allMessages = await db
       .select()

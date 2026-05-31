@@ -1,5 +1,4 @@
 import { AppError } from "@/lib/errors";
-import { logger } from "@/lib/logger";
 import { ActionErrorResponse } from "@/types/app.types";
 import { notFound, redirect } from "next/navigation";
 import { AppErrorPayload } from "@/types/app.types";
@@ -7,10 +6,10 @@ import { toast } from "sonner";
 
 export const handleServerActionError = (error: any): ActionErrorResponse => {
   if (error instanceof AppError) {
-    logger.warn(error);
+    console.warn(error);
     return { success: false, error: error.toJson() };
   }
-  logger.error(error);
+  console.error(error);
 
   const err = new AppError("internal:api", error.message).toJson();
   return { success: false, error: err };
@@ -37,13 +36,13 @@ export const handleClientError = (error: any): void => {
     if (process.env.NODE_ENV === "development") {
       console.error(error);
     } else {
-      logger.warn(error);
+      console.warn(error);
     }
 
     toast.error(error.message);
     return;
   }
 
-  logger.error(error);
+  console.error(error);
   toast.error(error?.message || "Something went wrong!");
 };

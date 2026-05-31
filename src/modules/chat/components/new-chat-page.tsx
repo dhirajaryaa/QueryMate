@@ -17,9 +17,9 @@ function NewChatPage() {
     // post api call for new conversion id [chat id ] create
     const dbId = localStorage.getItem("querymate_selected_db");
     if (!dbId) {
-      toast.error("Please Select Database First!");
+      toast.info("Please Select Database First!");
       return;
-    }
+    };
     if (!prompt) return;
     try {
       setIsLoading(true);
@@ -37,9 +37,9 @@ function NewChatPage() {
     }
   };
   return (
-    <section>
+    <>
       <ChatInputBox sendMessage={sendMessage} isLoading={isLoading} />
-    </section>
+    </>
   );
 }
 

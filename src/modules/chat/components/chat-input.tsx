@@ -4,6 +4,8 @@ import React from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import DbSelect from "@/modules/chat/components/db-select";
+import { CornerDownLeft } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 
 function ChatInputBox({
   sendMessage,
@@ -31,11 +33,11 @@ function ChatInputBox({
     if (!id) {
       toast.info("select Database to start Conversation.");
       return;
-    }
+    };
 
     sendMessage(message);
 
-    if (textareaRef.current) {
+    if (textareaRef.current && !isLoading) {
       textareaRef.current.value = "";
       textareaRef.current.style.height = "auto";
     }
@@ -69,8 +71,9 @@ function ChatInputBox({
           />
           <div className="w-full flex flex-1 items-center justify-between">
             <DbSelect />
-            <Button size={"sm"} type="submit" className="rounded-lg" disabled={isLoading} >
+            <Button size={"sm"} type="submit" className="rounded-lg items-center" disabled={isLoading} >
               {isLoading ? "Sending..." : "Send"}
+              {isLoading ? <Spinner /> : <CornerDownLeft />}
             </Button>
           </div>
         </div>

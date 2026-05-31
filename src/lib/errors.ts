@@ -4,7 +4,6 @@ import {
   ErrorType,
   Surface,
 } from "@/types/app.types";
-import { logger } from "./logger";
 
 // error throw class defined
 export class AppError extends Error {
@@ -40,9 +39,9 @@ export class AppError extends Error {
 
     // smarter logging
     if (this.type === "internal") {
-      logger.error(payload);
+      console.error(payload);
     } else {
-      logger.warn(payload);
+      console.warn(payload);
     }
 
     // return http response
