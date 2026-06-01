@@ -10,7 +10,7 @@ import { useChatStore } from "@/stores/useChatStore";
 
 function NewChatPage() {
   const router = useRouter();
-  const appendChatHistory = useChatStore((state) => state.appendHistory);
+  const { appendHistory, addMessage } = useChatStore((state) => state);
   const [isLoading, setIsLoading] = useState(false);
 
   const sendMessage = async (message: string) => {
@@ -25,7 +25,8 @@ function NewChatPage() {
       setIsLoading(true);
       const res = await createNewChat({ prompt: message, dbId });
       if (res.success) {
-        appendChatHistory({ id: res.data.chatId, title: "New Chat" }); // Append new chat to history
+        appendHistory({ id: res.data.chatId, title: "New Chat" }); // Append new chat to history
+        addMessage({ id: crypto.randomUUID(), role: "user", content: message }); // Add user message to store
         router.push(`/chat/${res.data.chatId}`);
       } else {
         toast.error(res.error?.message || "Failed to create chat.");

@@ -58,7 +58,7 @@ function ChatInputBox({
   };
 
   return (
-    <section className="flex flex-col gap-2 w-full">
+    <section className="flex flex-col gap-2 w-full max-w-3xl mx-auto">
       <form onSubmit={handleSubmit} className="w-full">
         <div className="flex flex-col items-center justify-between gap-2 rounded-2xl border shadow p-2 w-auto dark:bg-secondary bg-secondary/50">
           <textarea
