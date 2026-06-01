@@ -13,6 +13,7 @@ import MongoDBIcon from "@/components/icons/mongodb";
 import { formatDate } from "@/modules/connection/utils/formatDate";
 import { Settings } from "lucide-react";
 import Link from "next/link";
+import StatusBadge from "@/components/common/status-badge";
 
 export default function ConnectionCard({
   connection,
@@ -33,9 +34,12 @@ export default function ConnectionCard({
         {/* Icon */}
         <ItemMedia variant={"image"} >{Icon && <Icon className="size-7" />}</ItemMedia>
         {/* Name + Last Updated */}
-        <ItemContent>
-          <ItemTitle className="line-clamp-1">{connection.name}</ItemTitle>
-          <ItemDescription className="text-xs sm:text-sm">
+        <ItemContent >
+          <ItemTitle className="flex items-center gap-2 truncate max-w-xs  sm:text-base">
+            <span className="truncate">{connection.name}</span>
+            <StatusBadge status={connection.status} />
+          </ItemTitle>
+          <ItemDescription className="text-xs sm:text-sm truncate">
             Last updated -
             {connection.updatedAt
               ? formatDate(connection.updatedAt)
