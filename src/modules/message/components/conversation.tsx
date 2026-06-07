@@ -1,25 +1,44 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ChatInputBox from "@/modules/chat/components/chat-input";
 import { useParams, useRouter } from "next/navigation";
-import { AIMessage, UserMessage } from "@/modules/message/components/message";
 import { useChatStore } from "@/stores/useChatStore";
+import { useChat } from "@ai-sdk/react";
+import { SafeMessage } from "@/modules/message/types/message.types";
+import { convertMessageToUIMessage } from "../utils/convert-message";
+import { MessageList } from "./message-list";
 
-export function Conversation() {
+export function Conversation({ initialMessages }: { initialMessages: SafeMessage[] }) {
     const router = useRouter();
-    const { chatId } = useParams();
+    const { chatId }: { chatId: string } = useParams();
     const [isLoading, setIsLoading] = useState(false);
     const chatContainerRef = useRef<HTMLDivElement>(null);
+    const pendingMessage = useChatStore((s) => s.pendingMessage);
+    const clearPendingMessage = useChatStore((s) => s.clearPendingMessage);
+
+    const hasSent = useRef(false);
+
+    const {
+        messages,
+        sendMessage,
+        status,
+    } = useChat({
+        id: chatId,
+        messages: convertMessageToUIMessage(initialMessages),
+    });
 
 
+    useEffect(() => {
+        const lastMessage = messages[messages.length - 1];
+        const needsAIResponse = lastMessage?.role === "user";
 
-    function sendMessage(message: string) { }
-
-
-    const messages = useChatStore(state => state.messages);
-    // console.log(messages);
-
+        if (needsAIResponse && status === "ready" && !hasSent.current) {
+            hasSent.current = true;
+            clearPendingMessage();
+            sendMessage();
+        }
+    }, [status]);
 
 
     return (
@@ -29,17 +48,8 @@ export function Conversation() {
                 ref={chatContainerRef}
             >
                 {/* chat list  */}
-                <div className="flex flex-col gap-6 flex-1 w-full max-w-3xl mx-auto mb-36 py-4 px-4">
-                    {
-                        messages?.map((message) => {
-                            return (
-                                message.role === "user" ?
-                                    <UserMessage key={message.id} content={message.content} />
-                                    : <AIMessage key={message.id} content={message.content} isLoading={true} />
-                            )
-                        })
-                    }
-                </div>
+                <MessageList messages={messages} status={status} />
+
             </section>
             <section className="w-full sticky bottom-0 bg-background z-10 inset-x-0 mask-t-from-90% p-4">
                 <ChatInputBox sendMessage={sendMessage} isLoading={isLoading} />

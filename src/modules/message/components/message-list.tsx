@@ -1,33 +1,15 @@
-import { SafeMessage } from "@/modules/message/types/message.types";
-import MessageLoading from "./message-loading";
-import { Badge } from "@/components/ui/badge";
-import { AssistantChatMessage, UserChatMessage } from "./message-ui";
+import { ChatStatus, UIMessage } from "ai";
+import { memo } from "react";
+import { Message } from "./message";
 
-export default function MessageList({
-  messages,
-  status,
-}: {
-  messages: SafeMessage[];
-  status: string | null;
-}) {
+export const MessageList = memo(function MessagesList({ messages, status }: { messages: UIMessage[], status: ChatStatus }) {
   return (
-    <>
-      {messages.length === 0 ? (
-        <MessageLoading />
-      ) : (
-        messages.map((message) =>
-          message.role === "user" ? (
-            <UserChatMessage key={message.id} message={message.content} />
-          ) : (
-            <AssistantChatMessage key={message.id} message={message.content} />
-          ),
-        )
-      )}
-      {status && (
-        <Badge className="text-sm mb-3 px-4 py-1.5" variant={"secondary"}>
-          {status}
-        </Badge>
-      )}
-    </>
-  );
-}
+    <div className="flex flex-col gap-6 flex-1 w-full max-w-3xl mx-auto mb-36 py-4 px-4">
+      {
+        messages.map((message, index) => (
+          <Message key={message.id} message={message} status={status} isLast={index === messages.length - 1} />
+        ))
+      }
+    </div>
+  )
+})

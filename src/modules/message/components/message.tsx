@@ -2,60 +2,57 @@ import { Streamdown } from "streamdown";
 import { code } from '@streamdown/code';
 import { mermaid } from '@streamdown/mermaid';
 import { cn } from "@/lib/utils";
+import { ComponentProps, memo } from "react";
+import { ChatStatus, UIMessage } from "ai";
+import { convertMessageToTextContent } from "@/modules/message/utils/convert-message";
 // @ts-ignore
 import "streamdown/styles.css"; // for streamdown styling
 
-type Props = {
-    content: string;
-    className?: string;
-    loadingLabel?: string;
-    isLoading?: boolean;
-};
 
-const markdown = `
-# Hello World
-Here's some code:
-\`\`\`typescript
-const greeting = "Hello, World!";
-console.log(greeting);
-\`\`\`
-And a diagram:
-\`\`\`mermaid
-graph LR
-    A[Start] --> B[End]
-\`\`\`
-And some math: $$E = mc^2$$
-  `;
+export const Message = memo(function Message({ message, status, isLast }: { message: UIMessage, status: ChatStatus, isLast: boolean }) {
 
 
-export function UserMessage({ content, className }: Props) {
+    const isStreaming = status === "streaming" && isLast;
+
+    // render user message 
+    if (message.role === "user") {
+        return (
+            <div className={"self-end bg-secondary text-foreground px-4 py-2 rounded-lg max-w-1/2 w-fit text-sm sm:text-base text-right"}>
+                {convertMessageToTextContent(message)}
+            </div>
+        )
+    };
+
     return (
-        <div className={cn("self-end bg-secondary text-foreground px-4 py-2 rounded-lg max-w-xs w-fit text-sm sm:text-base text-right", className)}>
-            {content}
-        </div>
+        <>
+            {message.parts.map((part, i) => {
+                switch (part.type) {
+                    case "text":
+                        return (
+                            <StreamResponse key={i} isAnimating={isStreaming} animated={{ animation: "blurIn" }} >
+                                {part.text}
+                            </StreamResponse>
+                        )
+                }
+            })}
+        </>
     )
-};
+});
 
-export function AIMessage({ content, className, isLoading, loadingLabel }: Props) {
-    return (
-        <div className="space-y-2">
-            {isLoading && <div className="text-sm text-muted-foreground animate-pulse">{loadingLabel || "AI is typing..."}</div>}
-            <Streamdown
-                controls={{ code: { download: false } }}
-                plugins={{
-                    code: code,
-                    mermaid: mermaid
-                }}
-                isAnimating={true}
-                className={cn(
-                    "size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 ",
-                    className
-                )}
-            >
-                {content}
-            </Streamdown>
-        </div>
-    )
-};
+export type MessageResponseProps = ComponentProps<typeof Streamdown>;
 
+const streamdownPlugins = { code, mermaid };
 
+export const StreamResponse = memo(
+    ({ className, ...props }: MessageResponseProps) => (
+        <Streamdown
+            className={cn(
+                "size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
+                className
+            )}
+            plugins={streamdownPlugins}
+            {...props}
+        />
+    ),
+    (prevProps, nextProps) => prevProps.children === nextProps.children
+);

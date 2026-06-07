@@ -12,7 +12,7 @@ function ChatInputBox({
   isLoading,
 }: {
   isLoading?: boolean;
-  sendMessage: (message: string) => void;
+  sendMessage: ({text}:{text:string}) => void;
 }) {
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
   // handle input auto resize of textarea
@@ -34,8 +34,10 @@ function ChatInputBox({
       toast.info("select Database to start Conversation.");
       return;
     };
+  
+    console.log("sending message", message);
 
-    sendMessage(message);
+    sendMessage({text: message});
 
     if (textareaRef.current && !isLoading) {
       textareaRef.current.value = "";
@@ -48,6 +50,7 @@ function ChatInputBox({
     e.preventDefault();
     submitMessage();
   };
+
   //? handle submit on ctrl + enter
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     // Ctrl + Enter (Windows/Linux) OR Cmd + Enter (Mac)

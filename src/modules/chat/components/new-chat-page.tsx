@@ -10,10 +10,10 @@ import { useChatStore } from "@/stores/useChatStore";
 
 function NewChatPage() {
   const router = useRouter();
-  const { appendHistory, addMessage } = useChatStore((state) => state);
+  const { appendHistory, addMessage, setPendingMessage } = useChatStore((state) => state);
   const [isLoading, setIsLoading] = useState(false);
 
-  const sendMessage = async (message: string) => {
+  const sendMessage = async ({ text }: { text: string }) => {
     // post api call for new conversion id [chat id ] create
     const dbId = localStorage.getItem("querymate_selected_db");
     if (!dbId) {
@@ -23,10 +23,19 @@ function NewChatPage() {
     if (!prompt) return;
     try {
       setIsLoading(true);
-      const res = await createNewChat({ prompt: message, dbId });
+      const res = await createNewChat({ prompt: text, dbId });
       if (res.success) {
-        appendHistory({ id: res.data.chatId, title: "New Chat" }); // Append new chat to history
-        addMessage({ id: crypto.randomUUID(), role: "user", content: message }); // Add user message to store
+        // Append new chat to history
+        appendHistory({ id: res.data.chatId, title: "New Chat" });
+
+        // Add user message to store
+        addMessage({
+          chatId: res.data.chatId,
+          message: { id: crypto.randomUUID(), content: text, role: "user" }
+        });
+        // set pending message 
+        setPendingMessage(text);
+        // navigate 
         router.push(`/chat/${res.data.chatId}`);
       } else {
         toast.error(res.error?.message || "Failed to create chat.");

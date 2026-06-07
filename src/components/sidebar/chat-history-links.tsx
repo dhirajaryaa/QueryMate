@@ -21,9 +21,11 @@ export default function ChatHistoryLink({
   const chatHistory = useChatStore((state) => state.chatHistory);
   const setChatHistory = useChatStore((state) => state.setChatHistory);
 
-  if (chatHistory.length === 0 && history?.length) {
-    setChatHistory(history);
-  }
+  useEffect(() => {
+    if (history?.length) {
+      setChatHistory(history);
+    }
+  }, [history, setChatHistory]);
 
   const data = chatHistory.length ? chatHistory : history;
 

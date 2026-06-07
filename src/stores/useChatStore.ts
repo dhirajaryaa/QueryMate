@@ -3,28 +3,28 @@ import { Message, SafeMessage } from "@/modules/message/types/message.types";
 import { create } from "zustand";
 
 type ChatStates = {
+    // history 
     chatHistory: ChatHistory[];
     setChatHistory: (chats: ChatHistory[]) => void;
     appendHistory: (chat: ChatHistory) => void;
     removeHistory: (id: string) => void;
     clearHistory: () => void;
 
-    messages: SafeMessage[];
+    // chat message 
+    chatMessages: Record<string, SafeMessage[]>;
 
-    addMessage: (message: SafeMessage) => void;
+    pendingMessage: string | null;
 
-    updateAssistantMessage: (
-        id: string,
-        content: string
-    ) => void;
+    setPendingMessage: (message: string) => void;
+    clearPendingMessage: () => void;
 
-    clearMessages: () => void;
+    addMessage: ({ message, chatId }: { message: SafeMessage, chatId: string }) => void;
 };
 
 export const useChatStore = create<ChatStates>((set) => ({
     chatHistory: [],
-    // set chats 
-    setChatHistory: (chats: ChatHistory[]) => set((state) => ({ chatHistory: chats })),
+    // set chats history
+    setChatHistory: (history: ChatHistory[]) => set({chatHistory:history}),
     // add one chat 
     appendHistory: (newChat) =>
         set((state) => ({
@@ -32,22 +32,27 @@ export const useChatStore = create<ChatStates>((set) => ({
         })),
     // remove one chat 
     removeHistory: (id) => set((state) => ({ chatHistory: state.chatHistory.filter(chat => chat.id !== id) })),
+
     // remove all chat 
     clearHistory: () => set({ chatHistory: [] }),
 
-    messages: [],
+    // chatMessages
+    chatMessages: {},
 
-    addMessage: (message) =>
-        set((state) => ({
-            messages: [...state.messages, message],
-        })),
+    // add message 
+    addMessage: ({ chatId, message }) => set((state) => ({
+        chatMessages: {
+            ...state.chatMessages,
+            [chatId]: [...(state.chatMessages[chatId] ?? []), message]
+        }
+    })),
 
-    updateAssistantMessage: (id, content) =>
-        set((state) => ({
-            messages: state.messages.map((m) =>
-                m.id === id ? { ...m, content } : m
-            ),
-        })),
 
-    clearMessages: () => set({ messages: [] }),
+    // pending message 
+    pendingMessage: null,
+
+    setPendingMessage: (message: string) => set((state) => ({ pendingMessage: message })),
+
+    clearPendingMessage: () => set((state) => ({ pendingMessage: null })),
+
 }));
