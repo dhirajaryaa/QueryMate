@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import ChatInputBox from "@/modules/chat/components/chat-input";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useChatStore } from "@/stores/useChatStore";
 import { useChat } from "@ai-sdk/react";
 import { SafeMessage } from "@/modules/message/types/message.types";
@@ -10,10 +10,9 @@ import { convertMessageToUIMessage } from "../utils/convert-message";
 import { MessageList } from "./message-list";
 
 export function Conversation({ initialMessages }: { initialMessages: SafeMessage[] }) {
-    const router = useRouter();
     const { chatId }: { chatId: string } = useParams();
     const [isLoading, setIsLoading] = useState(false);
-    const chatContainerRef = useRef<HTMLDivElement>(null);
+
     const pendingMessage = useChatStore((s) => s.pendingMessage);
     const clearPendingMessage = useChatStore((s) => s.clearPendingMessage);
 
@@ -30,22 +29,20 @@ export function Conversation({ initialMessages }: { initialMessages: SafeMessage
 
 
     useEffect(() => {
-        const lastMessage = messages[messages.length - 1];
-        const needsAIResponse = lastMessage?.role === "user";
+        console.info(pendingMessage, status, hasSent.current);
 
-        if (needsAIResponse && status === "ready" && !hasSent.current) {
+        if (pendingMessage && status === "ready" && !hasSent.current) {
             hasSent.current = true;
+            sendMessage({ text: pendingMessage ?? "" });
             clearPendingMessage();
-            sendMessage();
-        }
-    }, [status]);
+        };
+    }, []);
 
 
     return (
         <div className="w-full h-full relative">
             <section
                 className="flex flex-1 flex-col w-full h-full overflow-y-auto  relative p-4"
-                ref={chatContainerRef}
             >
                 {/* chat list  */}
                 <MessageList messages={messages} status={status} />

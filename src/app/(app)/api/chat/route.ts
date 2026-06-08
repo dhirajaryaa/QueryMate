@@ -1,7 +1,8 @@
 import { db } from '@/db';
 import { message } from '@/db/schema';
 import { model } from '@/modules/ai/lib/provider';
-import { streamText, UIMessage, convertToModelMessages, createIdGenerator } from 'ai';
+import { convertMessageToTextContent } from '@/modules/message/utils/convert-message';
+import { streamText, UIMessage, convertToModelMessages } from 'ai';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -9,16 +10,13 @@ export const maxDuration = 30;
 export async function POST(req: Request) {
     const { messages, id: chatId }: { messages: UIMessage[], id: string } = await req.json();
 
-    // save user message and skip fist already add
+    //? save user message and skip fist already add
     const lastMessage = messages[messages.length - 1];
 
     await db.insert(message).values({
         chatId,
         role: "user",
-        content: lastMessage.parts
-            .filter((p: any) => p.type === "text")
-            .map((p: any) => p.text)
-            .join(""),
+        content: convertMessageToTextContent(lastMessage),
     }).onConflictDoNothing();
 
 
@@ -31,7 +29,7 @@ export async function POST(req: Request) {
     return result.toUIMessageStreamResponse({
         originalMessages: messages,
 
-        // ✅ Stream complete — assistant message save karo
+        //? ✅ Stream complete — assistant message save karo
         onFinish: async ({ messages: allMessages }) => {
             const assistantMsg = allMessages[allMessages.length - 1];
             // console.log(assistantMsg);
@@ -40,10 +38,7 @@ export async function POST(req: Request) {
             await db.insert(message).values({
                 chatId,
                 role: "assistant",
-                content: assistantMsg.parts
-                    .filter((p: any) => p.type === "text")
-                    .map((p: any) => p.text)
-                    .join(""),
+                content: convertMessageToTextContent(assistantMsg),
             });
         },
     });

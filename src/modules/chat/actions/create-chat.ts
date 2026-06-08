@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { chat, message } from "@/db/schema";
+import { chat } from "@/db/schema";
 import { AppError } from "@/lib/errors";
 import { requireUser } from "@/modules/auth/utils/require-user";
 import { ChatResponse, CreateChatProps } from "@/modules/chat/types/chat.types";
@@ -23,31 +23,26 @@ export async function createNewChat({
         const user = await requireUser();
 
 
-        const result = await db.transaction(async (tx) => {
-            // first save chat 
-            const [newChat] = await tx
-                .insert(chat)
-                .values({
-                    title: "New Chat",
-                    connectionId: dbId,
-                    userId: user?.id,
-                })
-                .returning({
-                    chatId: chat.id,
-                    dbId: chat.connectionId,
-                });
+        // create new chat 
 
-            // save first message 
-            await tx.insert(message).values({
-                content: prompt,
-                role: "user",
-                chatId: newChat.chatId,
+        const [newChat] = await db
+            .insert(chat)
+            .values({
+                title: "New Chat",
+                connectionId: dbId,
+                userId: user?.id,
+            })
+            .returning({
+                chatId: chat.id,
+                dbId: chat.connectionId,
             });
 
-            return newChat
-        });
+        if (!newChat) {
+            throw new AppError("internal:database");
+        };
 
-        return { success: true, data: result };
+
+        return { success: true, data: newChat };
     } catch (error) {
         return handleServerActionError(error);
     }

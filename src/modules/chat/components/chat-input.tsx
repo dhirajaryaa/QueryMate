@@ -12,10 +12,10 @@ function ChatInputBox({
   isLoading,
 }: {
   isLoading?: boolean;
-  sendMessage: ({text}:{text:string}) => void;
+  sendMessage: ({ text }: { text: string }) => void;
 }) {
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
-  // handle input auto resize of textarea
+  //? handle input auto resize of textarea
   const handleInput = () => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -34,10 +34,9 @@ function ChatInputBox({
       toast.info("select Database to start Conversation.");
       return;
     };
-  
-    console.log("sending message", message);
 
-    sendMessage({text: message});
+    //? send message to conversation component
+    sendMessage({ text: message });
 
     if (textareaRef.current && !isLoading) {
       textareaRef.current.value = "";
