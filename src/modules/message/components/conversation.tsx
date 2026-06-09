@@ -8,11 +8,10 @@ import { useChat } from "@ai-sdk/react";
 import { SafeMessage } from "@/modules/message/types/message.types";
 import { convertMessageToUIMessage } from "../utils/convert-message";
 import { MessageList } from "./message-list";
+import { handleClientError } from "@/utils/handle-errors";
 
 export function Conversation({ initialMessages }: { initialMessages: SafeMessage[] }) {
     const { chatId }: { chatId: string } = useParams();
-    const [isLoading, setIsLoading] = useState(false);
-
     const pendingMessage = useChatStore((s) => s.pendingMessage);
     const clearPendingMessage = useChatStore((s) => s.clearPendingMessage);
 
@@ -22,9 +21,15 @@ export function Conversation({ initialMessages }: { initialMessages: SafeMessage
         messages,
         sendMessage,
         status,
+        stop,
+        error,
+        regenerate
     } = useChat({
         id: chatId,
         messages: convertMessageToUIMessage(initialMessages),
+        onError: (err) => {
+            handleClientError(err);
+        }
     });
 
 
@@ -49,7 +54,7 @@ export function Conversation({ initialMessages }: { initialMessages: SafeMessage
 
             </section>
             <section className="w-full sticky bottom-0 bg-background z-10 inset-x-0 mask-t-from-90% p-4">
-                <ChatInputBox sendMessage={sendMessage} isLoading={isLoading} />
+                <ChatInputBox sendMessage={sendMessage} status={status} stop={stop} />
             </section>
         </div>
     )

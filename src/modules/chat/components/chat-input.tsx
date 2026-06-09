@@ -4,16 +4,21 @@ import React from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import DbSelect from "@/modules/chat/components/db-select";
-import { CornerDownLeft } from "lucide-react";
+import { SendHorizonal, Square } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
+import { ChatStatus } from "ai";
+
+type compProps = {
+  status: ChatStatus;
+  sendMessage: ({ text }: { text: string }) => void;
+  stop: () => void;
+}
 
 function ChatInputBox({
   sendMessage,
-  isLoading,
-}: {
-  isLoading?: boolean;
-  sendMessage: ({ text }: { text: string }) => void;
-}) {
+  status,
+  stop
+}: compProps) {
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
   //? handle input auto resize of textarea
   const handleInput = () => {
@@ -38,10 +43,8 @@ function ChatInputBox({
     //? send message to conversation component
     sendMessage({ text: message });
 
-    if (textareaRef.current && !isLoading) {
-      textareaRef.current.value = "";
-      textareaRef.current.style.height = "auto";
-    }
+    textareaRef.current!.value = "";
+    textareaRef.current!.style.height = "auto";
   };
 
   //? form submit handler
@@ -61,7 +64,7 @@ function ChatInputBox({
 
   return (
     <section className="flex flex-col gap-2 w-full max-w-3xl mx-auto">
-      <form onSubmit={handleSubmit} className="w-full">
+      <form className="w-full" onSubmit={handleSubmit}>
         <div className="flex flex-col items-center justify-between gap-2 rounded-2xl border shadow p-2 w-auto dark:bg-secondary bg-secondary/50">
           <textarea
             onInput={handleInput}
@@ -73,9 +76,19 @@ function ChatInputBox({
           />
           <div className="w-full flex flex-1 items-center justify-between">
             <DbSelect />
-            <Button size={"sm"} type="submit" className="rounded-lg items-center" disabled={isLoading} >
-              {isLoading ? "Sending..." : "Send"}
-              {isLoading ? <Spinner /> : <CornerDownLeft />}
+            <Button
+              size="icon-sm"
+              type={status === "streaming" ? "button" : "submit"}
+              onClick={status === "streaming" ? stop : undefined}
+              className="cursor-pointer"
+            >
+              {status === "submitted" ? (
+                <Spinner />
+              ) : status === "streaming" ? (
+                <Square />
+              ) : (
+                <SendHorizonal />
+              )}
             </Button>
           </div>
         </div>
