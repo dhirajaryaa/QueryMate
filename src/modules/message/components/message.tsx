@@ -35,8 +35,8 @@ export const Message = memo(function Message({ message, status, isLast }: { mess
                             <StreamResponse
                                 key={i}
                                 isAnimating={isStreaming}
-                            // animated={{ animation: "blurIn" }}
-                            // mode={isStreaming ? "streaming" : "static"}
+                                animated={{ animation: "blurIn" }}
+                                mode={isStreaming ? "streaming" : "static"}
                             >
                                 {part.text}
                             </StreamResponse>
