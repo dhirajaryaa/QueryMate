@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import ChatInputBox from "@/modules/chat/components/chat-input";
 import { useParams } from "next/navigation";
 import { useChatStore } from "@/stores/useChatStore";
@@ -9,14 +9,18 @@ import { SafeMessage } from "@/modules/message/types/message.types";
 import { convertMessageToUIMessage } from "@/modules/message/utils/convert-message";
 import { MessageList } from "./message-list";
 import { handleClientError } from "@/utils/handle-errors";
+import { generateAndSaveChatTitle } from "@/modules/chat/actions/chat-title";
+import { genChatTitle } from "@/modules/chat/types/chat.types";
 
 export function Conversation({ initialMessages }: { initialMessages: SafeMessage[] }) {
     const { chatId }: { chatId: string } = useParams();
     const pendingMessage = useChatStore((s) => s.pendingMessage);
+    const updateHistoryTitle = useChatStore((s) => s.updateHistoryTitle);
     const bottomRef = useRef<HTMLDivElement>(null);
     const clearPendingMessage = useChatStore((s) => s.clearPendingMessage);
 
     const hasSent = useRef(false);
+
 
     const {
         messages,
@@ -28,6 +32,9 @@ export function Conversation({ initialMessages }: { initialMessages: SafeMessage
     } = useChat({
         id: chatId,
         messages: convertMessageToUIMessage(initialMessages),
+        onFinish: () => {
+
+        },
         onError: (err) => {
             handleClientError(err);
         }
@@ -35,10 +42,21 @@ export function Conversation({ initialMessages }: { initialMessages: SafeMessage
 
 
     useEffect(() => {
-        console.info(pendingMessage, status, hasSent.current);
 
         if (pendingMessage && status === "ready" && !hasSent.current) {
             hasSent.current = true;
+            //* title generation call */
+            generateAndSaveChatTitle({
+                chatId,
+                message: pendingMessage,
+            }).then((res: genChatTitle) => {
+                if (res.success) {
+                    updateHistoryTitle(chatId, res.data.title);
+                };
+                return;
+            });
+
+            //* chat generation call */
             sendMessage({ text: pendingMessage ?? "" });
             clearPendingMessage();
         };

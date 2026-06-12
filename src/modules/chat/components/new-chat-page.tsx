@@ -48,7 +48,7 @@ function NewChatPage() {
   };
   return (
     <>
-      <ChatInputBox sendMessage={sendMessage} isLoading={isLoading} />
+      <ChatInputBox sendMessage={sendMessage} />
     </>
   );
 }

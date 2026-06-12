@@ -7,6 +7,7 @@ type ChatStates = {
     chatHistory: ChatHistory[];
     setChatHistory: (chats: ChatHistory[]) => void;
     appendHistory: (chat: ChatHistory) => void;
+    updateHistoryTitle: (id: string, title: string) => void;
     removeHistory: (id: string) => void;
     clearHistory: () => void;
 
@@ -24,11 +25,20 @@ type ChatStates = {
 export const useChatStore = create<ChatStates>((set) => ({
     chatHistory: [],
     // set chats history
-    setChatHistory: (history: ChatHistory[]) => set({chatHistory:history}),
+    setChatHistory: (history: ChatHistory[]) => set({ chatHistory: history }),
     // add one chat 
     appendHistory: (newChat) =>
         set((state) => ({
             chatHistory: [...state.chatHistory, newChat],
+        })),
+    //update chat title 
+    updateHistoryTitle: (id: string, title: string) =>
+        set((state) => ({
+            chatHistory: state.chatHistory.map((chat) =>
+                chat.id === id
+                    ? { ...chat, title }
+                    : chat
+            ),
         })),
     // remove one chat 
     removeHistory: (id) => set((state) => ({ chatHistory: state.chatHistory.filter(chat => chat.id !== id) })),

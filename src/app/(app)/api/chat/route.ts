@@ -1,6 +1,7 @@
 import { db } from '@/db';
 import { message } from '@/db/schema';
-import { model } from '@/modules/ai/lib/provider';
+import { ChatModel } from '@/modules/ai/lib/provider';
+import { generateAndSaveChatTitle } from '@/modules/chat/actions/chat-title';
 import { convertMessageToTextContent } from '@/modules/message/utils/convert-message';
 import { streamText, UIMessage, convertToModelMessages } from 'ai';
 
@@ -12,29 +13,33 @@ export async function POST(req: Request) {
 
     //? save user message and skip fist already add
     const lastMessage = messages[messages.length - 1];
+    const content = convertMessageToTextContent(lastMessage);
 
     await db.insert(message).values({
         chatId,
         role: "user",
-        content: convertMessageToTextContent(lastMessage),
+        content,
     }).onConflictDoNothing();
+
+    //* title generation call */
+    void generateAndSaveChatTitle({ chatId, message: content });
 
 
 
     const result = streamText({
-        model,
+        model: ChatModel,
         messages: await convertToModelMessages(messages),
     });
 
     return result.toUIMessageStreamResponse({
         originalMessages: messages,
 
-        //? ✅ Stream complete — assistant message save karo
+        
+        //? Stream complete 
         onFinish: async ({ messages: allMessages }) => {
+            //? assistant message save it 
             const assistantMsg = allMessages[allMessages.length - 1];
-            // console.log(assistantMsg);
-
-
+            
             await db.insert(message).values({
                 chatId,
                 role: "assistant",

@@ -9,9 +9,9 @@ import { Spinner } from "@/components/ui/spinner";
 import { ChatStatus } from "ai";
 
 type compProps = {
-  status: ChatStatus;
+  status?: ChatStatus;
   sendMessage: ({ text }: { text: string }) => void;
-  stop: () => void;
+  stop?: () => void;
 }
 
 function ChatInputBox({
