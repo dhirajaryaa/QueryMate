@@ -15,8 +15,6 @@ export async function ChatHistoryList() {
     handlePageError(res.error);
   };
 
-  console.log("db history",res.data);
-
   return (
     <SidebarGroup className="bg-sidebar px-2 z-1 overflow-y-auto">
       <SidebarGroupLabel>Your Chats</SidebarGroupLabel>

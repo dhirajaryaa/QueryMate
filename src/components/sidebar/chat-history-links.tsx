@@ -42,9 +42,6 @@ export default function ChatHistoryLink({
 
 
   const history = chatHistory ?? initialHistory;
-  console.log("history", history);
-  console.log("chat by store", chatHistory);
-
 
   const handleChatRemove = async (id: string) => {
     const res = await deleteChatById(id);
@@ -54,7 +51,6 @@ export default function ChatHistoryLink({
     removeHistory(id);
     router.push(AuthRedirectPath);
   };
-
 
 
   // empty chat history 
