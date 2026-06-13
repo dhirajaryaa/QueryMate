@@ -15,16 +15,12 @@ export async function ChatHistoryList() {
     handlePageError(res.error);
   };
 
+  console.log("db history",res.data);
+
   return (
     <SidebarGroup className="bg-sidebar px-2 z-1 overflow-y-auto">
       <SidebarGroupLabel>Your Chats</SidebarGroupLabel>
-      {res.data.length === 0 ? (
-        <div className="px-2 py-1 my-5 text-sm text-muted-foreground">
-          No chat history found.
-        </div>
-      ) : (
-        <ChatHistoryLink history={res.data} />
-      )}
+      <ChatHistoryLink initialHistory={res.data} />
     </SidebarGroup>
   );
 }

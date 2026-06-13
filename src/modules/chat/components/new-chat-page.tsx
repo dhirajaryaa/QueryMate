@@ -10,7 +10,7 @@ import { useChatStore } from "@/stores/useChatStore";
 
 function NewChatPage() {
   const router = useRouter();
-  const { appendHistory, addMessage, setPendingMessage } = useChatStore((state) => state);
+  const { appendHistory, setPendingMessage } = useChatStore((state) => state);
   const [isLoading, setIsLoading] = useState(false);
 
   const sendMessage = async ({ text }: { text: string }) => {
@@ -27,12 +27,6 @@ function NewChatPage() {
       if (res.success) {
         // Append new chat to history
         appendHistory({ id: res.data.chatId, title: "New Chat" });
-
-        // Add user message to store
-        addMessage({
-          chatId: res.data.chatId,
-          message: { id: crypto.randomUUID(), content: text, role: "user" }
-        });
         // set pending message 
         setPendingMessage(text);
         // navigate 
