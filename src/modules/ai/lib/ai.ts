@@ -11,4 +11,4 @@ export const generateChatTitle = async (message: string) => {
     });
 
     return text;
-}
+};

@@ -35,7 +35,7 @@ export default async function ConnectionsPage() {
             <div className="w-full flex flex-col gap-3">
               {/* Heading */}
               <div className="flex justify-between items-center">
-                <h2 className="text-sm sm:text-lg font-semibold text-muted-foreground">
+                <h2 className="text-sm sm:text-lg font-semibold text-muted-foreground border-l-4 px-2 border-yellow-400">
                   Connections
                 </h2>
               </div>

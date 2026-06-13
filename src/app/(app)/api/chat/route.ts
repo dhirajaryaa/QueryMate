@@ -1,6 +1,8 @@
 import { db } from '@/db';
 import { message } from '@/db/schema';
+import { chatSystemPrompt } from '@/modules/ai/lib/prompts';
 import { ChatModel } from '@/modules/ai/lib/provider';
+import { dbInformationTool } from '@/modules/ai/lib/tools/db-info';
 import { generateAndSaveChatTitle } from '@/modules/chat/actions/chat-title';
 import { convertMessageToTextContent } from '@/modules/message/utils/convert-message';
 import { streamText, UIMessage, convertToModelMessages } from 'ai';
@@ -25,21 +27,24 @@ export async function POST(req: Request) {
     void generateAndSaveChatTitle({ chatId, message: content });
 
 
-
     const result = streamText({
         model: ChatModel,
+        system: chatSystemPrompt,
+        tools: {
+            dbInfo: dbInformationTool
+        },
         messages: await convertToModelMessages(messages),
     });
 
     return result.toUIMessageStreamResponse({
         originalMessages: messages,
 
-        
+
         //? Stream complete 
         onFinish: async ({ messages: allMessages }) => {
             //? assistant message save it 
             const assistantMsg = allMessages[allMessages.length - 1];
-            
+
             await db.insert(message).values({
                 chatId,
                 role: "assistant",

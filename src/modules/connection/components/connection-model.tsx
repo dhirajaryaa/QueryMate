@@ -46,7 +46,7 @@ export function ConnectionModel() {
       type: "pg",
       ssl: false,
     },
-    resolver: zodResolver(addConnectionSchema),
+    resolver: zodResolver(addConnectionSchema) as any,
   });
   const dbType = watch("type");
 
