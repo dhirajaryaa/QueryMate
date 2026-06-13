@@ -31,7 +31,7 @@ export async function POST(req: Request) {
         model: ChatModel,
         system: chatSystemPrompt,
         tools: {
-            dbInfo: dbInformationTool
+            dbInfo: dbInformationTool(chatId)
         },
         messages: await convertToModelMessages(messages),
     });

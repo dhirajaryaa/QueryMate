@@ -4,17 +4,14 @@ import { tool } from 'ai';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
 
-export const dbInformationTool = tool({
+export const dbInformationTool = (chatId: string) => tool({
     description: 'Get the database information',
-    inputSchema: z.object({
-        chatId: z.string().describe('The chatId to get the db information'),
-    }),
-    execute: async ({ chatId }) => {
+    inputSchema: z.object({}),
+    execute: async () => {
         // Your db logic
         const [selectedChat] = await db.select().from(chat).where(eq(chat.id, chatId));
 
         if (selectedChat) {
-
             const [result] = await db.select({
                 id: connection.id,
                 dbType: connection.type,
