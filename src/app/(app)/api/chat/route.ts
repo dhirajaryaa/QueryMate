@@ -6,7 +6,7 @@ import { dbInformationTool } from '@/modules/ai/lib/tools/db-info';
 import { dbSchemaTool } from '@/modules/ai/lib/tools/db-schema';
 import { generateAndSaveChatTitle } from '@/modules/chat/actions/chat-title';
 import { convertMessageToTextContent } from '@/modules/message/utils/convert-message';
-import { streamText, UIMessage, convertToModelMessages } from 'ai';
+import { streamText, UIMessage, convertToModelMessages, stepCountIs } from 'ai';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -31,6 +31,7 @@ export async function POST(req: Request) {
     const result = streamText({
         model: ChatModel,
         system: chatSystemPrompt,
+        stopWhen: stepCountIs(5),
         tools: {
             dbInfo: dbInformationTool(chatId),
             dbSchema: dbSchemaTool(chatId)

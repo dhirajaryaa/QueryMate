@@ -33,7 +33,7 @@ export const Message = memo(function Message({ message, status, isLast }: { mess
                     case "text":
                         return (
                             <StreamResponse
-                                key={i}
+                                key={`${message.id}-${i}`}
                                 isAnimating={isStreaming}
                                 animated={{ animation: "blurIn" }}
                                 mode={isStreaming ? "streaming" : "static"}
@@ -41,6 +41,13 @@ export const Message = memo(function Message({ message, status, isLast }: { mess
                                 {part.text}
                             </StreamResponse>
                         )
+
+                    case 'tool-dbInfo':
+                        return (
+                            <div key={`${message.id}-${i}`} className="w-full whitespace-break-spaces bg-yellow-700/20 text-yellow-400">
+                                {JSON.stringify(part, null, 2)}
+                            </div>
+                        );
                 }
             })}
         </>

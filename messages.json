@@ -1,0 +1,89 @@
+[
+  {
+    "parts": [
+      {
+        "type": "text",
+        "text": "hii"
+      }
+    ],
+    "id": "YufjIA9LU7g8IzVE",
+    "role": "user"
+  },
+  {
+    "id": "05lGgGblHML7kKsy",
+    "role": "assistant",
+    "parts": [
+      {
+        "type": "step-start"
+      },
+      {
+        "type": "reasoning",
+        "text": "User says \"hii\". That's greeting. Should respond friendly.",
+        "state": "done"
+      },
+      {
+        "type": "text",
+        "text": "Hello! 👋 How can I help you today?",
+        "state": "done"
+      }
+    ]
+  },
+  {
+    "parts": [
+      {
+        "type": "text",
+        "text": "what db connected this time"
+      }
+    ],
+    "id": "fsBplhcvOibIkGk2",
+    "role": "user"
+  },
+  {
+    "id": "vZ4gcsBC3uUb4IHH",
+    "role": "assistant",
+    "parts": [
+      {
+        "type": "step-start"
+      },
+      {
+        "type": "reasoning",
+        "text": "User asks which database is connected. We can use dbInfo tool.",
+        "state": "done"
+      },
+      {
+        "type": "tool-dbInfo",
+        "toolCallId": "fc_f1fd715d-52d0-4cfb-b4d1-c1db7c3147a0",
+        "state": "output-available",
+        "input": {},
+        "output": {
+          "id": "ea6fc6bf-7803-434e-a7ac-321f036cca2e",
+          "dbType": "pg",
+          "dbName": "Docker Postgres DB"
+        }
+      },
+      {
+        "type": "step-start"
+      },
+      {
+        "type": "reasoning",
+        "text": "Need to output response in markdown, but never reveal internal details. But user asked what DB connected. According to rule, we can mention database type and name? We should not reveal schema details. It's okay to say \"We are connected to a PostgreSQL database.\" Should not reveal name? Possibly we can say \"PostgreSQL\" is okay. Let's respond.",
+        "state": "done"
+      },
+      {
+        "type": "text",
+        "text": "I’m connected to a PostgreSQL database. How can I help you with it?",
+        "state": "done"
+      }
+    ]
+  },
+  {
+    "parts": [
+      {
+        "type": "text",
+        "text": "hii"
+      }
+    ],
+    "id": "TeRMKse9Qi1BrNUi",
+    "role": "user"
+  }
+]
