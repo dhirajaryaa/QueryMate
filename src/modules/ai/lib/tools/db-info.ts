@@ -1,7 +1,7 @@
 import { db } from '@/db';
 import { chat, connection } from '@/db/schema';
 import { tool } from 'ai';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { z } from 'zod';
 
 export const dbInformationTool = (chatId: string) => tool({
@@ -16,7 +16,7 @@ export const dbInformationTool = (chatId: string) => tool({
                 id: connection.id,
                 dbType: connection.type,
                 dbName: connection.name
-            }).from(connection).where(eq(connection.userId, selectedChat.userId));
+            }).from(connection).where(and(eq(connection.id, selectedChat.connectionId), eq(connection.userId, selectedChat.userId)));
 
             return result;
         }
