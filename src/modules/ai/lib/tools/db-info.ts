@@ -5,6 +5,7 @@ import { and, eq } from 'drizzle-orm';
 import { z } from 'zod';
 
 export const dbInformationTool = (chatId: string) => tool({
+    title: 'Get Database Information',
     description: 'Get the database information',
     inputSchema: z.object({}),
     execute: async () => {

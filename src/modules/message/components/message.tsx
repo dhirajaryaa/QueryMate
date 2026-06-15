@@ -5,8 +5,15 @@ import { cn } from "@/lib/utils";
 import { ComponentProps, memo } from "react";
 import { ChatStatus, UIMessage } from "ai";
 import { convertMessageToTextContent } from "@/modules/message/utils/convert-message";
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion";
 // @ts-ignore
 import "streamdown/styles.css"; // for streamdown styling
+import { Tool } from "./tool";
 
 
 export const Message = memo(function Message({ message, status, isLast }: { message: UIMessage, status: ChatStatus, isLast: boolean }) {
@@ -26,6 +33,8 @@ export const Message = memo(function Message({ message, status, isLast }: { mess
         )
     };
 
+
+
     return (
         <>
             {message.parts.map((part, i) => {
@@ -44,10 +53,20 @@ export const Message = memo(function Message({ message, status, isLast }: { mess
 
                     case 'tool-dbInfo':
                         return (
-                            <div key={`${message.id}-${i}`} className="w-full whitespace-break-spaces bg-yellow-700/20 text-yellow-400">
-                                {JSON.stringify(part, null, 2)}
-                            </div>
-                        );
+                            <Tool
+                                key={part.toolCallId}
+                                part={part}
+                            />
+                        )
+                    case 'tool-dbSchema':
+                        return (
+                            <Tool
+                                key={part.toolCallId}
+                                part={part}
+                            />
+                        )
+
+                default: null
                 }
             })}
         </>
