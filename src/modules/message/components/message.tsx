@@ -5,12 +5,6 @@ import { cn } from "@/lib/utils";
 import { ComponentProps, memo } from "react";
 import { ChatStatus, UIMessage } from "ai";
 import { convertMessageToTextContent } from "@/modules/message/utils/convert-message";
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion";
 // @ts-ignore
 import "streamdown/styles.css"; // for streamdown styling
 import { Tool } from "./tool";
@@ -27,7 +21,7 @@ export const Message = memo(function Message({ message, status, isLast }: { mess
     // render user message 
     if (message.role === "user") {
         return (
-            <div className={"self-end bg-secondary text-foreground px-4 py-2 rounded-lg max-w-1/2 w-fit h-fit text-sm sm:text-base"}>
+            <div className={"my-4 self-end bg-secondary text-foreground px-4 py-2 rounded-lg max-w-1/2 w-fit h-fit text-sm sm:text-base"}>
                 {convertMessageToTextContent(message)}
             </div>
         )
