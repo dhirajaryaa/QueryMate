@@ -5,14 +5,13 @@ import ChatInputBox from "@/modules/chat/components/chat-input";
 import { useParams } from "next/navigation";
 import { useChatStore } from "@/stores/useChatStore";
 import { useChat } from "@ai-sdk/react";
-import { SafeMessage } from "@/modules/message/types/message.types";
-import { convertMessageToUIMessage } from "@/modules/message/utils/convert-message";
+import { Message } from "@/modules/message/types/message.types";
 import { MessageList } from "./message-list";
 import { handleClientError } from "@/utils/handle-errors";
 import { generateAndSaveChatTitle } from "@/modules/chat/actions/chat-title";
 import { genChatTitle } from "@/modules/chat/types/chat.types";
 
-export function Conversation({ initialMessages }: { initialMessages: SafeMessage[] }) {
+export function Conversation({ initialMessages }: { initialMessages: Message[] }) {
     const { chatId }: { chatId: string } = useParams();
     const pendingMessage = useChatStore((s) => s.pendingMessage);
     const updateHistoryTitle = useChatStore((s) => s.updateHistoryTitle);
@@ -31,7 +30,7 @@ export function Conversation({ initialMessages }: { initialMessages: SafeMessage
         regenerate
     } = useChat({
         id: chatId,
-        messages: convertMessageToUIMessage(initialMessages),
+        messages: initialMessages as any,
         onFinish: () => {
 
         },

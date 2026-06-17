@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     await db.insert(message).values({
         chatId,
         role: "user",
-        content,
+        parts: lastMessage.parts,
     }).onConflictDoNothing();
 
     //* title generation call */
@@ -39,6 +39,7 @@ export async function POST(req: Request) {
         messages: await convertToModelMessages(messages),
     });
 
+
     return result.toUIMessageStreamResponse({
         originalMessages: messages,
 
@@ -51,7 +52,7 @@ export async function POST(req: Request) {
             await db.insert(message).values({
                 chatId,
                 role: "assistant",
-                content: convertMessageToTextContent(assistantMsg),
+                parts: assistantMsg.parts,
             });
         },
     });

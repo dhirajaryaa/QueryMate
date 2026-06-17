@@ -1,22 +1,4 @@
-import type { UIMessage, UIMessagePart } from "ai";
-import { SafeMessage } from "@/modules/message/types/message.types";
-
-export function convertMessageToUIMessage(messages: SafeMessage[]): UIMessage[] {
-
-    return messages.map((message: SafeMessage): UIMessage => ({
-        id: message.id,
-        role: message.role as
-            | "user"
-            | "assistant"
-            | "system",
-        parts: [
-            {
-                type: "text",
-                text: message.content,
-            },
-        ],
-    }))
-}
+import type { UIMessage } from "ai";
 
 
 export function convertMessageToTextContent(message: UIMessage): string {
@@ -26,4 +8,4 @@ export function convertMessageToTextContent(message: UIMessage): string {
         .join("");
 
     return content;
-}
+};
