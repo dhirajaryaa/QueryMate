@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { CheckIcon, CopyIcon, RotateCcwIcon } from "lucide-react";
 
 
-export const Message = memo(function Message({ message, status, isLast }: { message: UIMessage, status: ChatStatus, isLast: boolean }) {
+export const Message = memo(function Message({ message, status, isLast, regenerate }: { message: UIMessage, status: ChatStatus, isLast: boolean, regenerate: () => void }) {
 
     const isStreaming = status === "streaming" && isLast;
 
@@ -65,7 +65,7 @@ export const Message = memo(function Message({ message, status, isLast }: { mess
                     default: null
                 }
             })}
-            <MessageAction message={message} />
+            <MessageAction message={message} regenerate={regenerate} />
         </>
     )
 });
@@ -90,7 +90,7 @@ export const StreamResponse = memo(
 
 
 // message action 
-export const MessageAction = ({ message }: { message: UIMessage }) => {
+export const MessageAction = ({ message, regenerate }: { message: UIMessage, regenerate: () => void }) => {
 
     const [copied, setCopied] = useState<boolean>(false);
 
@@ -117,8 +117,8 @@ export const MessageAction = ({ message }: { message: UIMessage }) => {
                 }
             </Button>
 
-            {/* // TODO: pass regenerate func and call it later  */}
-            <Button size={"icon-sm"} type="button" variant={"ghost"} title="Regenerate Message">
+            {/* // TODO: edge case handle db prev save time check if regenerate then remove prev message and save new message  */}
+            <Button onClick={() => regenerate()} size={"icon-sm"} type="button" variant={"ghost"} title="Regenerate Response">
                 <RotateCcwIcon />
             </Button>
         </div>

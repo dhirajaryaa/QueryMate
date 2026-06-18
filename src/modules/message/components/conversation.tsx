@@ -76,13 +76,24 @@ export function Conversation({ initialMessages }: { initialMessages: Message[] }
                 className="p-4 flex-1 h-full overflow-y-auto"
             >
                 {/* chat list  */}
-                <MessageList messages={messages} status={status} />
-                <div ref={bottomRef} className="w-full h-1" />
+                <MessageList
+                    messages={messages}
+                    status={status}
+                    regenerate={regenerate}
+                     />
+
+                    {/* use for auto scroll  */}
+                <div ref={bottomRef}
+                    className="w-full h-1"
+                />
 
             </section>
             <section className="w-full sticky bottom-0 bg-background z-10 inset-x-0 mask-t-from-90% p-4"
             >
-                <ChatInputBox sendMessage={sendMessage} status={status} stop={stop} />
+                <ChatInputBox
+                    sendMessage={sendMessage}
+                    status={status} stop={stop}
+                />
             </section>
         </div>
     )
