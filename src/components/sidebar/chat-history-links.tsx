@@ -75,7 +75,7 @@ export default function ChatHistoryLink({
                   isActive={pathname === `/chat/${link.id}`}
                   className="h-8.5 data-[active=true]:bg-sidebar-active text-foreground truncate hover:bg-sidebar-active/70"
                 >
-                  <span>{link.title}</span>
+                  <span className="truncate w-full inline-block">{link.title}</span>
                 </SidebarMenuButton>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
