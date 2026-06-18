@@ -36,8 +36,14 @@ export function Tool({ part }: Props) {
                 </AccordionTrigger>
 
                 <AccordionContent >
+                    {
+                        !part.input &&
+                        <pre className="w-full">
+                            Input: {JSON.stringify(part.input, null, 2)}
+                        </pre>
+                    }
                     <pre className="w-full">
-                        {JSON.stringify(part.output, null, 2)}
+                        Output: {JSON.stringify(part.output, null, 2)}
                     </pre>
                     {
                         part.errorText && <p className="text-red-500">{part.errorText}</p>
