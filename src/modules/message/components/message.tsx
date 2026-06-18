@@ -2,12 +2,14 @@ import { Streamdown } from "streamdown";
 import { code } from '@streamdown/code';
 import { mermaid } from '@streamdown/mermaid';
 import { cn } from "@/lib/utils";
-import { ComponentProps, memo } from "react";
+import { ComponentProps, memo, useState } from "react";
 import { ChatStatus, UIMessage } from "ai";
 import { convertMessageToTextContent } from "@/modules/message/utils/convert-message";
 // @ts-ignore
 import "streamdown/styles.css"; // for streamdown styling
 import { Tool } from "./tool";
+import { Button } from "@/components/ui/button";
+import { CheckIcon, CopyIcon, RotateCcwIcon } from "lucide-react";
 
 
 export const Message = memo(function Message({ message, status, isLast }: { message: UIMessage, status: ChatStatus, isLast: boolean }) {
@@ -60,9 +62,10 @@ export const Message = memo(function Message({ message, status, isLast }: { mess
                             />
                         )
 
-                default: null
+                    default: null
                 }
             })}
+            <MessageAction message={message} />
         </>
     )
 });
@@ -84,3 +87,40 @@ export const StreamResponse = memo(
     ),
     (prevProps, nextProps) => prevProps.children === nextProps.children
 );
+
+
+// message action 
+export const MessageAction = ({ message }: { message: UIMessage }) => {
+
+    const [copied, setCopied] = useState<boolean>(false);
+
+    const handleCopyToClipboard = async () => {
+        if (!message) return;
+
+        await navigator.clipboard.writeText(convertMessageToTextContent(message));
+
+        setCopied(true);
+
+        setTimeout(() => {
+            setCopied(false);
+        }, 1000)
+
+    };
+
+
+    return (
+        <div className="flex items-center gap-1">
+            <Button size={"icon-sm"} onClick={handleCopyToClipboard} type="button" variant={"ghost"} title="Copy Response">
+                {copied ?
+                    <CheckIcon /> :
+                    <CopyIcon />
+                }
+            </Button>
+
+            {/* // TODO: pass regenerate func and call it later  */}
+            <Button size={"icon-sm"} type="button" variant={"ghost"} title="Regenerate Message">
+                <RotateCcwIcon />
+            </Button>
+        </div>
+    )
+};
