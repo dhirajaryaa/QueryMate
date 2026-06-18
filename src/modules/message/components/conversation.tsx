@@ -70,6 +70,7 @@ export function Conversation({ initialMessages }: { initialMessages: Message[] }
     }, [messages, status]);
 
 
+
     return (
         <div className="w-full h-full relative flex flex-col">
             <section
@@ -80,9 +81,9 @@ export function Conversation({ initialMessages }: { initialMessages: Message[] }
                     messages={messages}
                     status={status}
                     regenerate={regenerate}
-                     />
+                />
 
-                    {/* use for auto scroll  */}
+                {/* use for auto scroll  */}
                 <div ref={bottomRef}
                     className="w-full h-1"
                 />

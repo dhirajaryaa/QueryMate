@@ -1,9 +1,11 @@
+"use client";
+
 import { Streamdown } from "streamdown";
 import { code } from '@streamdown/code';
 import { mermaid } from '@streamdown/mermaid';
 import { cn } from "@/lib/utils";
-import { ComponentProps, memo, useState } from "react";
-import { ChatStatus, UIMessage } from "ai";
+import { ComponentProps, memo, useMemo, useState } from "react";
+import { UIMessage } from "ai";
 import { convertMessageToTextContent } from "@/modules/message/utils/convert-message";
 // @ts-ignore
 import "streamdown/styles.css"; // for streamdown styling
@@ -12,85 +14,150 @@ import { Button } from "@/components/ui/button";
 import { CheckIcon, CopyIcon, RotateCcwIcon } from "lucide-react";
 
 
-export const Message = memo(function Message({ message, status, isLast, regenerate }: { message: UIMessage, status: ChatStatus, isLast: boolean, regenerate: () => void }) {
-
-    const isStreaming = status === "streaming" && isLast;
-
-    {
-
-    }
+export const Message = memo(function Message({
+    message,
+    isStreaming,
+    regenerate }
+    : {
+        message: UIMessage;
+        isStreaming: boolean;
+        regenerate: ({ messageId }: { messageId?: string }) => void;
+    }) {
 
     // render user message 
     if (message.role === "user") {
         return (
-            <div className={"my-4 self-end bg-secondary text-foreground px-4 py-2 rounded-lg max-w-1/2 w-fit h-fit text-sm sm:text-base"}>
-                {convertMessageToTextContent(message)}
-            </div>
-        )
+            <UserMessage
+                message={message}
+            />
+        );
     };
-
 
 
     return (
         <>
-            {message.parts.map((part, i) => {
-                switch (part.type) {
-                    case "text":
-                        return (
-                            <StreamResponse
-                                key={`${message.id}-${i}`}
-                                isAnimating={isStreaming}
-                                animated={{ animation: "blurIn" }}
-                                mode={isStreaming ? "streaming" : "static"}
-                            >
-                                {part.text}
-                            </StreamResponse>
-                        )
-
-                    case 'tool-dbInfo':
-                        return (
-                            <Tool
-                                key={part.toolCallId}
-                                part={part}
-                            />
-                        )
-                    case 'tool-dbSchema':
-                        return (
-                            <Tool
-                                key={part.toolCallId}
-                                part={part}
-                            />
-                        )
-
-                    default: null
-                }
-            })}
-            <MessageAction message={message} regenerate={regenerate} />
+            <AssistantMessage
+                message={message}
+                isStreaming={isStreaming}
+                regenerate={regenerate}
+            />
         </>
     )
+},
+    (prev, next) => {
+        return (
+            prev.message === next.message &&
+            prev.isStreaming === next.isStreaming
+        );
+    }
+);
+
+//? user message 
+const UserMessage = memo(function UserMessage({
+    message,
+}: {
+    message: UIMessage;
+}) {
+
+    const content = useMemo(
+        () => convertMessageToTextContent(message),
+        [message]
+    );
+
+    return (
+        <div className="my-4 self-end bg-secondary px-4 py-2 rounded-lg">
+            {content}
+        </div>
+    );
 });
 
-export type MessageResponseProps = ComponentProps<typeof Streamdown>;
+//? assistant message
+const AssistantMessage = memo(
+    function AssistantMessage({
+        message,
+        isStreaming,
+        regenerate,
+    }: {
+        message: UIMessage;
+        isStreaming: boolean;
+        regenerate: ({ messageId }: { messageId?: string }) => void;
+    }
 
-const streamdownPlugins = { code, mermaid };
+    ) {
+        return (
+            <>
+                {message.parts.map((part, i) => {
 
+                    switch (part.type) {
+
+                        case "text":
+                            return (
+                                <div key={`${message.id}-${i}`}>
+                                    <StreamResponse
+                                        isAnimating={isStreaming}
+                                        animated={{ animation: "blurIn" }}
+                                    >
+                                        {part.text}
+                                    </StreamResponse>
+                                    {isStreaming && (
+                                        <div className="text-sm text-muted-foreground animate-pulse">
+                                            Generating...
+                                        </div>
+                                    )}
+
+                                </div>
+                            );
+
+                        case "tool-dbInfo":
+                        case "tool-dbSchema":
+                            return (
+                                <Tool
+                                    key={part.toolCallId}
+                                    part={part}
+                                />
+                            );
+
+                        default:
+                            return null;
+                    }
+                })}
+
+                <MessageAction
+                    message={message}
+                    regenerate={regenerate}
+                />
+            </>
+        );
+    }
+);
+
+
+
+//* stream rending 
+type MessageResponseProps = ComponentProps<typeof Streamdown>;
 export const StreamResponse = memo(
     ({ className, ...props }: MessageResponseProps) => (
         <Streamdown
             className={cn(
-                "size-full h-fit [&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
+                "size-full h-fit",
                 className
             )}
-            plugins={streamdownPlugins}
+            plugins={{ code, mermaid }}
             {...props}
         />
     ),
-    (prevProps, nextProps) => prevProps.children === nextProps.children
+
+    (prev, next) => {
+        return (
+            prev.children === next.children &&
+            prev.mode === next.mode &&
+            prev.isAnimating === next.isAnimating
+        );
+    }
 );
 
-
 // message action 
-export const MessageAction = ({ message, regenerate }: { message: UIMessage, regenerate: () => void }) => {
+export const MessageAction = memo(function MessageAction({ message, regenerate }: { message: UIMessage, regenerate: ({ messageId }: { messageId?: string }) => void }) {
 
     const [copied, setCopied] = useState<boolean>(false);
 
@@ -118,9 +185,9 @@ export const MessageAction = ({ message, regenerate }: { message: UIMessage, reg
             </Button>
 
             {/* // TODO: edge case handle db prev save time check if regenerate then remove prev message and save new message  */}
-            <Button onClick={() => regenerate()} size={"icon-sm"} type="button" variant={"ghost"} title="Regenerate Response">
+            <Button onClick={() => regenerate({ messageId: message.id })} size={"icon-sm"} type="button" variant={"ghost"} title="Regenerate Response">
                 <RotateCcwIcon />
             </Button>
         </div>
     )
-};
+})
