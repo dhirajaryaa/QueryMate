@@ -2,7 +2,6 @@ import { db } from '@/db';
 import { connection, } from '@/db/schema';
 import { MySQLClient, PostgresClient } from '@/modules/connection/lib/connection-client';
 import { decrypt } from '@/modules/connection/utils/crypto';
-import { isSafeQuery } from '@/modules/ai/utils/safeQuery';
 import { tool } from 'ai';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
@@ -24,19 +23,16 @@ export const runDBQuery = tool({
 
         if (intent !== "read") return "Intent Not support, for security perseus";
 
-        //Todo: validate query check or guardrails
-
+        
         if (!dbId || !rowQuery) {
             return "dbId and rowQuery are required";
         }
-
+        
         const [dbInfo] = await db.select().from(connection).where(eq(connection.id, dbId));
-
+        
         if (!dbInfo) return "Db Not Exist.";
-
-        if (!isSafeQuery(rowQuery)) {
-            return "Only SELECT queries are allowed";
-        };
+        
+        //Todo: validate query check or guardrails
 
         const decryptUri = decrypt(dbInfo.uri);
 
