@@ -4,6 +4,7 @@ import { chatSystemPrompt } from '@/modules/ai/lib/prompts';
 import { ChatModel } from '@/modules/ai/lib/provider';
 import { dbInformationTool } from '@/modules/ai/lib/tools/db-info';
 import { dbSchemaTool } from '@/modules/ai/lib/tools/db-schema';
+import { runDBQuery } from '@/modules/ai/lib/tools/run-query';
 import { generateAndSaveChatTitle } from '@/modules/chat/actions/chat-title';
 import { convertMessageToTextContent } from '@/modules/message/utils/convert-message';
 import { streamText, UIMessage, convertToModelMessages, stepCountIs } from 'ai';
@@ -34,7 +35,8 @@ export async function POST(req: Request) {
         stopWhen: stepCountIs(5),
         tools: {
             dbInfo: dbInformationTool(chatId),
-            dbSchema: dbSchemaTool(chatId)
+            dbSchema: dbSchemaTool(chatId),
+            runQuery: runDBQuery
         },
         messages: await convertToModelMessages(messages),
     });

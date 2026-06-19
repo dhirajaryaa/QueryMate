@@ -110,6 +110,7 @@ const AssistantMessage = memo(
 
                         case "tool-dbInfo":
                         case "tool-dbSchema":
+                        case "tool-runQuery":
                             return (
                                 <Tool
                                     key={part.toolCallId}
