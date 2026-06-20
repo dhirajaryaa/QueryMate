@@ -5,13 +5,14 @@ import { code } from '@streamdown/code';
 import { mermaid } from '@streamdown/mermaid';
 import { cn } from "@/lib/utils";
 import { ComponentProps, memo, useMemo, useState } from "react";
-import { UIMessage } from "ai";
+import { ToolUIPart, UIMessage } from "ai";
 import { convertMessageToTextContent } from "@/modules/message/utils/convert-message";
 // @ts-ignore
 import "streamdown/styles.css"; // for streamdown styling
 import { Tool } from "./tool";
 import { Button } from "@/components/ui/button";
 import { CheckIcon, CopyIcon, RotateCcwIcon } from "lucide-react";
+import { Accordion } from "@/components/ui/accordion";
 
 
 export const Message = memo(function Message({
@@ -84,11 +85,31 @@ const AssistantMessage = memo(
     }
 
     ) {
+        const toolParts = message.parts.filter(
+            (part) =>
+                part.type === "tool-dbInfo" ||
+                part.type === "tool-dbSchema" ||
+                part.type === "tool-runQuery"
+        ) as ToolUIPart[];
+
+
         return (
             <>
-                {message.parts.map((part, i) => {
+                {
+                    toolParts.length > 0 && (
+                        <Accordion type="single" collapsible >
+                            {
+                                toolParts.map((part, index) => (
+                                    <Tool part={part} key={part.toolCallId} />
+                                ))
+                            }
+                        </Accordion>
+                    )
 
+                }
+                {message.parts.map((part, i) => {
                     switch (part.type) {
+
 
                         case "text":
                             return (
@@ -108,15 +129,6 @@ const AssistantMessage = memo(
                                 </div>
                             );
 
-                        case "tool-dbInfo":
-                        case "tool-dbSchema":
-                        case "tool-runQuery":
-                            return (
-                                <Tool
-                                    key={part.toolCallId}
-                                    part={part}
-                                />
-                            );
 
                         default:
                             return null;

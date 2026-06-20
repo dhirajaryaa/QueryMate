@@ -1,5 +1,4 @@
 import {
-    Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
@@ -19,37 +18,29 @@ export function Tool({ part }: Props) {
         "input-streaming": <><Circle className="text-muted" />Penning</>,
         "input-available": <><Clock />Running</>,
         "output-available": <><CircleCheckBig className="text-green-500" />Completed</>,
-        "output-error": <><CircleX className="text-red-500" />Error</>
+        "output-error": <><CircleX className="text-destructive" />Error</>
     }
 
     return (
-        <Accordion type="single" collapsible className="bg-muted/60 p-2 rounded-xl">
-            <AccordionItem value={part.toolCallId} >
-                <AccordionTrigger>
-                    <div className="flex items-center gap-3">
-                        <Wrench size={16} />
-                        {part.title}
-                        <Badge className="ml-3 items-center" variant={"secondary"}>
-                            {status[part.state]}
-                        </Badge>
-                    </div>
-                </AccordionTrigger>
+        <AccordionItem value={part.toolCallId} >
+            <AccordionTrigger className="sm:py-3">
+                <div className="flex items-center gap-3 flex-1">
+                    <Wrench size={16} />
+                    {part.title}
+                </div>
+                    <Badge className="ml-3 items-center" variant={"secondary"}>
+                        {status[part.state]}
+                    </Badge>
+            </AccordionTrigger>
 
-                <AccordionContent >
-                    {
-                        !part.input &&
-                        <pre className="w-full">
-                            Input: {JSON.stringify(part.input, null, 2)}
-                        </pre>
-                    }
-                    <pre className="w-full">
-                        Output: {JSON.stringify(part.output, null, 2)}
-                    </pre>
-                    {
-                        part.errorText && <p className="text-red-500">{part.errorText}</p>
-                    }
-                </AccordionContent>
-            </AccordionItem>
-        </Accordion>
+            <AccordionContent >
+                <pre className="w-full bg-muted/60 rounded-xl p-4">
+                    Output: {JSON.stringify(part.output, null, 2)}
+                </pre>
+                {
+                    part.errorText && <p className="text-destructive">{part.errorText}</p>
+                }
+            </AccordionContent>
+        </AccordionItem>
     );
 }

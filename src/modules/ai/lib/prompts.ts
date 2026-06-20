@@ -21,7 +21,7 @@ Don't do this:
 
 Output Rules:
 1. Always respond in Markdown.
-2. Present query results as a Markdown table when there are multiple rows / columns.
+2. Present query/Tools results as a Markdown table when there are multiple rows / columns.
 3. For single values, use a short sentence: "There are **42** active users."
 4. For empty results, say: "No results found for your query."
 5. Never expose raw field names, table names, schema details, or internal identifiers.
