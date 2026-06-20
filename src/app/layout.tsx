@@ -7,6 +7,7 @@ import Script from "next/script";
 import { ThemeProvider } from "@/components/provider/theme-provider";
 // @ts-ignore
 import "./globals.css";
+import { SiteUrl } from "@/lib/constant";
 
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -16,9 +17,40 @@ const fontMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "QueryMate - Chat With DB",
+  title: {
+    default: "QueryMate - Chat With DB",
+    template: "%s | QueryMate",
+  },
   description:
-    "QueryMate is a full-stack SaaS application that allows users to query their databases using natural language. It converts user questions into code using AI, executes queries safely, and displays results with visualization. This project is built with separate frontend and backend architecture to simulate real-world production systems.",
+    "QueryMate is a full-stack SaaS application that allows users to query their databases using natural language. It converts user questions into code using AI, executes queries safely, and displays results with visualization.",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: SiteUrl,
+    siteName: "QueryMate",
+    title: "QueryMate - Chat With DB",
+    description:
+      "QueryMate lets you query your database using natural language. Just ask in plain English — it understands your schema, runs the query, and explains the results.",
+    images: [
+      {
+        url: `${SiteUrl}/og.png`,
+        width: 1200,
+        height: 630,
+        alt: "QueryMate - Chat With DB",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "QueryMate - Chat With DB",
+    description:
+      "QueryMate lets you query your database using natural language. Just ask in plain English — it understands your schema, runs the query, and explains the results.",
+    images: [`${SiteUrl}/og.png`],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

@@ -1,58 +1,97 @@
-# QueryMate – Chat With DB
+# QueryMate
 
-QueryMate is a full-stack SaaS application that allows users to query their databases using natural language. It converts user questions into code using AI, executes queries safely, and displays results with visualization.
+QueryMate is an AI-powered database assistant that lets you chat with your databases using natural language.
 
-This project is built with separate frontend and backend architecture to simulate real-world production systems.
-
----
 ## Demo
 [![Watch the video](https://img.youtube.com/vi/z9KL74Jio_s/0.jpg)](https://www.youtube.com/watch?v=z9KL74Jio_s)
 
 > [!WARNING]
-> Preview version only support Postgres and MySQL db tested.
+> Fully Tested Postgres and MySQL db Only.
 
 ## Features
 
-* AI-powered query generation
-* Connect PostgreSQL, MySQL, SQLLite, MONGODB databases
-* Secure authentication (JWT and google)
-* Execute queries with safety validation
-* Query history and saved queries 
-* Results table with export (CSV, JSON) [upcoming]
-* Modern dashboard UI
-
----
+* Connect PostgreSQL and MySQL databases
+* Ask questions in plain English
+* AI-generated SQL queries
+* Secure read-only query execution
+* Database schema understanding
+* Chat history management
+* Multiple database connections
+* Modern and responsive UI
 
 ## Tech Stack
 
-**Frontend**
+### Frontend
 
-* Next.js
+* Next.js 15
+* React 19
 * TypeScript
 * Tailwind CSS
+* shadcn/ui
 
-**Backend**
+### Backend
 
-* Next.js API
+* Next.js API Routes & Server Action
+* Drizzle ORM
 * PostgreSQL
-* JWT Authentication
+* Better Auth
 
-**AI**
+### AI
 
-* Groq API
+* Vercel AI Sdk 5
+* Groq AI provider API
 
----
+## Getting Started
 
+```bash
+git clone https://github.com/dhirajaryaa/querymate.git
+cd querymate
 
-## How It Works
+pnpm install
 
-1. User connects their database
-2. User asks question in natural language
-3. Backend sends request to Groq api
-4. AI generates SQL query
-5. Backend validates and executes query
-6. Results displayed in frontend
+cp .env.example .env
 
-## Author
+pnpm db:push
 
-Dhiraj Arya [dhirajarya.ptn@gmail.com]
+pnpm dev
+```
+
+Open http://localhost:3000
+
+## Environment Variables
+
+```env
+DATABASE_URL=""
+
+BETTER_AUTH_SECRET=''
+BETTER_AUTH_URL='http://localhost:3000'
+
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
+
+GITHUB_CLIENT_ID=""
+GITHUB_CLIENT_SECRET=""
+
+PUBLIC_URL='http://localhost:3000'
+
+LOG_LEVEL='info'
+
+LLM_API_KEY=''
+
+# telgrame bot [for bug & feature ] report 
+TELEGRAM_BOT_TOKEN=''
+TELEGRAM_CHAT_ID=''
+```
+
+## Roadmap
+
+* [x] Authentication
+* [x] Database Connections
+* [x] AI SQL Generation
+* [x] Query Execution
+* [x] Chat Interface
+* [x] Persistent Chats
+
+## License
+
+MIT
