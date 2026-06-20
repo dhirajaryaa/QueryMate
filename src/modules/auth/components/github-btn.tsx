@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { handleClientError } from "@/utils/handle-errors";
 import { useState } from "react";
 import { authClient } from "@/modules/auth/lib/auth-client";
+import { AuthRedirectPath } from "@/lib/constant";
 
 function GithubLoginBtn() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -12,7 +13,7 @@ function GithubLoginBtn() {
     await authClient.signIn.social(
       {
         provider: "github",
-        callbackURL: "/new",
+        callbackURL: AuthRedirectPath,
       },
       {
         onRequest: () => {

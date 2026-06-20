@@ -13,8 +13,15 @@ export async function getAllConnections(): Promise<GetConnections> {
         // session get
         const user = await requireUser();
         // get all connection
+        // TODO: add pagination very important
         const allConn = await db
-            .select()
+            .select({
+                id:connection.id,
+                name:connection.name,
+                type: connection.type,
+                updatedAt: connection.updatedAt,
+                status: connection.status
+            })
             .from(connection)
             .where(eq(connection.userId, user.id))
             .orderBy(desc(connection.createdAt));

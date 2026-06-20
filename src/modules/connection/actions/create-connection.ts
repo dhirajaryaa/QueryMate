@@ -9,6 +9,7 @@ import { ConnectionInput, ConnectionResponse } from "@/modules/connection/types/
 import { requireUser } from "@/modules/auth/utils/require-user";
 import { handleServerActionError } from "@/utils/handle-errors";
 import { encrypt } from "@/modules/connection/utils/crypto";
+import { maskSecret } from "@/modules/connection/utils/mask-secret";
 
 //new connection
 export async function createNewConnection(
@@ -27,16 +28,17 @@ export async function createNewConnection(
 
     // save in db
     const secureUri = encrypt(valid.data.uri);
+    const maskedUri = maskSecret(valid.data.uri);
+
     const [data] = await db
       .insert(connection)
       .values({
         ...valid.data,
         uri: secureUri,
+        maskUri: maskedUri,
         userId: user.id,
       })
       .returning({ id: connection.id });
-
-    // Todo: trigger pg pubsub feature to schema fetching
 
 
     return { success: true, data };

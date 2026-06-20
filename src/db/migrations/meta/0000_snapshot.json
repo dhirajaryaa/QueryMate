@@ -1,5 +1,5 @@
 {
-  "id": "30bd3a67-7303-496f-85a7-2d7c3074c520",
+  "id": "36756551-4bab-4445-9c67-cc62d034e555",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -382,6 +382,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "mask_uri": {
+          "name": "mask_uri",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "user_id": {
           "name": "user_id",
           "type": "text",
@@ -571,7 +577,7 @@
           "name": "user_id",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "created_at": {
           "name": "created_at",
@@ -655,18 +661,19 @@
           "primaryKey": false,
           "notNull": false
         },
-        "content": {
-          "name": "content",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
         "role": {
           "name": "role",
-          "type": "text",
+          "type": "roles",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
           "default": "'user'"
+        },
+        "parts": {
+          "name": "parts",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
         },
         "created_at": {
           "name": "created_at",
@@ -722,7 +729,6 @@
       "values": [
         "pg",
         "mysql",
-        "sqlite",
         "mongodb"
       ]
     },
@@ -733,6 +739,15 @@
         "active",
         "pending",
         "issus"
+      ]
+    },
+    "public.roles": {
+      "name": "roles",
+      "schema": "public",
+      "values": [
+        "system",
+        "user",
+        "assistant"
       ]
     }
   },

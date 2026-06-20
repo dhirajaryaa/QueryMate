@@ -12,7 +12,7 @@ import {
 import { user } from "./user.schema";
 import { relations } from "drizzle-orm";
 
-export const dbTypeEnum = pgEnum("type", ["pg", "mysql", "sqlite", "mongodb"]);
+export const dbTypeEnum = pgEnum("type", ["pg", "mysql", "mongodb"]);
 export const statusEnum = pgEnum("status", ["active", "pending", "issus"]);
 
 export const connection = pgTable(
@@ -21,6 +21,7 @@ export const connection = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     name: text("name").notNull(),
     uri: text("uri").notNull(),
+    maskUri: text("mask_uri").notNull(),
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),

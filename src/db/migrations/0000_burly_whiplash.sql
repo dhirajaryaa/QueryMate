@@ -1,5 +1,6 @@
-CREATE TYPE "public"."type" AS ENUM('pg', 'mysql', 'sqlite', 'mongodb');--> statement-breakpoint
+CREATE TYPE "public"."type" AS ENUM('pg', 'mysql', 'mongodb');--> statement-breakpoint
 CREATE TYPE "public"."status" AS ENUM('active', 'pending', 'issus');--> statement-breakpoint
+CREATE TYPE "public"."roles" AS ENUM('system', 'user', 'assistant');--> statement-breakpoint
 CREATE TABLE "account" (
 	"id" text PRIMARY KEY NOT NULL,
 	"account_id" text NOT NULL,
@@ -52,6 +53,7 @@ CREATE TABLE "connection" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
 	"uri" text NOT NULL,
+	"mask_uri" text NOT NULL,
 	"user_id" text NOT NULL,
 	"type" "type" DEFAULT 'pg' NOT NULL,
 	"status" "status" DEFAULT 'pending' NOT NULL,
@@ -73,7 +75,7 @@ CREATE TABLE "chat" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"title" text NOT NULL,
 	"connection_id" uuid NOT NULL,
-	"user_id" text,
+	"user_id" text NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp NOT NULL
 );
@@ -81,8 +83,8 @@ CREATE TABLE "chat" (
 CREATE TABLE "message" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"chat_id" uuid,
-	"content" text NOT NULL,
-	"role" text DEFAULT 'user' NOT NULL,
+	"role" "roles" DEFAULT 'user' NOT NULL,
+	"parts" jsonb NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint

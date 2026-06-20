@@ -1,5 +1,6 @@
 "use server";
 
+import { AuthRedirectPath } from "@/lib/constant";
 import { auth } from "@/modules/auth/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -11,7 +12,7 @@ export const ensureAuth = async () => {
 
     if (!session?.user) {
         redirect("/login");
-    }
+    };
 
     return session.user;
 };
@@ -22,7 +23,7 @@ export const ensureGuest = async () => {
     });
 
     if (session?.user) {
-        redirect("/new")
+        redirect(AuthRedirectPath)
     };
 
     return session?.user;

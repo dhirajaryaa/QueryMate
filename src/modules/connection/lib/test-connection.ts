@@ -2,7 +2,6 @@
 import { Client as PgClient } from "pg";
 import mysql from "mysql2/promise";
 import { MongoClient } from "mongodb";
-import Database from "better-sqlite3";
 import { ConnectionInput } from "@/modules/connection/types/connection.types";
 
 type Response = {
@@ -47,16 +46,6 @@ export async function testDatabaseConnection(
         await mongoConn.close();
         return { success: true };
 
-      //? sqlite db
-      case "sqlite":
-        const dbPath = data.uri.replace("file:", "").replace("sqlite:///", "");
-
-        const sqliteConn = new Database(dbPath);
-        sqliteConn.prepare("SELECT 1").get();
-
-        sqliteConn.close();
-
-        return { success: true };
       default:
         return {
           success: false,

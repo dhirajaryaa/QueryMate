@@ -4,7 +4,7 @@ version: "3.9"
 services:
   postgres:
     image: postgres:16
-    container_name: querymate-db
+    container_name: querymate
     restart: unless-stopped
 
     environment:

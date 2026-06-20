@@ -29,17 +29,13 @@ export async function getAllMessages({
 
     if (!chatExists) {
       throw new AppError("not_found:chat");
-    }
+    };
 
     const allMessages = await db
       .select()
       .from(message)
       .where(eq(message.chatId, chatId))
       .orderBy(asc(message.createdAt));
-
-    if (allMessages.length <= 0) {
-      throw new AppError("not_found:chat");
-    }
 
     return { success: true, data: allMessages };
   } catch (error) {

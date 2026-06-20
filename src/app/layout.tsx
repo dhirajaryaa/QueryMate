@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import { DM_Sans, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import "highlight.js/styles/github-dark.css"; //? for markdown
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import Script from "next/script";
 import { ThemeProvider } from "@/components/provider/theme-provider";
-import QueryProvider from "@/components/provider/query-provider";
+// @ts-ignore
+import "./globals.css";
 
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -47,7 +46,6 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <QueryProvider>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
@@ -57,7 +55,6 @@ export default function RootLayout({
             <TooltipProvider>{children}</TooltipProvider>
             <Toaster richColors position="top-center" />
           </ThemeProvider>
-        </QueryProvider>
       </body>
     </html>
   );

@@ -16,14 +16,15 @@ export default function SectionLayout({
   return (
     <div className="flex w-full h-[93vh] md:px-14 px-6 py-4 flex-col gap-4 max-w-6xl mx-auto">
       <section className="w-full flex items-center justify-between gap-4 py-4 ">
-        <div className="flex flex-col items-start justify-center w-full  sm:w-fit gap-1 flex-1">
-          <h1 className="text-xl sm:text-3xl font-bold line-clamp-1">
+        <div className="flex flex-col items-start justify-center w-full  sm:w-fit gap-1 flex-1 truncate">
+          <h1 className="text-xl sm:text-3xl w-full max-w-lg font-bold truncate">
             {title}
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground/80 line-clamp-1">
             {description}
           </p>
         </div>
+        {/* <div className="flex items-center gap-2">{actionUI}</div> */}
         {actionUI}
       </section>
       {children}

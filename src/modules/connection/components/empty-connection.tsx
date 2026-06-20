@@ -28,7 +28,7 @@ export default function EmptyConnection() {
             </EmptyHeader>
             <EmptyContent>
                 <p className="text-sm text-muted-foreground">
-                    Supports PostgreSQL • MySQL • MongoDB • SQLite
+                    Supports PostgreSQL • MySQL • MongoDB 
                 </p>
             </EmptyContent>
         </Empty>

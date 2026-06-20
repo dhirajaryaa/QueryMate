@@ -10,22 +10,26 @@ import { useChatStore } from "@/stores/useChatStore";
 
 function NewChatPage() {
   const router = useRouter();
-  const appendChatHistory = useChatStore((state) => state.appendHistory);
+  const { appendHistory, setPendingMessage } = useChatStore((state) => state);
   const [isLoading, setIsLoading] = useState(false);
 
-  const sendMessage = async (message: string) => {
+  const sendMessage = async ({ text }: { text: string }) => {
     // post api call for new conversion id [chat id ] create
     const dbId = localStorage.getItem("querymate_selected_db");
     if (!dbId) {
-      toast.error("Please Select Database First!");
+      toast.info("Please Select Database First!");
       return;
-    }
+    };
     if (!prompt) return;
     try {
       setIsLoading(true);
-      const res = await createNewChat({ prompt: message, dbId });
+      const res = await createNewChat({ prompt: text, dbId });
       if (res.success) {
-        appendChatHistory({ id: res.data.chatId, title: "New Chat" }); // Append new chat to history
+        // Append new chat to history
+        appendHistory({ id: res.data.chatId, title: "New Chat" });
+        // set pending message 
+        setPendingMessage(text);
+        // navigate 
         router.push(`/chat/${res.data.chatId}`);
       } else {
         toast.error(res.error?.message || "Failed to create chat.");
@@ -37,9 +41,9 @@ function NewChatPage() {
     }
   };
   return (
-    <section>
-      <ChatInputBox sendMessage={sendMessage} isLoading={isLoading} />
-    </section>
+    <>
+      <ChatInputBox sendMessage={sendMessage} />
+    </>
   );
 }
 

@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { chat, message } from "@/db/schema";
+import { chat } from "@/db/schema";
 import { AppError } from "@/lib/errors";
 import { requireUser } from "@/modules/auth/utils/require-user";
 import { ChatResponse, CreateChatProps } from "@/modules/chat/types/chat.types";
@@ -18,11 +18,13 @@ export async function createNewChat({
                 "bad_request:api",
                 "Prompt or database id is required.",
             );
-        }
+        };
         // session get
-        const user = await requireUser()
+        const user = await requireUser();
 
-        // create new chat
+
+        // create new chat 
+
         const [newChat] = await db
             .insert(chat)
             .values({
@@ -35,13 +37,10 @@ export async function createNewChat({
                 dbId: chat.connectionId,
             });
 
-        if (newChat) {
-            await db.insert(message).values({
-                content: prompt,
-                role: "user",
-                chatId: newChat.chatId,
-            });
-        }
+        if (!newChat) {
+            throw new AppError("internal:database");
+        };
+
 
         return { success: true, data: newChat };
     } catch (error) {

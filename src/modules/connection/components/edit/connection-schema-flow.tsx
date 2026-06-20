@@ -14,9 +14,9 @@ import {
   useNodesState,
 } from "@xyflow/react";
 import TableNode from "@/modules/connection/components/edit/table-node";
-import SchemaToNode from "@/utils/schema-to-node";
+import SchemaToNode from "@/modules/connection/utils/schema-to-node";
 import { Expand } from "lucide-react";
-import { schemaToEdge } from "@/utils/schema-to-edge";
+import { schemaToEdge } from "@/modules/connection/utils/schema-to-edge";
 import { useTheme } from "next-themes";
 
 export default function ConnectionSchemaFlow({

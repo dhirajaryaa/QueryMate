@@ -1,33 +1,35 @@
-import { SafeMessage } from "@/modules/message/types/message.types";
-import MessageLoading from "./message-loading";
-import { Badge } from "@/components/ui/badge";
-import { AssistantChatMessage, UserChatMessage } from "./message-ui";
+"use client";
+import { ChatStatus, UIMessage } from "ai";
+import { memo } from "react";
+import { Message } from "./message";
 
-export default function MessageList({
-  messages,
-  status,
-}: {
-  messages: SafeMessage[];
-  status: string | null;
-}) {
+export const MessageList = memo(function MessagesList(
+  { messages, regenerate, status }
+    : { messages: UIMessage[], regenerate: ({messageId}:{ messageId?: string })=> void, status: ChatStatus }
+) {
+
   return (
-    <>
-      {messages.length === 0 ? (
-        <MessageLoading />
-      ) : (
-        messages.map((message) =>
-          message.role === "user" ? (
-            <UserChatMessage key={message.id} message={message.content} />
-          ) : (
-            <AssistantChatMessage key={message.id} message={message.content} />
-          ),
-        )
+    <div className="w-full max-w-3xl mx-auto py-4 px-4 h-fit flex flex-col gap-2" >
+      {
+        messages.map((message, index) => (
+          <Message
+            key={message.id}
+            message={message}
+            isStreaming={
+              status === "streaming" &&
+              index === messages.length - 1
+            }
+            regenerate={regenerate}
+          />
+        ))
+      }
+      {status === "submitted" && (
+        <div className="flex items-center gap-2 text-sm text-muted-foreground animate-pulse">
+          Thinking...
+        </div>
       )}
-      {status && (
-        <Badge className="text-sm mb-3 px-4 py-1.5" variant={"secondary"}>
-          {status}
-        </Badge>
-      )}
-    </>
-  );
-}
+    </div>
+  )
+})
+
+

@@ -13,7 +13,7 @@ import { PreviewWindow } from "@/components/home/preview-window";
 import { Badge } from "@/components/ui/badge";
 import Feature from "@/components/home/Feature";
 import HowItWork from "@/components/home/how-it-work";
-import { GithubLink } from "@/lib/constant";
+import { AuthRedirectPath } from "@/lib/constant";
 
 export default function HomePage() {
   return (
@@ -72,7 +72,7 @@ export default function HomePage() {
               className="hover:scale-99 duration-200 w-full sm:w-fit"
               asChild
             >
-              <Link href={"/new"}>
+              <Link href={AuthRedirectPath}>
                 Start For Free <ArrowRight size={16} />
               </Link>
             </Button>

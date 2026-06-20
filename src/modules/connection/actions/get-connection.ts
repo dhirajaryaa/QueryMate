@@ -7,8 +7,6 @@ import { AppError } from "@/lib/errors";
 import { requireUser } from "@/modules/auth/utils/require-user";
 import { GetConnection } from "@/modules/connection/types/connection.types";
 import { handleServerActionError } from "@/utils/handle-errors";
-import { decrypt } from "@/modules/connection/utils/crypto";
-import { maskSecret } from "@/modules/connection/utils/mask-secret";
 
 export async function getConnection(
   connId: string,
@@ -30,13 +28,7 @@ export async function getConnection(
       throw new AppError("not_found:database", "Connection not found!");
     };
 
-    //? mask secret 
-    const decryptedUri = decrypt(conn.uri);
-    const maskedUri = maskSecret(decryptedUri);
-
-
-
-    return { success: true, data: { ...conn, uri: maskedUri } };
+    return { success: true, data: { ...conn, uri: conn.maskUri } };
   } catch (error) {
     return handleServerActionError(error);
   }

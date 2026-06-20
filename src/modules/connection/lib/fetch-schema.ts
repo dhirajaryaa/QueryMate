@@ -8,7 +8,6 @@ import { connection } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { AppError } from "@/lib/errors";
 import { getAdapter } from "@/utils/db-adapter";
-import { logger } from "@/lib/logger";
 import { Relation } from "@/modules/connection/types/connection.types";
 import { decrypt } from "../utils/crypto";
 
@@ -65,7 +64,7 @@ export async function fetchDBSchema(connId: string) {
         relations: relations.rows,
       };
     } catch (err: any) {
-      logger.error(err);
+      console.error(err);
       return err.message;
     } finally {
       await pgConn.close();
@@ -122,7 +121,7 @@ export async function fetchDBSchema(connId: string) {
         relations: relationsResult,
       };
     } catch (error: any) {
-      logger.error(error);
+      console.error(error);
       return error.message;
     } finally {
       await sqlConn.close();
@@ -146,7 +145,7 @@ export async function fetchDBSchema(connId: string) {
         relations: relationRows,
       };
     } catch (error: any) {
-      logger.error(error);
+      console.error(error);
       return error.message;
     } finally {
       await mongoConn.close();

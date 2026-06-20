@@ -13,4 +13,6 @@ export type ChatResponse = AppResponse<{chatId: Chat["id"],dbId: Chat["connectio
 
 export type ChatHistory = Pick<Chat, "id" | "title">;
 
+export type genChatTitle = AppResponse<ChatHistory>
+
 export type GetChatHistory = AppResponse<ChatHistory[]>;

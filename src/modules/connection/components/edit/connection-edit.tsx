@@ -38,7 +38,7 @@ export default function ConnectionEdit({
     register,
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { errors, dirtyFields },
   } = useForm<ConnectionEditInput>({
     defaultValues: {
       name: connection.name,
@@ -51,8 +51,16 @@ export default function ConnectionEdit({
 
   const handleFormSubmit = async (payload: ConnectionEditInput) => {
     setIsLoading(true);
+
+    //  check dirty fields
+    let hasUriChanged = false;
+    console.log(dirtyFields);
+    if (dirtyFields && Object.keys(dirtyFields).includes("uri")) {
+      hasUriChanged = true;
+    };
+
     try {
-      const res = await updateConnection(connection.id, payload);
+      const res = await updateConnection(connection.id, { ...payload, uri: hasUriChanged ? payload.uri : undefined });
       if (!res.success) {
         return toast.error(res.error.message || "connection update failed!");
       }
@@ -122,23 +130,23 @@ export default function ConnectionEdit({
                 <Field orientation="horizontal" className="justify-between">
                   {(connection.type === "pg" ||
                     connection.type === "mysql") && (
-                    <div className="flex gap-3">
-                      <Controller
-                        name="ssl"
-                        control={control}
-                        render={({ field, fieldState }) => (
-                          <Switch
-                            id="ssl"
-                            name={field.name}
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                            aria-invalid={fieldState.invalid}
-                          />
-                        )}
-                      />
-                      <Label htmlFor="ssl">SSL Required</Label>
-                    </div>
-                  )}
+                      <div className="flex gap-3">
+                        <Controller
+                          name="ssl"
+                          control={control}
+                          render={({ field, fieldState }) => (
+                            <Switch
+                              id="ssl"
+                              name={field.name}
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                              aria-invalid={fieldState.invalid}
+                            />
+                          )}
+                        />
+                        <Label htmlFor="ssl">SSL Required</Label>
+                      </div>
+                    )}
                   <div className="flex gap-3 flex-col min-[410px]:flex-row">
                     <Button size={"sm"} variant="outline" type="button">
                       Cancel

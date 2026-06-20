@@ -1,4 +1,5 @@
 "use client";
+
 import { toast } from "sonner";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -45,7 +46,7 @@ export function ConnectionModel() {
       type: "pg",
       ssl: false,
     },
-    resolver: zodResolver(addConnectionSchema),
+    resolver: zodResolver(addConnectionSchema) as any,
   });
   const dbType = watch("type");
 
@@ -55,15 +56,17 @@ export function ConnectionModel() {
       const res = await createNewConnection(payload);
       if (!res.success) {
         return toast.error(res.error.message || "connection create failed!");
-      }
+      };
+      router.push(`/connections/${res.data.id}`); // redirect to connection list
+      setShowModel(false); // close model
+
     } catch (error) {
       return handleClientError(error);
-    }
+    } finally {
 
-    reset();
-    setIsLoading(false);
-    setShowModel(false); // close model
-    router.refresh();
+      reset();
+      setIsLoading(false);
+    }
   };
 
   //?test connection
@@ -174,12 +177,14 @@ export function ConnectionModel() {
             </Button>
             <div className="space-x-2">
               <Button type="submit" className="w-full">
-                {isLoading ? (
-                  <Loader2 className="size-6 animate-spin" />
+                {isLoading ? (<>
+                  <Loader2 className="size-6 animate-spin" /> <span>Saving...</span>
+                </>
                 ) : (
-                  <Save />
+                  <>
+                    <Save /><span>Save</span>
+                  </>
                 )}
-                Save
               </Button>
             </div>
           </DialogFooter>
