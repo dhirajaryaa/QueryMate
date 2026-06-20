@@ -5,6 +5,7 @@ import {
   ChevronRight,
   DatabaseSearch,
   Sparkles,
+  StarIcon,
 } from "lucide-react";
 import { ThemeToggler } from "@/components/common/theme-toggler";
 import { StarsBackground } from "@/components/home/star-background";
