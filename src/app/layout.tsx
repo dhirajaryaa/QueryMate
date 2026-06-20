@@ -18,19 +18,19 @@ const fontMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "QueryMate - Chat With DB",
+    default: "QueryMate – AI Database Assistant for PostgreSQL, MySQL & MongoDB",
     template: "%s | QueryMate",
   },
   description:
-    "QueryMate is a full-stack SaaS application that allows users to query their databases using natural language. It converts user questions into code using AI, executes queries safely, and displays results with visualization.",
+    "QueryMate is an AI-powered database assistant that lets you chat with PostgreSQL, MySQL and MongoDB databases using natural language.",
   openGraph: {
     type: "website",
     locale: "en_US",
     url: SiteUrl,
     siteName: "QueryMate",
-    title: "QueryMate - Chat With DB",
+    title: "QueryMate – AI Database Assistant for PostgreSQL, MySQL & MongoDB",
     description:
-      "QueryMate lets you query your database using natural language. Just ask in plain English — it understands your schema, runs the query, and explains the results.",
+      "Chat with PostgreSQL, MySQL and MongoDB databases using natural language. Generate SQL, explore data and get insights instantly.",
     images: [
       {
         url: `${SiteUrl}/og.png`,
@@ -42,9 +42,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "QueryMate - Chat With DB",
+    title: "QueryMate – AI Database Assistant for PostgreSQL, MySQL & MongoDB",
     description:
-      "QueryMate lets you query your database using natural language. Just ask in plain English — it understands your schema, runs the query, and explains the results.",
+      "Chat with PostgreSQL, MySQL and MongoDB databases using natural language. Generate SQL, explore data and get insights instantly.",
     images: [`${SiteUrl}/og.png`],
   },
   robots: {
