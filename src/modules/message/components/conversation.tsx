@@ -10,6 +10,16 @@ import { MessageList } from "./message-list";
 import { handleClientError } from "@/utils/handle-errors";
 import { generateAndSaveChatTitle } from "@/modules/chat/actions/chat-title";
 import { genChatTitle } from "@/modules/chat/types/chat.types";
+import {
+    Item,
+    ItemActions,
+    ItemContent,
+    ItemDescription,
+    ItemMedia,
+    ItemTitle,
+} from "@/components/ui/item"
+import { InfoIcon, RefreshCcw } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function Conversation({ initialMessages }: { initialMessages: Message[] }) {
     const { chatId }: { chatId: string } = useParams();
@@ -38,7 +48,6 @@ export function Conversation({ initialMessages }: { initialMessages: Message[] }
             handleClientError(err);
         }
     });
-
 
     useEffect(() => {
 
@@ -82,6 +91,25 @@ export function Conversation({ initialMessages }: { initialMessages: Message[] }
                     status={status}
                     regenerate={regenerate}
                 />
+
+                {error && (
+                    <>
+                        <Item variant={"outline"}>
+                            <ItemMedia variant="icon">
+                                <InfoIcon />
+                            </ItemMedia>
+                            <ItemContent>
+                                <ItemTitle className="text-destructive">{error?.name || "Error Accord!"}</ItemTitle>
+                                <ItemDescription className="text-destructive">{error?.message}</ItemDescription>
+                            </ItemContent>
+                            <ItemActions>
+                                <Button variant="destructive" onClick={() => regenerate()}>
+                                    <RefreshCcw /> Retry
+                                </Button>
+                            </ItemActions>
+                        </Item>
+                    </>
+                )}
 
                 {/* use for auto scroll  */}
                 <div ref={bottomRef}

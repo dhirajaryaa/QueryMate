@@ -34,9 +34,9 @@ export function Tool({ part }: Props) {
             </AccordionTrigger>
 
             <AccordionContent >
-                <pre className="w-full bg-muted/60 rounded-xl p-4">
+                {part.output as string && <pre className="w-full bg-muted/60 rounded-xl p-4">
                     Output: {JSON.stringify(part.output, null, 2)}
-                </pre>
+                </pre>}
                 {
                     part.errorText && <p className="text-destructive">{part.errorText}</p>
                 }
