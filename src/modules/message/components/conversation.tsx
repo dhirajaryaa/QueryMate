@@ -93,8 +93,8 @@ export function Conversation({ initialMessages }: { initialMessages: Message[] }
                 />
 
                 {error && (
-                    <>
-                        <Item variant={"outline"}>
+                    <div className="w-full max-w-3xl mx-auto py-4 px-4 h-fit flex flex-col gap-2">
+                        <Item variant={"outline"} className="w-full">
                             <ItemMedia variant="icon">
                                 <InfoIcon />
                             </ItemMedia>
@@ -108,7 +108,7 @@ export function Conversation({ initialMessages }: { initialMessages: Message[] }
                                 </Button>
                             </ItemActions>
                         </Item>
-                    </>
+                    </div>
                 )}
 
                 {/* use for auto scroll  */}

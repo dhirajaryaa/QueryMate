@@ -8,8 +8,8 @@ import { connection } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { AppError } from "@/lib/errors";
 import { getAdapter } from "@/utils/db-adapter";
-import { Relation } from "@/modules/connection/types/connection.types";
-import { decrypt } from "../utils/crypto";
+import { decrypt } from "@/modules/connection/utils/crypto";
+import { normalizeResult } from "@/modules/connection/utils/format-schema";
 
 export async function fetchDBSchema(connId: string) {
   const [conn] = await db
@@ -31,45 +31,19 @@ export async function fetchDBSchema(connId: string) {
       ssl: conn.ssl ? { rejectUnauthorized: false } : false,
     });
 
-    if (!pgConn) {
-      throw new Error("Unable to connect database");
-    }
-
     try {
       const adapter = getAdapter(conn.type);
       const schema = await pgConn.pool.query(adapter.getSchema());
       const relations = await pgConn.pool.query(adapter.getRelations());
 
-      const group = schema.rows.reduce<Record<string, Set<string>>>(
-        (acc: any, row: any) => {
-          if (!acc[row.table_name]) {
-            acc[row.table_name] = new Set();
-          }
-          acc[row.table_name].add(row.column_name);
-          return acc;
-        },
-        {},
-      );
-      const entries = Object.entries(group) as [string, Set<string>][];
-
-      const schemaResult: Record<string, string[]> = Object.fromEntries(
-        entries.map(([table, cols]) => [
-          table,
-          [...cols],
-        ]),
-      );
-
-      return {
-        schema: schemaResult,
-        relations: relations.rows,
-      };
+      const result = await normalizeResult(schema.rows, relations.rows);
+      return result;
     } catch (err: any) {
       console.error(err);
-      return err.message;
+      throw new Error(err.message); // string nahi, throw karo — consistent
     } finally {
       await pgConn.close();
     }
-
     //! my sql
   }
   //! MySql
@@ -79,50 +53,20 @@ export async function fetchDBSchema(connId: string) {
       ssl: conn.ssl ? { rejectUnauthorized: false } : undefined,
     });
 
-    if (!sqlConn) {
-      throw new Error("Unable to connect database");
-    }
     try {
       const adapter = getAdapter(conn.type);
       const [schemaRows] = await sqlConn.pool.query(adapter.getSchema());
       const [relationRows] = await sqlConn.pool.query(adapter.getRelations());
 
-      // validate
       if (!Array.isArray(schemaRows) || !Array.isArray(relationRows)) {
         throw new Error("Expected SELECT result type");
-      }
-
-      const group = schemaRows.reduce<Record<string, Set<string>>>(
-        (acc, row: any) => {
-          if (!acc[row.table_name]) {
-            acc[row.table_name] = new Set();
-          }
-          acc[row.table_name].add(row.column_name);
-          return acc;
-        },
-        {},
-      );
-
-      const schemaResult = Object.fromEntries(
-        Object.entries(group).map(([table, cols]) => [table, [...cols]]),
-      );
-
-      const relationsResult: Relation[] = relationRows.map(
-        (relation: any): Relation => ({
-          table_name: relation.table_name,
-          column_name: relation.column_name,
-          foreign_table: relation.referenced_table_name,
-          foreign_column: relation.referenced_column_name,
-        }),
-      );
-
-      return {
-        schema: schemaResult,
-        relations: relationsResult,
       };
-    } catch (error: any) {
-      console.error(error);
-      return error.message;
+
+      const result = await normalizeResult(schemaRows, relationRows);
+      return result
+    } catch (err: any) {
+      console.error(err);
+      throw new Error(err.message);
     } finally {
       await sqlConn.close();
     }
