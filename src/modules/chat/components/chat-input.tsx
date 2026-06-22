@@ -10,12 +10,14 @@ import { ChatStatus } from "ai";
 
 type compProps = {
   status?: ChatStatus;
+  isLoading? : boolean;
   sendMessage: ({ text }: { text: string }) => void;
   stop?: () => void;
 }
 
 function ChatInputBox({
   sendMessage,
+  isLoading,
   status,
   stop
 }: compProps) {
@@ -82,7 +84,7 @@ function ChatInputBox({
               onClick={status === "streaming" ? stop : undefined}
               className="cursor-pointer"
             >
-              {status === "submitted" ? (
+              {status === "submitted" || isLoading ? (
                 <Spinner />
               ) : status === "streaming" ? (
                 <Square />

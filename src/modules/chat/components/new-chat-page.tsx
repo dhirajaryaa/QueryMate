@@ -42,7 +42,7 @@ function NewChatPage() {
   };
   return (
     <>
-      <ChatInputBox sendMessage={sendMessage} />
+      <ChatInputBox sendMessage={sendMessage} isLoading={isLoading} />
     </>
   );
 }

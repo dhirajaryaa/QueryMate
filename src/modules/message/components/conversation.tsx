@@ -26,6 +26,7 @@ export function Conversation({ initialMessages }: { initialMessages: Message[] }
     const pendingMessage = useChatStore((s) => s.pendingMessage);
     const updateHistoryTitle = useChatStore((s) => s.updateHistoryTitle);
     const bottomRef = useRef<HTMLDivElement>(null);
+    const hasAutoSubmitted = useRef(false);
     const clearPendingMessage = useChatStore((s) => s.clearPendingMessage);
 
     const hasSent = useRef(false);
@@ -69,6 +70,24 @@ export function Conversation({ initialMessages }: { initialMessages: Message[] }
             clearPendingMessage();
         };
     }, []);
+
+    // auto massage submit if last user message
+    useEffect(() => {
+        if (
+            messages.length > 0 &&
+            status === "ready" &&
+            !hasAutoSubmitted.current
+        ) {
+            const lastMessage = messages[messages.length - 1];
+
+            if (lastMessage.role === "user") {
+                hasAutoSubmitted.current = true;
+                console.log(lastMessage);
+
+                regenerate({ messageId: lastMessage.id });
+            }
+        }
+    }, [messages, status]);
 
 
     // auto scroll to bottom when messages or status changes

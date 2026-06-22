@@ -17,12 +17,14 @@ import { Accordion } from "@/components/ui/accordion";
 
 export const Message = memo(function Message({
     message,
+    isLastMessage,
     isStreaming,
     regenerate }
     : {
         message: UIMessage;
+        isLastMessage: boolean;
         isStreaming: boolean;
-        regenerate: ({ messageId }: { messageId?: string }) => void;
+        regenerate: () => void;
     }) {
 
     // render user message 
@@ -41,6 +43,7 @@ export const Message = memo(function Message({
                 message={message}
                 isStreaming={isStreaming}
                 regenerate={regenerate}
+                isLastMessage={isLastMessage}
             />
         </>
     )
@@ -78,10 +81,12 @@ const AssistantMessage = memo(
         message,
         isStreaming,
         regenerate,
+        isLastMessage
     }: {
         message: UIMessage;
         isStreaming: boolean;
-        regenerate: ({ messageId }: { messageId?: string }) => void;
+        regenerate: () => void;
+        isLastMessage: boolean;
     }
 
     ) {
@@ -105,7 +110,6 @@ const AssistantMessage = memo(
                             }
                         </Accordion>
                     )
-
                 }
                 {message.parts.map((part, i) => {
                     switch (part.type) {
@@ -138,6 +142,7 @@ const AssistantMessage = memo(
                 <MessageAction
                     message={message}
                     regenerate={regenerate}
+                    isShow={isLastMessage}
                 />
             </>
         );
@@ -170,7 +175,7 @@ export const StreamResponse = memo(
 );
 
 // message action 
-export const MessageAction = memo(function MessageAction({ message, regenerate }: { message: UIMessage, regenerate: ({ messageId }: { messageId?: string }) => void }) {
+export const MessageAction = memo(function MessageAction({ message, regenerate, isShow }: { message: UIMessage, regenerate: () => void, isShow: boolean }) {
 
     const [copied, setCopied] = useState<boolean>(false);
 
@@ -197,10 +202,9 @@ export const MessageAction = memo(function MessageAction({ message, regenerate }
                 }
             </Button>
 
-            {/* // TODO: edge case handle db prev save time check if regenerate then remove prev message and save new message  */}
-            <Button onClick={() => regenerate({ messageId: message.id })} size={"icon-sm"} type="button" variant={"ghost"} title="Regenerate Response">
+            {isShow && <Button onClick={regenerate} size={"icon-sm"} type="button" variant={"ghost"} title="Regenerate Response">
                 <RotateCcwIcon />
-            </Button>
+            </Button>}
         </div>
     )
 })

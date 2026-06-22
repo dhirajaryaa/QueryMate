@@ -1,4 +1,4 @@
-import { index, jsonb, pgEnum, pgTable, timestamp, uuid, } from "drizzle-orm/pg-core";
+import { index, jsonb, pgEnum, pgTable, text, timestamp, uuid, } from "drizzle-orm/pg-core";
 import { chat } from "./chat.schema";
 
 export const rolesEnum = pgEnum("roles", ["system", "user", "assistant"]);
@@ -7,7 +7,7 @@ export const rolesEnum = pgEnum("roles", ["system", "user", "assistant"]);
 export const message = pgTable(
   "message",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
+    id: text("id").primaryKey(),
     chatId: uuid("chat_id").references(() => chat.id, { onDelete: "cascade" }),
     role: rolesEnum().default("user").notNull(),
     parts: jsonb("parts").notNull(),
